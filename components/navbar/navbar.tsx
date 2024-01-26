@@ -51,13 +51,6 @@ export const NavbarWrapper = ({ children }: Props) => {
           <div className="max-md:hidden">
             <SupportIcon />
           </div>
-
-          <Link
-            href="https://github.com/Siumauricio/nextui-dashboard-template"
-            target={"_blank"}
-          >
-            <GithubIcon />
-          </Link>
           <NavbarContent>
             <UserDropdown />
           </NavbarContent>
