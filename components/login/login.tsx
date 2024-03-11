@@ -1,5 +1,29 @@
 "use client";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { userSelector } from "@/redux/selector";
+
+interface UserInputType {
+  email: string,
+  password: string
+}
+
+const initUserInput = {
+  email: "",
+  password: "",
+};
+
 export const Login = () => {
+  const user = useSelector(userSelector);
+  const { login } = useAuthContext();
+  const [userInput, setUserInput] = useState<UserInputType>(initUserInput);
+
+  const handleSubmit = () => {
+    login(userInput)
+  }
+  console.log(user);
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
       <div className="max-w-screen-xl m-0 sm:m-10 bg-white shadow sm:rounded-lg flex justify-center flex-1">
@@ -50,20 +74,31 @@ export const Login = () => {
                   className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
                   type="email"
                   placeholder="Email"
+                  value={userInput.email}
+                  onChange={(e) =>
+                    setUserInput((prev) => ({ ...prev, email: e.target.value }))
+                  }
                 />
                 <input
                   className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
                   type="password"
                   placeholder="Password"
+                  value={userInput.password}
+                  onChange={(e) =>
+                    setUserInput((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
                 />
-                <button className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
+                <button onClick={handleSubmit} className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
                   <svg
                     className="w-6 h-6 -ml-2"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
                     <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
                     <circle cx="8.5" cy="7" r="4" />

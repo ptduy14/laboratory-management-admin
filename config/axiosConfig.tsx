@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const AxiosInstance = axios.create({
-  baseURL: `${process.env.API_URL}`,
+  baseURL: 'https://laboratory-management-system.onrender.com/apis',
 });
 
 AxiosInstance.interceptors.request.use(
@@ -13,6 +13,7 @@ AxiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.log(error);
     return Promise.reject(error);
   }
 );
