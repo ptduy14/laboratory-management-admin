@@ -1,9 +1,9 @@
 import React, { ReactNode, createContext, useContext } from "react";
 import { AuthService } from "@/services/authService";
-import { toast } from 'react-toastify';
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser, removeUser } from "@/redux/slice/userSlice";
+import { toast } from "react-toastify";
 
 interface UserType {
   email: string;
@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let user = await getMe()
       dispatch(setUser(user.data))
     } catch (error) {
-      toast.error("Login information is incorrect");
+      toast.error('Thông tin đăng nhập không chính xác');
       console.log(error);
     }
   };
