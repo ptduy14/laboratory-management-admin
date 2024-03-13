@@ -1,8 +1,9 @@
 "use client";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { userSelector } from "@/redux/selector";
+import { toast } from "react-toastify";
 
 interface UserInputType {
   email: string,
@@ -18,6 +19,12 @@ export const Login = () => {
   const user = useSelector(userSelector);
   const { login } = useAuthContext();
   const [userInput, setUserInput] = useState<UserInputType>(initUserInput);
+
+  useEffect(() => {
+    if (Object.keys(user).length > 0) {
+      toast.success("đăng nhập thành công")
+    }
+  }, [user])
 
   const handleSubmit = () => {
     login(userInput)

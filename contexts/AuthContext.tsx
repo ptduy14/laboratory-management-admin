@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser, removeUser } from "@/redux/slice/userSlice";
 import { toast } from "react-toastify";
+import { JWTManager } from "@/libs/JWTManager";
 
 interface UserType {
   email: string;
@@ -25,9 +26,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (userData: UserType) => {
     try {
       const { data } = await AuthService.login(userData);
-      localStorage.setItem("access_token", data.access_token);
-      let user = await getMe()
+      JWTManager.setToken(data.access_token);
+      let user = await AuthService.getMe()
       dispatch(setUser(user.data))
+      router.push("/")
     } catch (error) {
       toast.error('Thông tin đăng nhập không chính xác');
       console.log(error);
