@@ -3,9 +3,11 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { userSelector } from "@/redux/selector";
-import { toast } from "react-toastify";
+import { withAuth } from "@/middleware/withAuth";
+import { loginFormValidation } from "@/validations/loginFormValidation";
+import { errorsType } from "@/validations/loginFormValidation";
 
-interface UserInputType {
+export interface UserInputType {
   email: string,
   password: string
 }
@@ -15,18 +17,25 @@ const initUserInput = {
   password: "",
 };
 
-export const Login = () => {
+const Login = () => {
   const user = useSelector(userSelector);
   const { login } = useAuthContext();
   const [userInput, setUserInput] = useState<UserInputType>(initUserInput);
-
-  useEffect(() => {
-    if (Object.keys(user).length > 0) {
-      toast.success("đăng nhập thành công")
-    }
-  }, [user])
+  const [errors, setErrors] = useState<errorsType>({
+    email: "",
+    password: ""
+  });
 
   const handleSubmit = () => {
+    setErrors(loginFormValidation(userInput));
+
+    console.log(errors)
+
+    if (errors.email || errors.password) {
+      return;
+    }
+
+    console.log('waiting server...')
     login(userInput)
   }
   console.log(user);
@@ -78,26 +87,31 @@ export const Login = () => {
 
               <div className="mx-auto max-w-xs">
                 <input
-                  className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
+                  className={`w-full px-8 py-4 rounded-lg font-medium  ${ errors.email ? "border-red-500 bg-red-100 focus:border-red-400" : "bg-gray-100 border-gray-200 focus:border-gray-400" } border placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5`}
                   type="email"
                   placeholder="Email"
                   value={userInput.email}
-                  onChange={(e) =>
-                    setUserInput((prev) => ({ ...prev, email: e.target.value }))
-                  }
+                  onChange={(e) => {
+                    setUserInput((prev) => ({ ...prev, email: e.target.value }));
+                    setErrors((prev) => ({ ...prev, email: "" }));
+                  }}
                 />
+                {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
                 <input
-                  className="w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5"
+                  className={`w-full px-8 py-4 rounded-lg font-medium  ${ errors.password ? "border-red-500 bg-red-100 focus:border-red-400" : "bg-gray-100 border-gray-200 focus:border-gray-400" } border placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5`}
                   type="password"
                   placeholder="Password"
                   value={userInput.password}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setUserInput((prev) => ({
                       ...prev,
                       password: e.target.value,
                     }))
+                    setErrors((prev) => ({ ...prev, password: "" }));
+                  }
                   }
                 />
+                {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
                 <button onClick={handleSubmit} className="mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none">
                   <svg
                     className="w-6 h-6 -ml-2"
@@ -129,4 +143,6 @@ export const Login = () => {
       </div>
     </div>
   );
-};
+}; 
+
+export default withAuth(Login)

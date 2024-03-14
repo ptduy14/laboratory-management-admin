@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setUser, removeUser } from "@/redux/slice/userSlice";
 import { toast } from "react-toastify";
-import { JWTManager } from "@/libs/JWTManager";
+import { JWTManager } from "@/utils/JWTManager";
 
 interface UserType {
   email: string;
@@ -30,8 +30,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let user = await AuthService.getMe()
       dispatch(setUser(user.data))
       router.push("/")
+      toast.success('Đăng nhập thành công !!');
     } catch (error) {
-      toast.error('Thông tin đăng nhập không chính xác');
+      toast.error('Sai email hoặc mật khẩu !!');
       console.log(error);
     }
   };
@@ -41,7 +42,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return data;
   };
 
-  const logout = () => {};
+  const logout = () => {
+    JWTManager.deleteToken();
+    dispatch(removeUser());
+    router.push("/login");
+    toast.success("đăng xuất thành công");
+  };
 
   const AuthContextValue: AuthContextType = {
     login,

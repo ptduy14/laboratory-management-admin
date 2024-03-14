@@ -9,8 +9,17 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 import { DarkModeSwitch } from "./darkmodeswitch";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { useSelector } from "react-redux";
+import { userSelector } from "@/redux/selector";
 
 export const UserDropdown = () => {
+  const { logout } = useAuthContext();
+  const user = useSelector(userSelector)
+  const handleLogout = () => {
+    logout();
+  }
+
   return (
     <Dropdown>
       <NavbarItem>
@@ -32,7 +41,7 @@ export const UserDropdown = () => {
           className="flex flex-col justify-start w-full items-start"
         >
           <p>Signed in as</p>
-          <p>zoey@example.com</p>
+          <p>{user.email}</p>
         </DropdownItem>
         <DropdownItem key="settings">My Settings</DropdownItem>
         <DropdownItem key="team_settings">Team Settings</DropdownItem>
@@ -40,7 +49,7 @@ export const UserDropdown = () => {
         <DropdownItem key="system">System</DropdownItem>
         <DropdownItem key="configurations">Configurations</DropdownItem>
         <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-        <DropdownItem key="logout" color="danger" className="text-danger ">
+        <DropdownItem key="logout" color="danger" className="text-danger " onClick={handleLogout}>
           Log Out
         </DropdownItem>
         <DropdownItem key="switch">

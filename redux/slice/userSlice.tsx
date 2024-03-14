@@ -17,8 +17,8 @@ export const userSlice = createSlice({
             state.user = action.payload
         }, // tạo action creator với mỗi case là key tương ứng của reducer
 
-        removeUser: (state, action) => {
-            state.user = null
+        removeUser: (state) => {
+            state.user = {} 
         }
     }
 })
