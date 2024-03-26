@@ -3,12 +3,18 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import nextAuth, { NextAuthOptions } from "next-auth";
 import { AuthService } from "@/services/authService";
 import axiosConfig from "@/config/axiosConfig";
+import GoogleProvider from "next-auth/providers/google";
+import { GoogleLoginData } from "@/services/authService";
 
+let userVerifyData: object | null;
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -45,37 +51,52 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
-      console.log("JWT callback", {token, user})
-      if (user) {
-        token.accessToken = user.access_token
-        token.id = user.userInfo.id
-        token.name = user.userInfo.firstName
-        token.email = user.userInfo.email
-        token.role = user.userInfo.roles[0].value
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google" && user) {
+        const payload = handleTransformData(user, account);
+        try {
+          axiosConfig();
+          const { data } = await AuthService.verifyTokenFromGoogleLogin(payload);
+          userVerifyData = data;
+          console.log("verifyTokenFromGoogleLogin", data);
+        } catch (error) {
+          console.log("error: ", error);
+        }
       }
-      return token;
+      return true;
+    },
+    async jwt({ token, user }) {
+      if (userVerifyData) {
+        return { ...token, ...userVerifyData}
+      }
+      return { ...token, ...user };
     },
 
-    async session({ session, user, token }) {
+    async session({ session, token }) {
+      userVerifyData = null;
       return {
         ...session,
         user: {
           ...session.user,
-          accessToken: token.accessToken,
-          id: token.id,
-          name: token.name,
-          email: token.email,
-          role: token.role
-        }
-      }
-      console.log("Session callback", {session, token})
-      // return session;
+          ...token,
+        },
+      };
     },
   },
 };
 
-
+const handleTransformData = (user: any, account: any): GoogleLoginData => {
+  const fullName = user.name;
+  const firstName = fullName!.split(" ")[0];
+  const lastName = fullName!.substring(firstName?.length).trim();
+  return {
+    email: user.email,
+    firstName,
+    lastName,
+    photo: user.image,
+    accessToken: account.access_token,
+  };
+};
 
 const handler = nextAuth(authOptions);
 export { handler as GET, handler as POST };

@@ -34,7 +34,7 @@ export const UserDropdown = () => {
             as="button"
             color="secondary"
             size="md"
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            src={session?.user.userInfo.photo || "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
           />
         </DropdownTrigger>
       </NavbarItem>
@@ -47,7 +47,7 @@ export const UserDropdown = () => {
           className="flex flex-col justify-start w-full items-start"
         >
           <p>Signed in as</p>
-          <p>{session?.user?.email}</p>
+          <p>{session?.user.userInfo.email}</p>
         </DropdownItem>
         <DropdownItem key="settings">My Settings</DropdownItem>
         <DropdownItem key="team_settings">Team Settings</DropdownItem>
