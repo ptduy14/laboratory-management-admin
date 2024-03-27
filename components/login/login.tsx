@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import {
   loginFormValidation,
   errorsType,
-} from "@/validations/loginFormvalidation";
+} from "@/validations/loginFormValidation";
 
 export interface UserInputType {
   email: string;
