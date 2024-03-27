@@ -3,10 +3,8 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import {
-  loginFormValidation,
-  errorsType,
-} from "@/validations/loginFormvalidation";
+
+import { loginFormValidation, errorsType } from "@/validations/loginFormValidation.ts";
 
 export interface UserInputType {
   email: string;
