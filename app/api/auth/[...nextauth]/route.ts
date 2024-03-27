@@ -56,11 +56,12 @@ export const authOptions: NextAuthOptions = {
         const payload = handleTransformData(user, account);
         try {
           axiosConfig();
-          const { data } = await AuthService.verifyTokenFromGoogleLogin(payload);
+          const { data } = await AuthService.ggAccessTokenVerify(payload);
           userVerifyData = data;
-          console.log("verifyTokenFromGoogleLogin", data);
-        } catch (error) {
-          console.log("error: ", error);
+          console.log("ggAccessTokenVerify", payload);
+        } catch (error: any) {
+          console.log("error: ", error.response.data);
+          return false;
         }
       }
       return true;

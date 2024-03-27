@@ -17,7 +17,7 @@ export const AuthService = {
   login: async (payload: LoginData) => {
     return await axios.post("/auths/login", payload);
   },
-  verifyTokenFromGoogleLogin: async (payload: GoogleLoginData) => {
+  ggAccessTokenVerify: async (payload: GoogleLoginData) => {
     return await axios.post("/auths/google-login", payload);
   },
 };
