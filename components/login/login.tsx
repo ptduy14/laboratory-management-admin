@@ -3,6 +3,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+
 import {
   loginFormValidation,
   errorsType,
@@ -57,11 +58,11 @@ export const Login = () => {
 
   const handleGoogleLogin = async () => {
     const result = await signIn("google", {
-      redirect: false
-    })
+      redirect: false,
+    });
 
     if (result?.ok) {
-      console.log('ok')
+      console.log("ok");
     }
   };
 
