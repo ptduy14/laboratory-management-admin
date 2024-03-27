@@ -8,13 +8,13 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (req.nextUrl.pathname.startsWith("/accounts") && token?.role !== "ADMIN") {
+        if (req.nextUrl.pathname.startsWith("/accounts") && token?.userInfo.roles[0].value !== "ADMIN") {
           return false
         } else if (token) {
           return true
         }
-
-        return false
+        console.log(token)
+        return true
       },
     },
   }
