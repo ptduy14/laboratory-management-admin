@@ -4,7 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-import { loginFormValidation, errorsType } from "@/validations/loginFormValidation.ts";
+import {
+  loginFormValidation,
+  errorsType,
+} from "@/validations/loginFormValidation.ts";
 
 export interface UserInputType {
   email: string;
@@ -55,11 +58,11 @@ export const Login = () => {
 
   const handleGoogleLogin = async () => {
     const result = await signIn("google", {
-      redirect: false
-    })
+      redirect: false,
+    });
 
     if (result?.ok) {
-      console.log('ok')
+      console.log("ok");
     }
   };
 
