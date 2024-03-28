@@ -1,6 +1,6 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -65,6 +65,14 @@ export const Login = () => {
       console.log("ok");
     }
   };
+
+  useEffect(() => {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        handleLogin();
+      } 
+    })
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
