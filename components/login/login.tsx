@@ -67,11 +67,17 @@ export const Login = () => {
   };
 
   useEffect(() => {
-    document.addEventListener('keydown', (e) => {
+    const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
         handleLogin();
-      } 
-    })
+      }
+    };
+  
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [])
 
   return (
