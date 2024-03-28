@@ -28,12 +28,7 @@ export const authOptions: NextAuthOptions = {
           password: credentials?.password,
         });
 
-        if (
-          (res.status == 201 &&
-            res.data &&
-            res.data.userInfo.roles[0].value === "ADMIN") ||
-          res.data.userInfo.roles[0].value === "MANAGER"
-        ) {
+        if (res.status == 201 && res.data && isAccess(res.data)) {
           return res.data;
         }
 
@@ -57,6 +52,9 @@ export const authOptions: NextAuthOptions = {
         try {
           axiosConfig();
           const { data } = await AuthService.ggAccessTokenVerify(payload);
+          if (!isAccess(data)) {
+            return false
+          }
           userVerifyData = data;
           console.log("ggAccessTokenVerify", payload);
         } catch (error: any) {
@@ -98,6 +96,10 @@ const handleTransformData = (user: any, account: any): GoogleLoginData => {
     accessToken: account.access_token,
   };
 };
+
+const isAccess = (data: any): boolean => {
+    return  data.userInfo.roles[0].value === "ADMIN" || data.userInfo.roles[0].value === "MANAGER"
+}
 
 const handler = nextAuth(authOptions);
 export { handler as GET, handler as POST };
