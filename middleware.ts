@@ -13,8 +13,7 @@ export default withAuth(
         } else if (token) {
           return true
         }
-        console.log(token)
-        return true
+        return false
       },
     },
   }
