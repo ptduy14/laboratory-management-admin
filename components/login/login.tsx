@@ -78,7 +78,7 @@ export const Login = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [])
+  }, [errors])
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
