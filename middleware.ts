@@ -1,4 +1,5 @@
 import { withAuth } from "next-auth/middleware";
+import { Role } from "./enums/Role";
 
 export default withAuth(
   async function middleware(req) {
@@ -8,7 +9,7 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (req.nextUrl.pathname.startsWith("/accounts") && token?.userInfo.roles[0].value !== "ADMIN") {
+        if (req.nextUrl.pathname.startsWith("/accounts") && token?.userInfo.roles[0].value !== Role.ADMIN) {
           return false
         } else if (token) {
           return true

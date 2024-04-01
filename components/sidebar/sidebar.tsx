@@ -19,10 +19,13 @@ import { FilterIcon } from "../icons/sidebar/filter-icon";
 import { useSidebarContext } from "../layout/layout-context";
 import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Role } from "@/enums/Role";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
+  const { data: session } = useSession();
 
   return (
     <aside className="h-screen z-[202] sticky top-0">
@@ -46,12 +49,15 @@ export const SidebarWrapper = () => {
               href="/"
             />
             <SidebarMenu title="Main Menu">
-              <SidebarItem
-                isActive={pathname === "/accounts"}
-                title="Accounts"
-                icon={<AccountsIcon />}
-                href="accounts"
-              />
+              {session?.user.userInfo.roles[0].value === Role.ADMIN && (
+                <SidebarItem
+                  isActive={pathname === "/accounts"}
+                  title="Accounts"
+                  icon={<AccountsIcon />}
+                  href="accounts"
+                />
+              )}
+
               <SidebarItem
                 isActive={pathname === "/payments"}
                 title="Payments"

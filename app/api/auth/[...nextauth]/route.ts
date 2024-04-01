@@ -5,6 +5,7 @@ import { AuthService } from "@/services/authService";
 import axiosConfig from "@/config/axiosConfig";
 import GoogleProvider from "next-auth/providers/google";
 import { GoogleLoginData } from "@/services/authService";
+import { Role } from "@/enums/Role";
 
 let userVerifyData: object | null;
 
@@ -56,7 +57,6 @@ export const authOptions: NextAuthOptions = {
             return false
           }
           userVerifyData = data;
-          console.log("ggAccessTokenVerify", payload);
         } catch (error: any) {
           console.log("error: ", error.response.data);
           return false;
@@ -98,7 +98,7 @@ const handleTransformData = (user: any, account: any): GoogleLoginData => {
 };
 
 const isAccess = (data: any): boolean => {
-    return  data.userInfo.roles[0].value === "ADMIN" || data.userInfo.roles[0].value === "MANAGER"
+    return data.userInfo.roles[0].value === Role.ADMIN || data.userInfo.roles[0].value === Role.MANAGER
 }
 
 const handler = nextAuth(authOptions);
