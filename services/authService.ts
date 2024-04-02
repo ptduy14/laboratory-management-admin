@@ -20,4 +20,7 @@ export const AuthService = {
   ggAccessTokenVerify: async (payload: GoogleLoginData) => {
     return await axios.post("/auths/google-login", payload);
   },
+  getMe: async () => {
+    return await axios.get("/users/info");
+  },
 };
