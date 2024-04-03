@@ -12,19 +12,22 @@ import { DarkModeSwitch } from "./darkmodeswitch";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { useSession } from "next-auth/react";
+import { userSelector } from "@/redux/selector/userSelector";
+import { useDispatch, useSelector } from "react-redux";
+import { removeUser } from "@/redux/slice/userSlice";
 
 export const UserDropdown = () => {
   const router = useRouter();
-  const { data: session } = useSession();
-  console.log(session)
+  const user = useSelector(userSelector);
+  const dispatch = useDispatch();
   const handleLogout = async () => {
     await signOut({
-      redirect: false
+      redirect: false,
     });
+    dispatch(removeUser());
     toast.success("Đăng xuất thành công");
     router.push("/login");
-  }
+  };
 
   return (
     <Dropdown>
@@ -34,7 +37,10 @@ export const UserDropdown = () => {
             as="button"
             color="secondary"
             size="md"
-            src={session?.user.userInfo.photo || "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
+            src={
+              user?.userInfo.photo ||
+              "https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            }
           />
         </DropdownTrigger>
       </NavbarItem>
@@ -47,7 +53,7 @@ export const UserDropdown = () => {
           className="flex flex-col justify-start w-full items-start"
         >
           <p>Signed in as</p>
-          <p>{session?.user.userInfo.email}</p>
+          <p>{user?.userInfo.email}</p>
         </DropdownItem>
         <DropdownItem key="settings">My Settings</DropdownItem>
         <DropdownItem key="team_settings">Team Settings</DropdownItem>
@@ -55,7 +61,12 @@ export const UserDropdown = () => {
         <DropdownItem key="system">System</DropdownItem>
         <DropdownItem key="configurations">Configurations</DropdownItem>
         <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-        <DropdownItem key="logout" color="danger" className="text-danger " onClick={handleLogout}>
+        <DropdownItem
+          key="logout"
+          color="danger"
+          className="text-danger "
+          onClick={handleLogout}
+        >
           Log Out
         </DropdownItem>
         <DropdownItem key="switch">

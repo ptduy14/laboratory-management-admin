@@ -8,6 +8,9 @@ import { usePathname } from "next/navigation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider } from "next-auth/react";
+import { persistor, store } from "@/redux/store";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -19,16 +22,20 @@ export function Providers({ children, themeProps, session }: ProvidersProps) {
   const pathname = usePathname();
   return (
     <SessionProvider session={session}>
-      <NextUIProvider>
-        <NextThemesProvider
-          defaultTheme="system"
-          attribute="class"
-          {...themeProps}
-        >
-          {pathname === "/login" ? children : <Layout>{children}</Layout>}
-          <ToastContainer />
-        </NextThemesProvider>
-      </NextUIProvider>
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <NextUIProvider>
+            <NextThemesProvider
+              defaultTheme="system"
+              attribute="class"
+              {...themeProps}
+            >
+              {pathname === "/login" ? children : <Layout>{children}</Layout>}
+              <ToastContainer />
+            </NextThemesProvider>
+          </NextUIProvider>
+        </PersistGate>
+      </Provider>
     </SessionProvider>
   );
 }

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@nextui-org/react": "2.0.22",
+    "@reduxjs/toolkit": "^2.2.3",
     "apexcharts": "^3.35.5",
     "axios": "^1.6.8",
     "clsx": "^2.0.0",
@@ -20,7 +21,9 @@
     "react": "18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-dom": "18.2.0",
-    "react-toastify": "^10.0.5"
+    "react-redux": "^9.1.0",
+    "react-toastify": "^10.0.5",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "18.7.18",
