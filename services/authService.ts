@@ -1,4 +1,4 @@
-import axios from "axios";
+import AxiosInstance from "@/config/axiosInstance";
 
 interface LoginData {
   email: string | undefined;
@@ -15,12 +15,12 @@ export interface GoogleLoginData {
 
 export const AuthService = {
   login: async (payload: LoginData) => {
-    return await axios.post("/auths/login", payload);
+    return await AxiosInstance.post("/auths/login", payload);
   },
   ggAccessTokenVerify: async (payload: GoogleLoginData) => {
-    return await axios.post("/auths/google-login", payload);
+    return await AxiosInstance.post("/auths/google-login", payload);
   },
   getMe: async () => {
-    return await axios.get("/users/info");
+    return await AxiosInstance.get("/users/info");
   },
 };
