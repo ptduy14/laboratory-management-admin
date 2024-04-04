@@ -13,15 +13,16 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
+import jwtManager from "@/config/jwtManager";
 
 export const UserDropdown = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  console.log(session)
   const handleLogout = async () => {
     await signOut({
       redirect: false
     });
+    jwtManager.clearToken();
     toast.success("Đăng xuất thành công");
     router.push("/login");
   }

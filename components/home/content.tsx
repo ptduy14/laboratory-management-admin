@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { TableWrapper } from "../table/table";
 import { CardBalance1 } from "./card-balance1";
@@ -9,6 +9,8 @@ import { CardAgents } from "./card-agents";
 import { CardTransactions } from "./card-transactions";
 import { Link } from "@nextui-org/react";
 import NextLink from "next/link";
+import { useSession } from "next-auth/react";
+import jwtManager from "@/config/jwtManager";
 
 const Chart = dynamic(
   () => import("../charts/steam").then((mod) => mod.Steam),
@@ -17,8 +19,17 @@ const Chart = dynamic(
   }
 );
 
-export const Content = () => (
-  <div className="h-full lg:px-6">
+export const Content = () => {
+  const { data: session } = useSession();
+  const token = jwtManager.getToken();
+  useEffect(() => {
+    if (!token && session) {
+      jwtManager.setToken(session.user.access_token)
+    }
+  }, [session])
+
+  return (
+    <div className="h-full lg:px-6">
     <div className="flex justify-center gap-4 xl:gap-6 pt-3 px-4 lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full">
       <div className="mt-6 gap-6 flex flex-col w-full">
         {/* Card Section Top */}
@@ -66,4 +77,5 @@ export const Content = () => (
       <TableWrapper />
     </div>
   </div>
-);
+  )
+}
