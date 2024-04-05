@@ -9,13 +9,13 @@ declare module "next-auth" {
         address: string | null;
         email: string;
         firstName: string;
-        id: integer;
+        id: number;
         lastName: string;
-        phone: integer | null;
+        phone: number | null;
         photo: string | null;
         roles: [
           {
-            id: integer,
+            id: number,
             name: string,
             value: string,
             status: boolean
