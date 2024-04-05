@@ -33,8 +33,10 @@ AxiosInstance.interceptors.response.use(
                 redirect: false
               });
               jwtManager.clearToken();
-              toast.error("Phiên đăng nhập đã hết hạn");
-              redirect("/login");
+              if (typeof window !== 'undefined') {
+                window.location.href = '/'
+            }
+            
         }
         console.log(error)
         return Promise.reject(error)
