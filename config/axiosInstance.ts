@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { redirect } from "next/navigation";
 
 const AxiosInstance = axios.create({
-    baseURL: process.env.API_URL
+    baseURL: process.env.NEXT_PUBLIC_API_URL
 });
 
 AxiosInstance.interceptors.request.use(
@@ -26,14 +26,14 @@ AxiosInstance.interceptors.response.use(
     (response) => {
         return response
     },
-    (error) => {
+    async (error) => {
         const access_token = jwtManager.getToken();
         if (error.response && error.response.data.statusCode === 401 && access_token) {
-            signOut({
+            await signOut({
                 redirect: false
               });
               jwtManager.clearToken();
-              toast.success("Phiên đăng nhập đã hết hạn");
+              toast.error("Phiên đăng nhập đã hết hạn");
               redirect("/login");
         }
         console.log(error)
