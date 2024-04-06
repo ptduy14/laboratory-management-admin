@@ -1,7 +1,7 @@
 "use client";
 import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DotsIcon } from "@/components/icons/accounts/dots-icon";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
 import { InfoIcon } from "@/components/icons/accounts/info-icon";
@@ -9,10 +9,27 @@ import { TrashIcon } from "@/components/icons/accounts/trash-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
 import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
-import { TableWrapper } from "@/components/table/table";
+import { SearchIcon } from "../icons/searchicon";
+import { TableWrapper } from "./account-table/table";
 import { AddUser } from "./add-user";
+import { UserService } from "@/services/userService";
+import { Account } from "./account-table/columns";
+import { LoaderTable } from "../loader/loader-table";
 
 export const Accounts = () => {
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [filterValue, setFilterValue] = useState("");
+
+  useEffect(() => {
+    getAccounts();
+  }, []);
+
+  const getAccounts = async () => {
+    const { data } = await UserService.getAll();
+    setAccounts(data);
+  };
+
+
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
       <ul className="flex">
@@ -42,12 +59,10 @@ export const Accounts = () => {
               input: "w-full",
               mainWrapper: "w-full",
             }}
-            placeholder="Search users"
+            startContent={<SearchIcon />}
+            isClearable
+            placeholder="Search users by Email"
           />
-          <SettingsIcon />
-          <TrashIcon />
-          <InfoIcon />
-          <DotsIcon />
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           <AddUser />
@@ -57,7 +72,15 @@ export const Accounts = () => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        <TableWrapper />
+        {accounts.length > 0 ? 
+          <>
+            <span className="text-default-400 text-small">Total {accounts.length} accounts</span>
+            <div style={{ marginBottom: '16px' }}></div>
+            <TableWrapper accounts={accounts} />
+          </>
+         : (
+          <LoaderTable />
+        )}
       </div>
     </div>
   );
