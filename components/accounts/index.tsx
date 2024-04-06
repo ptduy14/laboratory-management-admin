@@ -2,13 +2,9 @@
 import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
-import { DotsIcon } from "@/components/icons/accounts/dots-icon";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
-import { InfoIcon } from "@/components/icons/accounts/info-icon";
-import { TrashIcon } from "@/components/icons/accounts/trash-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
-import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
 import { SearchIcon } from "../icons/searchicon";
 import { TableWrapper } from "./account-table/table";
 import { AddUser } from "./add-user";
@@ -42,7 +38,8 @@ export const Accounts = () => {
 
     if (filterValue) {
       filteredAccounts = filteredAccounts.filter((account) => {
-        return account.email.toLowerCase().includes(filterValue.toLowerCase())
+        const accountEmail = account.email.toLowerCase();
+        return accountEmail.substring(0, accountEmail.indexOf('@')).includes(filterValue.toLowerCase())
       })
     }
 
