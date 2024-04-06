@@ -3,7 +3,7 @@ import React from "react";
 import { DeleteIcon } from "@/components/icons/table/delete-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { EditIcon } from "@/components/icons/table/edit-icon";
-import { Account } from "./columns";
+import { Account } from "./data";
 
 interface Props {
   account: Account;

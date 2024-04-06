@@ -8,7 +8,7 @@ import {
   TableCell,
   Pagination,
 } from "@nextui-org/react";
-import { columns, Account } from "./columns";
+import { columns, Account } from "./data";
 import { RenderCell } from "./render-cell";
 
 export const TableWrapper: React.FC<{ accounts: Account[] }> = ({ accounts }) => {

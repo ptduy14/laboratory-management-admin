@@ -9,7 +9,7 @@ import { SearchIcon } from "../icons/searchicon";
 import { TableWrapper } from "./account-table/table";
 import { AddUser } from "./add-user";
 import { UserService } from "@/services/userService";
-import { Account } from "./account-table/columns";
+import { Account } from "./account-table/data";
 import { LoaderTable } from "../loader/loader-table";
 
 export const Accounts = () => {
