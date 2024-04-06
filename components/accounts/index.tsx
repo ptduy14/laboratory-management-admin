@@ -29,6 +29,27 @@ export const Accounts = () => {
     setAccounts(data);
   };
 
+  const onSearchChange = (value?: string) => {
+    if (value) {
+      setFilterValue(value)
+    } else {
+      setFilterValue("")
+    }
+  }
+
+  const handleFilteredItems = () => {
+    let filteredAccounts = [...accounts];
+
+    if (filterValue) {
+      filteredAccounts = filteredAccounts.filter((account) => {
+        return account.email.toLowerCase().includes(filterValue.toLowerCase())
+      })
+    }
+
+    return filteredAccounts;
+  }
+
+  const filteredItems = handleFilteredItems();
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -62,6 +83,8 @@ export const Accounts = () => {
             startContent={<SearchIcon />}
             isClearable
             placeholder="Search users by Email"
+            value={filterValue}
+            onValueChange={onSearchChange}
           />
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
@@ -76,7 +99,7 @@ export const Accounts = () => {
           <>
             <span className="text-default-400 text-small">Total {accounts.length} accounts</span>
             <div style={{ marginBottom: '16px' }}></div>
-            <TableWrapper accounts={accounts} />
+            <TableWrapper accounts={filteredItems} />
           </>
          : (
           <LoaderTable />
