@@ -1,20 +1,23 @@
 "use client";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
+import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { SearchIcon } from "../icons/searchicon";
 import { TableWrapper } from "./account-table/table";
 import { AddUser } from "./add-user";
 import { UserService } from "@/services/userService";
 import { Account } from "./account-table/data";
 import { LoaderTable } from "../loader/loader-table";
+import { statusOptions } from "./account-table/data";
 
 export const Accounts = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [filterValue, setFilterValue] = useState("");
+  const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
 
   useEffect(() => {
     getAccounts();
@@ -40,6 +43,12 @@ export const Accounts = () => {
       filteredAccounts = filteredAccounts.filter((account) => {
         const accountEmail = account.email.toLowerCase();
         return accountEmail.substring(0, accountEmail.indexOf('@')).includes(filterValue.toLowerCase())
+      })
+    }
+
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
+      filteredAccounts = filteredAccounts.filter((account, index) => {
+        return Array.from(statusFilter).includes(account.status.toString())
       })
     }
 
@@ -83,6 +92,29 @@ export const Accounts = () => {
             value={filterValue}
             onValueChange={onSearchChange}
           />
+          <div className="flex gap-3">
+            <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  Status
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={statusFilter}
+                selectionMode="multiple"
+                onSelectionChange={setStatusFilter}
+              >
+                {statusOptions.map((status) => (
+                  <DropdownItem key={status.uid} className="capitalize">
+                    {status.name}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+        </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           <AddUser />

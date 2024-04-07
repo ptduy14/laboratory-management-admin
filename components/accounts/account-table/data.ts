@@ -43,6 +43,6 @@ export const columns = [
 ];
 
 export const statusOptions = [
-  {name: "ADMIN", uid: "admin"},
-  {name: "MANAGER", uid: "manager"},
+  {name: "Active", uid: 0},
+  {name: "Not Active", uid: 1},
 ];
