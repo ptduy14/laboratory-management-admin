@@ -46,3 +46,9 @@ export const statusOptions = [
   {name: "Active", uid: 0},
   {name: "Not Active", uid: 1},
 ];
+
+export const roleOptions = [
+  {name: "USER", uid: 'USER'},
+  {name: "MANAGER", uid: 'MANAGER'},
+  {name: "ADMIN", uid: 'ADMIN'},
+];

@@ -13,11 +13,13 @@ import { UserService } from "@/services/userService";
 import { Account } from "./account-table/data";
 import { LoaderTable } from "../loader/loader-table";
 import { statusOptions } from "./account-table/data";
+import { roleOptions } from "./account-table/data";
 
 export const Accounts = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
+  const [roleFilter, setRoleFilter] = React.useState<Selection>('all');
 
   useEffect(() => {
     getAccounts();
@@ -47,8 +49,14 @@ export const Accounts = () => {
     }
 
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredAccounts = filteredAccounts.filter((account, index) => {
+      filteredAccounts = filteredAccounts.filter((account) => {
         return Array.from(statusFilter).includes(account.status.toString())
+      })
+    }
+
+    if (roleFilter !== "all" && Array.from(roleFilter).length !== roleOptions.length) {
+      filteredAccounts = filteredAccounts.filter((account) => {
+        return Array.from(roleFilter).includes(account.roles[0].value)
       })
     }
 
@@ -114,7 +122,30 @@ export const Accounts = () => {
                 ))}
               </DropdownMenu>
             </Dropdown>
-        </div>
+          </div>
+          <div className="flex gap-3">
+            <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  Role
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={roleFilter}
+                selectionMode="multiple"
+                onSelectionChange={setRoleFilter}
+              >
+                {roleOptions.map((role) => (
+                  <DropdownItem key={role.uid} className="capitalize">
+                    {role.name}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           <AddUser />
@@ -124,15 +155,15 @@ export const Accounts = () => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        {accounts.length > 0 ? 
+        {accounts.length > 0 ?
           <>
             <span className="text-default-400 text-small">Total {accounts.length} accounts</span>
             <div style={{ marginBottom: '16px' }}></div>
             <TableWrapper accounts={filteredItems} />
           </>
-         : (
-          <LoaderTable />
-        )}
+          : (
+            <LoaderTable />
+          )}
       </div>
     </div>
   );
