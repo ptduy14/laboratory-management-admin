@@ -35,7 +35,7 @@ export const UserDropdown = () => {
             as="button"
             color="secondary"
             size="md"
-            src={session?.user.userInfo.photo || "https://i.pravatar.cc/150?u=a042581f4e29026704d"}
+            src={session?.user.userInfo.photo || "https://images.unsplash.com/broken"}
           />
         </DropdownTrigger>
       </NavbarItem>
@@ -44,11 +44,12 @@ export const UserDropdown = () => {
         onAction={(actionKey) => console.log({ actionKey })}
       >
         <DropdownItem
-          key="profile"
+        isReadOnly
+          key="info"
           className="flex flex-col justify-start w-full items-start"
+          description={session?.user.userInfo.email}
         >
-          <p>Signed in as</p>
-          <p>{session?.user.userInfo.email}</p>
+          <p>{session?.user.userInfo.firstName + " " + session?.user.userInfo.lastName}</p>
         </DropdownItem>
         <DropdownItem key="settings">My Settings</DropdownItem>
         <DropdownItem key="team_settings">Team Settings</DropdownItem>
