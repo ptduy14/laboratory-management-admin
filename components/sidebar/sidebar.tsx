@@ -21,6 +21,9 @@ import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Role } from "@/enums/Role";
+import { ChemicalIcon } from "../icons/chemical-icon";
+import { ToolIcon } from "../icons/tool-icons";
+import { EquipmentIcon } from "../icons/equiptment-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
@@ -60,30 +63,26 @@ export const SidebarWrapper = () => {
 
               <SidebarItem
                 isActive={pathname === "/payments"}
-                title="Payments"
-                icon={<PaymentsIcon />}
-              />
-              <CollapseItems
-                icon={<BalanceIcon />}
-                items={["Banks Accounts", "Credit Cards", "Loans"]}
-                title="Balances"
+                title="Hóa chất"
+                icon={<ChemicalIcon />}
               />
               <SidebarItem
                 isActive={pathname === "/customers"}
-                title="Customers"
-                icon={<CustomersIcon />}
-              />
-              <SidebarItem
-                isActive={pathname === "/products"}
-                title="Products"
-                icon={<ProductsIcon />}
+                title="Dụng cụ"
+                icon={<ToolIcon />}
               />
               <SidebarItem
                 isActive={pathname === "/reports"}
-                title="Reports"
-                icon={<ReportsIcon />}
+                title="Thiết bị"
+                icon={<EquipmentIcon />}
+              />
+              <CollapseItems
+                icon={<FilterIcon />}
+                items={["Công nghệ sinh học", "Hóa Sinh", "Quản trị thiết bị", "Vi sinh"]}
+                title="Phòng"
               />
             </SidebarMenu>
+            
           </div>
         </div>
       </div>
