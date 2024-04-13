@@ -59,8 +59,6 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                       <Avatar
                         radius="none"
                         className="w-full h-full"
-                        isBordered
-                        color="success"
                         src={
                           account.photo
                             ? account.photo
