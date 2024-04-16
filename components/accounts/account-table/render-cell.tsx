@@ -4,6 +4,7 @@ import { DeleteIcon } from "@/components/icons/table/delete-icon";
 import { EditIcon } from "@/components/icons/table/edit-icon";
 import { Account } from "./data";
 import { DetailAccount } from "../detail-account";
+import { RoleNames } from "@/enums/Role";
 
 interface Props {
   account: Account;
@@ -26,14 +27,9 @@ export const RenderCell = ({ account, columnKey }: Props) => {
       );
     case "role":
       return (
-        <div>
           <div>
-            <span>{cellValue}</span>
+            <span>{RoleNames[account.role]}</span>
           </div>
-          <div>
-            <span>{account.roles[0].value}</span>
-          </div>
-        </div>
       );
     case "status":
       return (

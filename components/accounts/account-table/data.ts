@@ -1,10 +1,3 @@
-interface Role {
-  id: number;
-  name: string;
-  status: number;
-  value: string;
-}
-
 export interface Account {
   id: number;
   firstName: string;
@@ -17,7 +10,7 @@ export interface Account {
   photo: string | null;
   refresh_token: string | null;
   repass_token: string | null;
-  roles: Role[];
+  role: number;
   status: number;
   token: string;
   updatedAt: string;
