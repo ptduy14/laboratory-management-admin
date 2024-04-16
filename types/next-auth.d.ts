@@ -13,14 +13,7 @@ declare module "next-auth" {
         lastName: string;
         phone: number | null;
         photo: string | null;
-        roles: [
-          {
-            id: number,
-            name: string,
-            value: string,
-            status: boolean
-          }
-        ];
+        role: number;
         status: boolean;
       };
     };
