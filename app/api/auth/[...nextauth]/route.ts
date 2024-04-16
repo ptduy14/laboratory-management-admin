@@ -5,7 +5,7 @@ import { AuthService } from "@/services/authService";
 import axiosConfig from "@/config/axiosConfig";
 import GoogleProvider from "next-auth/providers/google";
 import { GoogleLoginData } from "@/services/authService";
-import { Role } from "@/enums/Role";
+import { RoleEnum } from "@/enums/Role";
 
 let userVerifyData: object | null;
 
@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           // axiosConfig();
           const { data } = await AuthService.ggAccessTokenVerify(payload);
           if (!isAccess(data)) {
-            return false
+            return false;
           }
           userVerifyData = data;
         } catch (error: any) {
@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user }) {
       if (userVerifyData) {
-        return { ...token, ...userVerifyData}
+        return { ...token, ...userVerifyData };
       }
       return { ...token, ...user };
     },
@@ -98,8 +98,11 @@ const handleTransformData = (user: any, account: any): GoogleLoginData => {
 };
 
 const isAccess = (data: any): boolean => {
-    return data.userInfo.roles[0].value === Role.ADMIN || data.userInfo.roles[0].value === Role.MANAGER
-}
+  return (
+    data.userInfo.role === RoleEnum.ADMIN ||
+    data.userInfo.role === RoleEnum.MANAGER
+  );
+};
 
 const handler = nextAuth(authOptions);
 export { handler as GET, handler as POST };
