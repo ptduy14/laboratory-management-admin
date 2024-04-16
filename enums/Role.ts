@@ -9,7 +9,7 @@ interface RoleNamesType {
 }
 
 export const RoleNames: RoleNamesType = {
-    [RoleEnum.ADMIN]: "ADMIN",
-    [RoleEnum.MANAGER]: "MANAGER",
-    [RoleEnum.USER]: "USER"
+    [RoleEnum.ADMIN]: "Admin",
+    [RoleEnum.MANAGER]: "Manager",
+    [RoleEnum.USER]: "User"
 }

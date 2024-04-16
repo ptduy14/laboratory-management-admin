@@ -15,6 +15,7 @@ import React, { useState, useEffect } from "react";
 import { UserService } from "@/services/userService";
 import { Account } from "./account-table/data";
 import { LoaderImageText } from "../loader/loader-image-text";
+import { RoleNames } from "@/enums/Role";
 
 export const DetailAccount = ({ accountId }: { accountId: number }) => {
   const [account, setAccount] = useState<Account>();
@@ -98,7 +99,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                           Số điện thoại:
                         </span>
                         <span className="w-2/3 block font-light">
-                          {account?.phone}
+                        {account?.phone ? account.phone : "null"}
                         </span>
                       </label>
                       <label className="flex mb-1.5">
@@ -106,7 +107,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                           Địa chỉ:
                         </span>
                         <span className="w-2/3 block font-light">
-                          {account?.address}
+                        {account?.address ? account.address : "null"}
                         </span>
                       </label>
                       <label className="flex mb-1.5">
@@ -136,7 +137,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                           Vai trò:
                         </span>
                         <span className="w-2/3 block font-light">
-                          {account?.roles[0].value}
+                          {RoleNames[account.role]}
                         </span>
                       </label>
                       <label className="flex mb-1.5">
