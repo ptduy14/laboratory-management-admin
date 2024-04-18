@@ -33,7 +33,7 @@ export const AddUser = () => {
                   Add Account
                 </ModalHeader>
                 <ModalBody>
-                  <form className="flex justify-between overflow-y-auto">
+                  <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                     <div className="w-1/3 pr-10">
                       <Avatar
                         radius="none"

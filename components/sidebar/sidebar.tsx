@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Sidebar } from "./sidebar.styles";
 import { Avatar, Tooltip } from "@nextui-org/react";
 import { CompaniesDropdown } from "./companies-dropdown";
@@ -24,11 +24,26 @@ import { RoleEnum } from "@/enums/Role";
 import { ChemicalIcon } from "../icons/chemical-icon";
 import { ToolIcon } from "../icons/tool-icons";
 import { EquipmentIcon } from "../icons/equiptment-icon";
+import { RoomService } from "@/services/roomService";
+
+export interface RoomType {
+  id: number,
+  name: string
+}
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
   const { data: session } = useSession();
+  const [rooms, setRooms] = useState<RoomType[]>([])
+  useEffect(() => {
+    getAllRoom();
+  }, []);
+
+  const getAllRoom = async () => {
+    const { data } = await RoomService.getAll();
+    setRooms(data)
+  }
 
   return (
     <aside className="h-screen z-[202] sticky top-0">
@@ -78,7 +93,7 @@ export const SidebarWrapper = () => {
               />
               <CollapseItems
                 icon={<FilterIcon />}
-                items={["Công nghệ sinh học", "Hóa Sinh", "Quản trị thiết bị", "Vi sinh"]}
+                items={rooms}
                 title="Phòng"
               />
             </SidebarMenu>

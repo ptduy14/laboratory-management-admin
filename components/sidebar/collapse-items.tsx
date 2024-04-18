@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { ChevronUpIcon } from "../icons/sidebar/chevron-up-icon";
 import { Accordion, AccordionItem, Link } from "@nextui-org/react";
 import clsx from "clsx";
+import { RoomType } from "./sidebar";
 
 interface Props {
   icon: React.ReactNode;
   title: string;
-  items: string[];
+  items: RoomType[];
 }
 
 export const CollapseItems = ({ icon, items, title }: Props) => {
@@ -36,7 +37,7 @@ export const CollapseItems = ({ icon, items, title }: Props) => {
         >
           <div className="pl-12">
             {items.map((item, index) => (
-              <Link key={index} href="#" color="foreground" className="mb-2.5">{item}</Link>
+              <Link key={index} href="#" color="foreground" className="mb-2.5">{item.name}</Link>
               // <span
               //   key={index}
               //   className="w-full flex  text-default-500 hover:text-default-900 transition-colors"
