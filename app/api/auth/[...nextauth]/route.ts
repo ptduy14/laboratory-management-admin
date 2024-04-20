@@ -2,7 +2,6 @@ import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import nextAuth, { NextAuthOptions } from "next-auth";
 import { AuthService } from "@/services/authService";
-import axiosConfig from "@/config/axiosConfig";
 import GoogleProvider from "next-auth/providers/google";
 import { GoogleLoginData } from "@/services/authService";
 import { RoleEnum } from "@/enums/Role";
