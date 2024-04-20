@@ -56,7 +56,7 @@ export const Accounts = () => {
 
     if (roleFilter !== "all" && Array.from(roleFilter).length !== roleOptions.length) {
       filteredAccounts = filteredAccounts.filter((account) => {
-        return Array.from(roleFilter).includes(account.roles[0].value)
+        return Array.from(roleFilter).includes(account.role.toString())
       })
     }
 
