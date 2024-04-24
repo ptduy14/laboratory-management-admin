@@ -13,16 +13,31 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeFilledIcon } from "../icons/EyeFilledIcon";
+import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
 
 const AddAccountSchema = z
   .object({
-    email: z.string().min(1, { message: "Trường này không được trống"}),
-    firstName: z.string().min(1, { message: "Trường này không được trống"}),
-    lastName: z.string().min(1, { message: "Trường này không được trống"}),
+    email: z
+      .string()
+      .min(1, { message: "Trường này không được trống" })
+      .regex(/^[a-zA-Z0-9._%+-]+@student\.ctuet\.edu\.vn$/, {
+        message: "Địa chỉ email không hợp lệ",
+      }),
+    firstName: z.string().min(1, { message: "Trường này không được trống" }),
+    lastName: z.string().min(1, { message: "Trường này không được trống" }),
     address: z.string(),
-    password: z.string().min(1, { message: "Trường này không được trống"}),
-    confirmPassword: z.string().min(1, { message: "Trường này không được trống"}),
-    role: z.string().min(1, { message: "Trường này không được trống"}),
+    password: z
+      .string()
+      .min(8, { message: "Mật khẩu phải lớn hơn 8 ký tự" })
+      .max(32)
+      .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,32}$/, {
+        message: "Mật khẩu phải chứa ít nhất một chữ cái và một số",
+      }),
+    confirmPassword: z
+      .string()
+      .min(1, { message: "Trường này không được trống" }),
+    role: z.string().min(1, { message: "Trường này không được trống" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Mật khẩu không khớp",
@@ -33,23 +48,26 @@ type AddAccountSchemaType = z.infer<typeof AddAccountSchema>;
 
 export const AddAccount = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [isVisible, setIsVisible] = React.useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-    clearErrors
+    clearErrors,
   } = useForm<AddAccountSchemaType>({
     resolver: zodResolver(AddAccountSchema),
   });
 
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
   const onSubmit: SubmitHandler<AddAccountSchemaType> = (data) => {
-    console.log(data)
-  }
+    console.log(data);
+  };
 
   const handleCloseModal = () => {
-    clearErrors()
+    clearErrors();
     onClose();
-  }
+  };
 
   return (
     <div>
@@ -78,7 +96,7 @@ export const AddAccount = () => {
                         variant="bordered"
                         errorMessage={errors.email?.message}
                         isInvalid={errors.email?.message ? true : false}
-                        {...register('email')}
+                        {...register("email")}
                       />
                       <Input
                         className="mb-7"
@@ -86,7 +104,7 @@ export const AddAccount = () => {
                         variant="bordered"
                         errorMessage={errors.firstName?.message}
                         isInvalid={errors.firstName?.message ? true : false}
-                        {...register('firstName')}
+                        {...register("firstName")}
                       />
                       <Input
                         className="mb-7"
@@ -94,7 +112,7 @@ export const AddAccount = () => {
                         variant="bordered"
                         errorMessage={errors.lastName?.message}
                         isInvalid={errors.lastName?.message ? true : false}
-                        {...register('lastName')}
+                        {...register("lastName")}
                       />
                       <Input
                         className="mb-7"
@@ -102,26 +120,46 @@ export const AddAccount = () => {
                         variant="bordered"
                         errorMessage={errors.address?.message}
                         isInvalid={errors.address?.message ? true : false}
-                        {...register('address')}
+                        {...register("address")}
                       />
 
                       <Input
                         className="mb-7"
                         label="Password"
-                        type="password"
                         variant="bordered"
                         errorMessage={errors.password?.message}
                         isInvalid={errors.password?.message ? true : false}
-                        {...register('password')}
+                        endContent={
+                          <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                            {isVisible ? (
+                              <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                            ) : (
+                              <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                            )}
+                          </button>
+                        }
+                        type={isVisible ? "text" : "password"}
+                        {...register("password")}
                       />
                       <Input
                         className="mb-7"
                         label="Confirm Password"
-                        type="password"
                         variant="bordered"
                         errorMessage={errors.confirmPassword?.message}
-                        isInvalid={errors.confirmPassword?.message ? true : false}
-                        {...register('confirmPassword')}
+                        isInvalid={
+                          errors.confirmPassword?.message ? true : false
+                        }
+                        endContent={
+                          <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                            {isVisible ? (
+                              <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                            ) : (
+                              <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                            )}
+                          </button>
+                        }
+                        type={isVisible ? "text" : "password"}
+                        {...register("confirmPassword")}
                       />
                       <label
                         htmlFor="roles"
@@ -133,7 +171,7 @@ export const AddAccount = () => {
                         defaultValue="admin"
                         id="roles"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        {...register('role')}
+                        {...register("role")}
                       >
                         <option value="admin">Admin</option>
                         <option value="manager">Manager</option>
@@ -142,7 +180,11 @@ export const AddAccount = () => {
                   </form>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onClick={handleCloseModal}>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onClick={handleCloseModal}
+                  >
                     Close
                   </Button>
                   <Button color="primary" onClick={handleSubmit(onSubmit)}>
