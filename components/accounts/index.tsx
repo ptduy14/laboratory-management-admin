@@ -8,7 +8,7 @@ import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { SearchIcon } from "../icons/searchicon";
 import { TableWrapper } from "./account-table/table";
-import { AddUser } from "./add-user";
+import { AddAccount } from "./add-account";
 import { UserService } from "@/services/userService";
 import { Account } from "./account-table/data";
 import { LoaderTable } from "../loader/loader-table";
@@ -148,7 +148,7 @@ export const Accounts = () => {
           </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddUser />
+          <AddAccount />
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
