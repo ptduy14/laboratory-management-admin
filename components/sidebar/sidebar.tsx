@@ -20,7 +20,7 @@ import { useSidebarContext } from "../layout/layout-context";
 import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { RoleEnum } from "@/enums/Role";
+import { RoleEnum } from "@/enums/role";
 import { ChemicalIcon } from "../icons/chemical-icon";
 import { ToolIcon } from "../icons/tool-icons";
 import { EquipmentIcon } from "../icons/equiptment-icon";

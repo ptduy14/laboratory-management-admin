@@ -15,7 +15,7 @@ import React, { useState, useEffect } from "react";
 import { UserService } from "@/services/userService";
 import { Account } from "./account-table/data";
 import { LoaderImageText } from "../loader/loader-image-text";
-import { RoleNames } from "@/enums/Role";
+import { RoleNames } from "@/enums/role";
 
 export const DetailAccount = ({ accountId }: { accountId: number }) => {
   const [account, setAccount] = useState<Account>();

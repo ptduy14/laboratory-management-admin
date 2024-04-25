@@ -4,7 +4,7 @@ import nextAuth, { NextAuthOptions } from "next-auth";
 import { AuthService } from "@/services/authService";
 import GoogleProvider from "next-auth/providers/google";
 import { GoogleLoginData } from "@/services/authService";
-import { RoleEnum } from "@/enums/Role";
+import { RoleEnum } from "@/enums/role";
 
 let userVerifyData: object | null;
 

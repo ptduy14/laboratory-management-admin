@@ -1,5 +1,5 @@
 import { withAuth } from "next-auth/middleware";
-import { RoleEnum } from "./enums/Role";
+import { RoleEnum } from "./enums/role";
 
 export default withAuth(
   async function middleware(req) {

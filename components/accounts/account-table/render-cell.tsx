@@ -4,7 +4,7 @@ import { DeleteIcon } from "@/components/icons/table/delete-icon";
 import { EditIcon } from "@/components/icons/table/edit-icon";
 import { Account } from "./data";
 import { DetailAccount } from "../detail-account";
-import { RoleNames } from "@/enums/Role";
+import { RoleNames } from "@/enums/role";
 
 interface Props {
   account: Account;

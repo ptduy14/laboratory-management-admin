@@ -148,7 +148,7 @@ export const Accounts = () => {
           </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddAccount />
+          <AddAccount setAccounts={setAccounts} accounts={accounts}/>
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
