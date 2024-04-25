@@ -11,42 +11,22 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeFilledIcon } from "../icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
+import { AccountService } from "@/services/accountService";
+import { Account } from "./account-table/data";
+import { AddAccountSchema } from "./schema/addAccountSchema";
+import { AddAccountSchemaType } from "./schema/addAccountSchema";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-const AddAccountSchema = z
-  .object({
-    email: z
-      .string()
-      .min(1, { message: "Trường này không được trống" })
-      .regex(/^[a-zA-Z0-9._%+-]+@student\.ctuet\.edu\.vn$/, {
-        message: "Địa chỉ email không hợp lệ",
-      }),
-    firstName: z.string().min(1, { message: "Trường này không được trống" }),
-    lastName: z.string().min(1, { message: "Trường này không được trống" }),
-    address: z.string(),
-    password: z
-      .string()
-      .min(8, { message: "Mật khẩu phải lớn hơn 8 ký tự" })
-      .max(32)
-      .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,32}$/, {
-        message: "Mật khẩu phải chứa ít nhất một chữ cái và một số",
-      }),
-    confirmPassword: z
-      .string()
-      .min(1, { message: "Trường này không được trống" }),
-    role: z.string().min(1, { message: "Trường này không được trống" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Mật khẩu không khớp",
-    path: ["confirmPassword"],
-  });
+type AddAccountProps = {
+  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>,
+  accounts: Account[]
+}
 
-type AddAccountSchemaType = z.infer<typeof AddAccountSchema>;
-
-export const AddAccount = () => {
+export const AddAccount = ({ setAccounts, accounts } : AddAccountProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isVisible, setIsVisible] = React.useState(false);
   const {
@@ -60,8 +40,17 @@ export const AddAccount = () => {
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const onSubmit: SubmitHandler<AddAccountSchemaType> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<AddAccountSchemaType> = async (dataField) => {
+    try {
+      const { data } = await AccountService.createAccount(dataField)
+      setAccounts([...accounts, data])
+      toast.success("Thêm tài khoản thành công !!")
+      onClose();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message)
+      }
+    }
   };
 
   const handleCloseModal = () => {
