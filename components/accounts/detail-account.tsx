@@ -63,7 +63,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                         src={
                           account.photo
                             ? account.photo
-                            : "https://i.pravatar.cc/150?u=a04258114e29026302d"
+                            : ""
                         }
                       />
                     </div>

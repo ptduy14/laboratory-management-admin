@@ -21,7 +21,7 @@ export const RenderCell = ({ account, columnKey }: Props) => {
           name={account.lastName + cellValue}
           description={account.email}
           avatarProps={{
-            src: account.photo !== null ? account.photo : "https://i.pravatar.cc/150?u=a04258114e29026302d",
+            src: account.photo !== null ? account.photo : "",
           }}
         />
       );
