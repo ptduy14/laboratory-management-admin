@@ -8,7 +8,7 @@ import UpdateAccount from "../update-account";
 import { StatusNames } from "@/enums/status";
 
 interface Props {
-  account: Account;
+  account: Account; 
   columnKey: string | React.Key;
 }
 

@@ -15,6 +15,8 @@ export default withAuth(
         if (token?.userInfo.role === RoleEnum.ADMIN) {
           return true
         }
+
+        return false
       },
     },
   }
