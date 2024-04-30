@@ -1,10 +1,11 @@
 import { User, Tooltip, Chip } from "@nextui-org/react";
 import React from "react";
 import { DeleteIcon } from "@/components/icons/table/delete-icon";
-import { EditIcon } from "@/components/icons/table/edit-icon";
 import { Account } from "./data";
 import { DetailAccount } from "../detail-account";
 import { RoleNames } from "@/enums/role";
+import UpdateAccount from "../update-account";
+import { StatusNames } from "@/enums/status";
 
 interface Props {
   account: Account;
@@ -27,9 +28,9 @@ export const RenderCell = ({ account, columnKey }: Props) => {
       );
     case "role":
       return (
-          <div>
-            <span>{RoleNames[account.role]}</span>
-          </div>
+        <div>
+          <span>{RoleNames[account.role]}</span>
+        </div>
       );
     case "status":
       return (
@@ -41,7 +42,7 @@ export const RenderCell = ({ account, columnKey }: Props) => {
           }
         >
           <span className="capitalize text-xs">
-            {cellValue === 0 ? "Acitve" : "Not Active"}
+            {StatusNames[cellValue]}
           </span>
         </Chip>
       );
@@ -49,14 +50,8 @@ export const RenderCell = ({ account, columnKey }: Props) => {
     case "actions":
       return (
         <div className="flex items-center gap-4 ">
-          <DetailAccount accountId = {account.id} />
-          <div>
-            <Tooltip content="Edit user" color="secondary">
-              <button onClick={() => console.log("Edit user", account.id)}>
-                <EditIcon size={20} fill="#979797" />
-              </button>
-            </Tooltip>
-          </div>
+          <DetailAccount accountId={account.id} />
+          <UpdateAccount accountId={account.id} />
           <div>
             <Tooltip
               content="Delete user"

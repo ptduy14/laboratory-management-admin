@@ -7,7 +7,6 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-  Avatar,
 } from "@nextui-org/react";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";

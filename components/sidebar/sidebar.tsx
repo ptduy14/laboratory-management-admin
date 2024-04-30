@@ -27,23 +27,23 @@ import { EquipmentIcon } from "../icons/equiptment-icon";
 import { RoomService } from "@/services/roomService";
 
 export interface RoomType {
-  id: number,
-  name: string
+  id: number;
+  name: string;
 }
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
   const { data: session } = useSession();
-  const [rooms, setRooms] = useState<RoomType[]>([])
+  const [rooms, setRooms] = useState<RoomType[]>([]);
   useEffect(() => {
     getAllRoom();
   }, []);
 
   const getAllRoom = async () => {
     const { data } = await RoomService.getAll();
-    setRooms(data)
-  }
+    setRooms(data);
+  };
 
   return (
     <aside className="h-screen z-[202] sticky top-0">
@@ -67,14 +67,12 @@ export const SidebarWrapper = () => {
               href="/"
             />
             <SidebarMenu title="Main Menu">
-              {session?.user.userInfo.role === RoleEnum.ADMIN && (
-                <SidebarItem
-                  isActive={pathname === "/accounts"}
-                  title="Accounts"
-                  icon={<AccountsIcon />}
-                  href="accounts"
-                />
-              )}
+              <SidebarItem
+                isActive={pathname === "/accounts"}
+                title="Accounts"
+                icon={<AccountsIcon />}
+                href="accounts"
+              />
 
               <SidebarItem
                 isActive={pathname === "/payments"}
@@ -97,7 +95,6 @@ export const SidebarWrapper = () => {
                 title="Phòng"
               />
             </SidebarMenu>
-            
           </div>
         </div>
       </div>

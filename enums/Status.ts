@@ -1,4 +1,13 @@
 export enum Status {
     ACTIVE = 0,
-    NOT_ACTIVE = 1,
+    INACTIVE = 1,
+}
+
+interface StatusNamesType {
+    [key: number]: string
+}
+
+export const StatusNames: StatusNamesType = {
+    [Status.ACTIVE]: "Active",
+    [Status.INACTIVE]: "Inactive"
 }

@@ -96,7 +96,7 @@ export const Accounts = () => {
             }}
             startContent={<SearchIcon />}
             isClearable
-            placeholder="Search users by Email"
+            placeholder="Search accounts by Email"
             value={filterValue}
             onValueChange={onSearchChange}
           />

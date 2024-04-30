@@ -16,6 +16,7 @@ import { UserService } from "@/services/userService";
 import { Account } from "./account-table/data";
 import { LoaderImageText } from "../loader/loader-image-text";
 import { RoleNames } from "@/enums/role";
+import { StatusNames } from "@/enums/status";
 
 export const DetailAccount = ({ accountId }: { accountId: number }) => {
   const [account, setAccount] = useState<Account>();
@@ -127,7 +128,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                             }
                           >
                             <span className="capitalize text-xs">
-                              {account.status === 0 ? "Acitve" : "Not Active"}
+                              {StatusNames[account.status]}
                             </span>
                           </Chip>
                         </span>
