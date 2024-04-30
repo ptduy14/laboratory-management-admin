@@ -1,20 +1,20 @@
 import { withAuth } from "next-auth/middleware";
 import { RoleEnum } from "./enums/role";
+import { NextRequest } from "next/server";
 
 export default withAuth(
-  async function middleware(req) {
-    // const user = req.nextauth.token;
-    // console.log(user)
+  async function middleware(req: NextRequest) {
+    // 
   },
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (req.nextUrl.pathname.startsWith("/accounts") && token?.userInfo.role !== RoleEnum.ADMIN) {
+        if (!token) {
           return false
-        } else if (token) {
+        }
+        if (token?.userInfo.role === RoleEnum.ADMIN) {
           return true
         }
-        return false
       },
     },
   }
