@@ -8,7 +8,7 @@ import { RoleEnum } from "@/enums/role";
 
 let userVerifyData: object | null;
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
@@ -104,4 +104,5 @@ const isAccess = (data: any): boolean => {
 };
 
 const handler = nextAuth(authOptions);
-export { handler as GET, handler as POST };
+
+export { handler as GET, handler as POST, authOptions };
