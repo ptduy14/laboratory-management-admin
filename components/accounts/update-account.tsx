@@ -62,7 +62,7 @@ export default function UpdateAccount({ accountId, setAccounts }: { accountId: n
   const onSubmit: SubmitHandler<UpdateAccountSchemaType> = async (data) => {
     let account: Account;
     try {
-      if (data.photo[0]) {
+      if (!data.photo[0]) {
         const { data: upadtedAccount } = await UserService.updateById(accountId.toString(), data);
         account = upadtedAccount;
       } else {
