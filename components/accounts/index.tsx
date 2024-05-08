@@ -159,7 +159,7 @@ export const Accounts = () => {
           <>
             <span className="text-default-400 text-small">Total {accounts.length} accounts</span>
             <div style={{ marginBottom: '16px' }}></div>
-            <TableWrapper accounts={filteredItems} />
+            <TableWrapper accounts={filteredItems} setAccounts={setAccounts}/>
           </>
           : (
             <LoaderTable />

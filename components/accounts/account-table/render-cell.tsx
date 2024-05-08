@@ -10,9 +10,10 @@ import { StatusNames } from "@/enums/status";
 interface Props {
   account: Account; 
   columnKey: string | React.Key;
+  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
 }
 
-export const RenderCell = ({ account, columnKey }: Props) => {
+export const RenderCell = ({ account, columnKey, setAccounts }: Props) => {
   // @ts-ignore
   const cellValue = account[columnKey];
   switch (columnKey) {
@@ -51,7 +52,7 @@ export const RenderCell = ({ account, columnKey }: Props) => {
       return (
         <div className="flex items-center gap-4 ">
           <DetailAccount accountId={account.id} />
-          <UpdateAccount accountId={account.id} />
+          <UpdateAccount accountId={account.id} setAccounts={setAccounts} />
           <div>
             <Tooltip
               content="Delete user"

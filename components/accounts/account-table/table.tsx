@@ -11,7 +11,12 @@ import {
 import { columns, Account } from "./data";
 import { RenderCell } from "./render-cell";
 
-export const TableWrapper: React.FC<{ accounts: Account[] }> = ({ accounts }) => {
+interface TableAccountProps {
+  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
+  accounts: Account[];
+}
+
+export const TableWrapper = ({ setAccounts, accounts }: TableAccountProps) => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -53,7 +58,7 @@ export const TableWrapper: React.FC<{ accounts: Account[] }> = ({ accounts }) =>
           <TableRow key={item.id}>
             {(columnKey) => (
               <TableCell>
-                {RenderCell({ account: item, columnKey: columnKey })}
+                {RenderCell({ account: item, columnKey: columnKey, setAccounts: setAccounts })}
               </TableCell>
             )}
           </TableRow>
