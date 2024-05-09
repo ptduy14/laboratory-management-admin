@@ -21,9 +21,9 @@ export interface RoomType {
 }
 
 export interface CategoryType {
-  id: number,
-  name: string,
-  status: boolean
+  id: number;
+  name: string;
+  status: boolean;
 }
 
 export const SidebarWrapper = () => {
@@ -31,7 +31,7 @@ export const SidebarWrapper = () => {
   const { collapsed, setCollapsed } = useSidebarContext();
   const { data: session } = useSession();
   const [rooms, setRooms] = useState<RoomType[]>([]);
-  const [categories, setCategories] = useState<CategoryType[]>([])
+  const [categories, setCategories] = useState<CategoryType[]>([]);
 
   useEffect(() => {
     getAllRoom();
@@ -46,7 +46,7 @@ export const SidebarWrapper = () => {
   const getAllCategory = async () => {
     const { data } = await CategoryService.getAll();
     setCategories(data);
-  }
+  };
 
   return (
     <aside className="h-screen z-[202] sticky top-0">
@@ -76,6 +76,8 @@ export const SidebarWrapper = () => {
                 icon={<AccountsIcon />}
                 href="accounts"
               />
+            </SidebarMenu>
+            <SidebarMenu title="Danh Mục">
               <SidebarItem
                 isActive={pathname === "/resources"}
                 title="Tài nguyên"
@@ -85,12 +87,12 @@ export const SidebarWrapper = () => {
               {categories.map((category) => {
                 return (
                   <SidebarItem
-                  key={category.id}
-                  isActive={pathname === `/items/category/${category.id}`}
-                  title={category.name}
-                  icon={getCategoryIcon(category.id)}
-              />
-                )
+                    key={category.id}
+                    isActive={pathname === `/items/category/${category.id}`}
+                    title={category.name}
+                    icon={getCategoryIcon(category.id)}
+                  />
+                );
               })}
               <CollapseItems
                 icon={<FilterIcon />}
