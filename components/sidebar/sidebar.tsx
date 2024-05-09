@@ -75,14 +75,14 @@ export const SidebarWrapper = () => {
                 icon={<AccountsIcon />}
                 href="accounts"
               />
-            </SidebarMenu>
-            <SidebarMenu title="Danh Mục">
               <SidebarItem
                 isActive={pathname === "/resources"}
                 title="Tài nguyên"
                 icon={<ResoucesIcon />}
                 href="/resources"
               />
+            </SidebarMenu>
+            <SidebarMenu title="Danh Mục">
               {categories.map((category) => {
                 return (
                   <SidebarItem
