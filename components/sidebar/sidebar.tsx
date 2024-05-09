@@ -29,7 +29,6 @@ export interface CategoryType {
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
-  const { data: session } = useSession();
   const [rooms, setRooms] = useState<RoomType[]>([]);
   const [categories, setCategories] = useState<CategoryType[]>([]);
 

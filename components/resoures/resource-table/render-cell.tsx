@@ -16,27 +16,37 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
   // @ts-ignore
   const cellValue = resouce[columnKey];
   switch (columnKey) {
-    case "category": {
-        return cellValue.name
-    }
-    case "unit": 
-        return (
-            UnitEnumNames[cellValue]
-        )
+    case "origin":
+      return cellValue !== "" ? (
+        <Chip size="sm" variant="flat" color={"warning"}>
+          <span className="capitalize text-xs">{cellValue}</span>
+        </Chip>
+      ) : (
+        "null"
+      );
+    case "category":
+      return cellValue.name;
+
+    case "unit":
+      return UnitEnumNames[cellValue];
     case "status":
-        return (
-            <Chip
+      return (
+        <Chip
           size="sm"
           variant="flat"
           color={
-            (cellValue === 0 ||  cellValue === 1) ? "success" : (cellValue === 2 ? "warning" : "danger")
+            cellValue === 0 || cellValue === 1
+              ? "success"
+              : cellValue === 2
+              ? "warning"
+              : "danger"
           }
         >
           <span className="capitalize text-xs">
             {StatusResourceName[cellValue]}
           </span>
         </Chip>
-        );
+      );
     case "actions":
       return (
         <div className="flex items-center gap-4 ">
