@@ -78,7 +78,7 @@ export const Accounts = () => {
 
         <li className="flex gap-2">
           <UsersIcon />
-          <span>Users</span>
+          <span>Accounts</span>
           <span> / </span>{" "}
         </li>
         <li className="flex gap-2">

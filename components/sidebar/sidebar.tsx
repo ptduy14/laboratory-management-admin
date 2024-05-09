@@ -10,12 +10,10 @@ import { FilterIcon } from "../icons/sidebar/filter-icon";
 import { useSidebarContext } from "../layout/layout-context";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { ChemicalIcon } from "../icons/chemical-icon";
-import { ToolIcon } from "../icons/tool-icons";
-import { EquipmentIcon } from "../icons/equiptment-icon";
 import { RoomService } from "@/services/roomService";
 import { CategoryService } from "@/services/categoryService";
 import { getCategoryIcon } from "./getCategoryIcon";
+import { ResoucesIcon } from "../icons/resources-icon";
 
 export interface RoomType {
   id: number;
@@ -77,6 +75,12 @@ export const SidebarWrapper = () => {
                 title="Accounts"
                 icon={<AccountsIcon />}
                 href="accounts"
+              />
+              <SidebarItem
+                isActive={pathname === "/resources"}
+                title="Tài nguyên"
+                icon={<ResoucesIcon />}
+                href="/resources"
               />
               {categories.map((category) => {
                 return (
