@@ -1,34 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { Sidebar } from "./sidebar.styles";
-import { Avatar, Tooltip } from "@nextui-org/react";
 import { CompaniesDropdown } from "./companies-dropdown";
 import { HomeIcon } from "../icons/sidebar/home-icon";
-import { PaymentsIcon } from "../icons/sidebar/payments-icon";
-import { BalanceIcon } from "../icons/sidebar/balance-icon";
 import { AccountsIcon } from "../icons/sidebar/accounts-icon";
-import { CustomersIcon } from "../icons/sidebar/customers-icon";
-import { ProductsIcon } from "../icons/sidebar/products-icon";
-import { ReportsIcon } from "../icons/sidebar/reports-icon";
-import { DevIcon } from "../icons/sidebar/dev-icon";
-import { ViewIcon } from "../icons/sidebar/view-icon";
-import { SettingsIcon } from "../icons/sidebar/settings-icon";
 import { CollapseItems } from "./collapse-items";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
 import { FilterIcon } from "../icons/sidebar/filter-icon";
 import { useSidebarContext } from "../layout/layout-context";
-import { ChangeLogIcon } from "../icons/sidebar/changelog-icon";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { RoleEnum } from "@/enums/role";
 import { ChemicalIcon } from "../icons/chemical-icon";
 import { ToolIcon } from "../icons/tool-icons";
 import { EquipmentIcon } from "../icons/equiptment-icon";
 import { RoomService } from "@/services/roomService";
+import { CategoryService } from "@/services/categoryService";
+import { getCategoryIcon } from "./getCategoryIcon";
 
 export interface RoomType {
   id: number;
   name: string;
+}
+
+export interface CategoryType {
+  id: number,
+  name: string,
+  status: boolean
 }
 
 export const SidebarWrapper = () => {
@@ -36,14 +33,22 @@ export const SidebarWrapper = () => {
   const { collapsed, setCollapsed } = useSidebarContext();
   const { data: session } = useSession();
   const [rooms, setRooms] = useState<RoomType[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>([])
+
   useEffect(() => {
     getAllRoom();
+    getAllCategory();
   }, []);
 
   const getAllRoom = async () => {
     const { data } = await RoomService.getAll();
     setRooms(data);
   };
+
+  const getAllCategory = async () => {
+    const { data } = await CategoryService.getAll();
+    setCategories(data);
+  }
 
   return (
     <aside className="h-screen z-[202] sticky top-0">
@@ -73,22 +78,16 @@ export const SidebarWrapper = () => {
                 icon={<AccountsIcon />}
                 href="accounts"
               />
-
-              <SidebarItem
-                isActive={pathname === "/payments"}
-                title="Hóa chất"
-                icon={<ChemicalIcon />}
+              {categories.map((category) => {
+                return (
+                  <SidebarItem
+                  key={category.id}
+                  isActive={pathname === `/items/category/${category.id}`}
+                  title={category.name}
+                  icon={getCategoryIcon(category.id)}
               />
-              <SidebarItem
-                isActive={pathname === "/customers"}
-                title="Dụng cụ"
-                icon={<ToolIcon />}
-              />
-              <SidebarItem
-                isActive={pathname === "/reports"}
-                title="Thiết bị"
-                icon={<EquipmentIcon />}
-              />
+                )
+              })}
               <CollapseItems
                 icon={<FilterIcon />}
                 items={rooms}
