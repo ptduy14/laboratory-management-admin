@@ -32,16 +32,21 @@ export const TableWrapper = ({ resources }: TableRecoureProps) => {
       aria-label="Example static collection table"
       bottomContentPlacement="outside"
       bottomContent={
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            color="primary"
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
+        <div className="position: relative">
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={pages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+          <span className="position: absolute right-0 top-0 text-xs text-[#A1A1AA]">
+            Tổng số sản phẩm - tài nguyên của hệ thống: {resources.length}
+          </span>
         </div>
       }
     >
