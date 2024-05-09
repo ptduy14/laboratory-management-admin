@@ -1,3 +1,5 @@
+import { generateSHA1 } from "@/utils/generateSHA1";
+import { generateSignature } from "@/utils/generateSignature";
 import axios from "axios";
 
 export const CloudinaryService = {
@@ -13,4 +15,17 @@ export const CloudinaryService = {
       data
     );
   },
+
+  deleteImg: async (publicId: string) => {
+    const timestamp = new Date().getTime();
+    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_KEY;
+    const signature = generateSHA1(generateSignature(publicId));
+    const payload = {
+      public_id: publicId,
+      signature: signature,
+      api_key: apiKey,
+      timestamp: timestamp,
+    }
+    return await axios.post(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!}/image/destroy`, payload)
+  }
 };
