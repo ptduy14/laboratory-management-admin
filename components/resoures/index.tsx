@@ -1,20 +1,20 @@
 "use client";
-import { Button, Input } from "@nextui-org/react";
+import { Button, Input, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { DotsIcon } from "@/components/icons/accounts/dots-icon";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
-import { InfoIcon } from "@/components/icons/accounts/info-icon";
-import { TrashIcon } from "@/components/icons/accounts/trash-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
-import { SettingsIcon } from "@/components/icons/sidebar/settings-icon";
 import { LoaderTable } from "../loader/loader-table";
 import { ResourceType } from "./resource-table/data";
 import { ResouceService } from "@/services/resourceService";
 import { TableWrapper } from "./resource-table/table";
+import { ChevronDownIcon } from "../icons/chevron-down-icon";
+import { statusOptions } from "./resource-table/data";
 
 export const Resources = () => {
   const [resources, setResources] = useState<ResourceType[]>([]);
+  const [searchFilterValue, setSearchFilterValue] = useState("");
+  const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
 
   useEffect(() => {
     getAllResoueces();
@@ -24,6 +24,33 @@ export const Resources = () => {
     const { data } = await ResouceService.getAll();
     setResources(data);
   };
+
+  const onSearchChange = (value?: string) => {
+    if (value) {
+      setSearchFilterValue(value)
+    } else {
+      setSearchFilterValue("")
+    }
+  }
+
+  const handleFilteredItems = () => {
+    let filteredResources = [...resources];
+
+    if (searchFilterValue) {
+      filteredResources = filteredResources.filter((resource) => resource.name.toLowerCase().includes(searchFilterValue.toLowerCase()))
+    }
+
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
+      filteredResources = filteredResources.filter((resource) => {
+        return Array.from(statusFilter).includes(resource.status.toString())
+      })
+
+    }
+
+    return filteredResources;
+  }
+
+  const filteredItems = handleFilteredItems();
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -48,17 +75,39 @@ export const Resources = () => {
       <h3 className="text-xl font-semibold">Tài nguyên</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-          <Input
+        <Input
             classNames={{
               input: "w-full",
               mainWrapper: "w-full",
             }}
-            placeholder="Search users"
+            isClearable
+            placeholder="Search accounts by Email"
+            value={searchFilterValue}
+            onValueChange={onSearchChange}
           />
-          <SettingsIcon />
-          <TrashIcon />
-          <InfoIcon />
-          <DotsIcon />
+          <div className="flex gap-3">
+            <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  Status
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={statusFilter}
+                selectionMode="multiple"
+                onSelectionChange={setStatusFilter}
+              >
+                {statusOptions.map((status) => (
+                  <DropdownItem key={status.uid} className="capitalize">
+                    {status.name}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           {/* <AddUser /> */}
@@ -68,7 +117,14 @@ export const Resources = () => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        {resources.length > 0 ? <TableWrapper resources={resources}/> : <LoaderTable />}
+        {resources.length > 0 ? 
+        (
+          <>
+          <span className="text-default-400 text-small">Tổng số sản phẩm - tài nguyên của hệ thống: {resources.length} </span>
+        <div style={{ marginBottom: '16px' }}></div>
+        <TableWrapper resources={filteredItems}/></>
+        )
+         : <LoaderTable />}
       </div>
     </div>
   );

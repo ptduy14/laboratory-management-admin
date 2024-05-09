@@ -1,7 +1,7 @@
 "use client";
 import { Button, Input, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import Link from "next/link";
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
@@ -17,7 +17,7 @@ import { roleOptions } from "./account-table/data";
 
 export const Accounts = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const [filterValue, setFilterValue] = useState("");
+  const [searchFilterValue, setSearchFilterValue] = useState("");
   const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
   const [roleFilter, setRoleFilter] = React.useState<Selection>('all');
 
@@ -32,19 +32,19 @@ export const Accounts = () => {
 
   const onSearchChange = (value?: string) => {
     if (value) {
-      setFilterValue(value)
+      setSearchFilterValue(value)
     } else {
-      setFilterValue("")
+      setSearchFilterValue("")
     }
   }
 
   const handleFilteredItems = () => {
     let filteredAccounts = [...accounts];
 
-    if (filterValue) {
+    if (searchFilterValue) {
       filteredAccounts = filteredAccounts.filter((account) => {
         const accountEmail = account.email.toLowerCase();
-        return accountEmail.substring(0, accountEmail.indexOf('@')).includes(filterValue.toLowerCase())
+        return accountEmail.substring(0, accountEmail.indexOf('@')).includes(searchFilterValue.toLowerCase())
       })
     }
 
@@ -97,7 +97,7 @@ export const Accounts = () => {
             startContent={<SearchIcon />}
             isClearable
             placeholder="Search accounts by Email"
-            value={filterValue}
+            value={searchFilterValue}
             onValueChange={onSearchChange}
           />
           <div className="flex gap-3">
