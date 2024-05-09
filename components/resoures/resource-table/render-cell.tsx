@@ -18,11 +18,11 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
   switch (columnKey) {
     case "origin":
       return cellValue !== "" ? (
-        <Chip size="sm" variant="flat" color={"warning"}>
-          <span className="capitalize text-xs">{cellValue}</span>
-        </Chip>
+        cellValue
       ) : (
-        "null"
+        <Chip size="sm" variant="flat" color={"warning"}>
+          <span className="capitalize text-xs">null</span>
+        </Chip>
       );
     case "category":
       return cellValue.name;
