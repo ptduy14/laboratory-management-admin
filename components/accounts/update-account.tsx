@@ -27,11 +27,13 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Status, StatusNames } from "@/enums/status";
 import { Account } from "./account-table/data";
+import { getPublicIdFromUrl } from "@/utils/getPublicIdFromUrl";
 
 export default function UpdateAccount({ accountId, setAccounts }: { accountId: number, setAccounts: React.Dispatch<React.SetStateAction<Account[]>> }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [currentAccountPhoto, setCurrentAccountPhoto] = useState<string>("")
 
   const {
     register,
@@ -55,9 +57,25 @@ export default function UpdateAccount({ accountId, setAccounts }: { accountId: n
     let account: UpdateAccountSchemaType = {
       ...data,
     };
+    setCurrentAccountPhoto(data.photo)
     reset({ ...account });
     setIsLoading(false);
   };
+
+  const handleDeleteImgFromCloud = async () => {
+    if (getValues('photo') !== undefined) {
+      let publicId = getPublicIdFromUrl(currentAccountPhoto);
+      try {
+        const res = await CloudinaryService.deleteImg(publicId!);
+        console.log(res)
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+        console.log(error);
+      }
+      }
+    }
+    return
+  }
 
   const onSubmit: SubmitHandler<UpdateAccountSchemaType> = async (data) => {
     let account: Account;
@@ -71,6 +89,7 @@ export default function UpdateAccount({ accountId, setAccounts }: { accountId: n
           ...data,
           photo: cloudinaryData.url
         }
+        handleDeleteImgFromCloud();
         const { data: updatedAccount } = await UserService.updateById(accountId.toString(), newData);
         account = updatedAccount;
       }
