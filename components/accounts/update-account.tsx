@@ -29,11 +29,17 @@ import { Status, StatusNames } from "@/enums/status";
 import { Account } from "./account-table/data";
 import { getPublicIdFromUrl } from "@/utils/getPublicIdFromUrl";
 
-export default function UpdateAccount({ accountId, setAccounts }: { accountId: number, setAccounts: React.Dispatch<React.SetStateAction<Account[]>> }) {
+export default function UpdateAccount({
+  accountId,
+  setAccounts,
+}: {
+  accountId: number;
+  setAccounts?: React.Dispatch<React.SetStateAction<Account[]>>;
+}) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [currentAccountPhoto, setCurrentAccountPhoto] = useState<string>("")
+  const [currentAccountPhoto, setCurrentAccountPhoto] = useState<string>("");
 
   const {
     register,
@@ -57,57 +63,67 @@ export default function UpdateAccount({ accountId, setAccounts }: { accountId: n
     let account: UpdateAccountSchemaType = {
       ...data,
     };
-    setCurrentAccountPhoto(data.photo)
+    setCurrentAccountPhoto(data.photo);
     reset({ ...account });
     setIsLoading(false);
   };
 
   const handleDeleteImgFromCloud = async () => {
-    if (getValues('photo') !== undefined) {
+    if (getValues("photo") !== undefined) {
       let publicId = getPublicIdFromUrl(currentAccountPhoto);
       try {
         const res = await CloudinaryService.deleteImg(publicId!);
-        console.log(res)
+        console.log(res);
       } catch (error) {
         if (axios.isAxiosError(error)) {
-        console.log(error);
-      }
+          console.log(error);
+        }
       }
     }
-    return
-  }
+    return;
+  };
 
   const onSubmit: SubmitHandler<UpdateAccountSchemaType> = async (data) => {
     let account: Account;
     try {
       if (!data.photo[0]) {
-        const { data: upadtedAccount } = await UserService.updateById(accountId.toString(), data);
+        const { data: upadtedAccount } = await UserService.updateById(
+          accountId.toString(),
+          data
+        );
         account = upadtedAccount;
       } else {
-        const { data: cloudinaryData } = await CloudinaryService.uploadImg(data.photo[0]);
+        const { data: cloudinaryData } = await CloudinaryService.uploadImg(
+          data.photo[0]
+        );
         let newData = {
           ...data,
-          photo: cloudinaryData.url
-        }
+          photo: cloudinaryData.url,
+        };
         handleDeleteImgFromCloud();
-        const { data: updatedAccount } = await UserService.updateById(accountId.toString(), newData);
+        const { data: updatedAccount } = await UserService.updateById(
+          accountId.toString(),
+          newData
+        );
         account = updatedAccount;
       }
       toast.success("Cập nhật thành công !!");
 
-      // cập nhật lại list account sau khi update
-      setAccounts((prev) => {
-        let newAccounts = prev.map((accountItem) => {
-          if (accountItem.id === account.id) {
-            return account;
-          }
-          return accountItem
-        })
+      if (setAccounts !== undefined) {
+        // cập nhật lại list account sau khi update
+        setAccounts((prev) => {
+          let newAccounts = prev.map((accountItem) => {
+            if (accountItem.id === account.id) {
+              return account;
+            }
+            return accountItem;
+          });
 
-        return newAccounts;
-      })
+          return newAccounts;
+        });
+      }
       reset({ ...account });
-      onClose()
+      onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log(error);
@@ -161,7 +177,9 @@ export default function UpdateAccount({ accountId, setAccounts }: { accountId: n
                       <Avatar
                         className="w-full h-48"
                         radius="sm"
-                        src={previewImage ? previewImage : (getValues("photo") || "")}
+                        src={
+                          previewImage ? previewImage : getValues("photo") || ""
+                        }
                       />
                       <div className="mt-3">
                         <label
@@ -234,7 +252,7 @@ export default function UpdateAccount({ accountId, setAccounts }: { accountId: n
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           defaultValue={getValues("status")}
                           {...register("status")}
-                          onChange={(e) => console.log(typeof(e.target.value))}
+                          onChange={(e) => console.log(typeof e.target.value)}
                         >
                           <option value={Status.ACTIVE}>
                             {StatusNames[Status.ACTIVE]}

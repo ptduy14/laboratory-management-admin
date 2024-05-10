@@ -3,11 +3,11 @@ import Chart, { Props } from "react-apexcharts";
 
 const state: Props["series"] = [
   {
-    name: "Series1",
+    name: "Đã trả",
     data: [31, 40, 28, 51, 42, 109, 100],
   },
   {
-    name: "Series2",
+    name: "Đã mượn",
     data: [11, 32, 45, 32, 34, 52, 41],
   },
 ];

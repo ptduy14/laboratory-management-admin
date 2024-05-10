@@ -12,11 +12,12 @@ import { columns, Account } from "./data";
 import { RenderCell } from "./render-cell";
 
 interface TableAccountProps {
-  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
+  setAccounts?: React.Dispatch<React.SetStateAction<Account[]>>;
   accounts: Account[];
+  paginate: boolean;
 }
 
-export const TableWrapper = ({ setAccounts, accounts }: TableAccountProps) => {
+export const TableWrapper = ({ setAccounts, accounts, paginate }: TableAccountProps) => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -34,17 +35,17 @@ export const TableWrapper = ({ setAccounts, accounts }: TableAccountProps) => {
       aria-label="Example static collection table"
       bottomContentPlacement="outside"
       bottomContent={
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            color="primary"
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
-        </div>
+        paginate ? (<div className="flex w-full justify-center">
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="primary"
+          page={page}
+          total={pages}
+          onChange={(page) => setPage(page)}
+        />
+      </div>) : null
       }
       classNames={{
         wrapper: "min-h-[222px]",
