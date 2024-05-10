@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 interface Props {
   title: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   isActive?: boolean;
   href?: string;
 }

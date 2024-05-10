@@ -3,18 +3,16 @@ import { Sidebar } from "./sidebar.styles";
 import { CompaniesDropdown } from "./companies-dropdown";
 import { HomeIcon } from "../icons/sidebar/home-icon";
 import { AccountsIcon } from "../icons/sidebar/accounts-icon";
-import { CollapseItems } from "./collapse-items";
 import { SidebarItem } from "./sidebar-item";
 import { SidebarMenu } from "./sidebar-menu";
-import { FilterIcon } from "../icons/sidebar/filter-icon";
 import { useSidebarContext } from "../layout/layout-context";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { RoomService } from "@/services/roomService";
 import { CategoryService } from "@/services/categoryService";
 import { getCategoryIcon } from "./getCategoryIcon";
 import { ResoucesIcon } from "../icons/resources-icon";
 import axios from "axios";
+import { PlusSquareIcon } from "../icons/plus-square-icon";
 
 export interface RoomType {
   id: number;
@@ -65,7 +63,10 @@ export const SidebarWrapper = () => {
         })}
       >
         <div className={Sidebar.Header()}>
-          <CompaniesDropdown />
+        <img
+              src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Logo_ctuet.png"
+              className="w-20 mx-auto"
+            />
         </div>
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
@@ -100,11 +101,23 @@ export const SidebarWrapper = () => {
                   />
                 );
               })}
-              <CollapseItems
-                icon={<FilterIcon />}
-                items={rooms}
-                title="Phòng"
+              <SidebarItem
+                isActive={pathname === ""}
+                title="Thêm danh mục"
+                icon={<PlusSquareIcon />}
+                href=""
               />
+            </SidebarMenu>
+            <SidebarMenu title="Phòng thí nghiệm">
+              {rooms.map((room) => {
+                return (
+                  <SidebarItem
+                    key={room.id}
+                    isActive={pathname === `/rooms/${room.id}`}
+                    title={room.name.replace("PTN", "").trim()}
+                  />
+                );
+              })}
             </SidebarMenu>
           </div>
         </div>
