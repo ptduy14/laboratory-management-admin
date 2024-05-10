@@ -14,6 +14,7 @@ import { RoomService } from "@/services/roomService";
 import { CategoryService } from "@/services/categoryService";
 import { getCategoryIcon } from "./getCategoryIcon";
 import { ResoucesIcon } from "../icons/resources-icon";
+import axios from "axios";
 
 export interface RoomType {
   id: number;
@@ -23,7 +24,7 @@ export interface RoomType {
 export interface CategoryType {
   id: number;
   name: string;
-  status: boolean;
+  status: number;
 }
 
 export const SidebarWrapper = () => {
@@ -43,8 +44,14 @@ export const SidebarWrapper = () => {
   };
 
   const getAllCategory = async () => {
-    const { data } = await CategoryService.getAll();
-    setCategories(data);
+    try {
+      const { data } = await CategoryService.getAll();
+      setCategories(data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.message);
+      }
+    }
   };
 
   return (

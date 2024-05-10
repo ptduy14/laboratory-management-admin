@@ -10,6 +10,7 @@ import { ResouceService } from "@/services/resourceService";
 import { TableWrapper } from "./resource-table/table";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "./resource-table/data";
+import { AddResource } from "./add-resource";
 
 export const Resources = () => {
   const [resources, setResources] = useState<ResourceType[]>([]);
@@ -110,7 +111,7 @@ export const Resources = () => {
           </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          {/* <AddUser /> */}
+          <AddResource/>
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
