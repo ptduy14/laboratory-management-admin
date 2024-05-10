@@ -16,7 +16,7 @@ export interface ResourceType {
   category: CategoryType;
 }
 
-export const columns = [
+export const resourceColumns = [
   {
     key: "name",
     label: "TÊN",

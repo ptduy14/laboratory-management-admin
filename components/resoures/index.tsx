@@ -7,7 +7,7 @@ import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { LoaderTable } from "../loader/loader-table";
 import { ResourceType } from "./resource-table/data";
 import { ResouceService } from "@/services/resourceService";
-import { TableWrapper } from "./resource-table/table";
+import { ResourceTableWrapper } from "./resource-table/resource-table";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "./resource-table/data";
 import { AddResource } from "./add-resource";
@@ -123,7 +123,7 @@ export const Resources = () => {
           <>
           <span className="text-default-400 text-small">Tổng số sản phẩm - tài nguyên của hệ thống: {resources.length} </span>
         <div style={{ marginBottom: '16px' }}></div>
-        <TableWrapper resources={filteredItems}/></>
+        <ResourceTableWrapper resources={filteredItems}/></>
         )
          : <LoaderTable />}
       </div>

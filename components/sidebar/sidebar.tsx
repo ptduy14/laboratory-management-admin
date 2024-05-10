@@ -95,9 +95,10 @@ export const SidebarWrapper = () => {
                 return (
                   <SidebarItem
                     key={category.id}
-                    isActive={pathname === `/items/category/${category.id}`}
+                    isActive={pathname === `/categories/${category.id}/resources`}
                     title={category.name}
                     icon={getCategoryIcon(category.id)}
+                    href={`/categories/${category.id}/resources`}
                   />
                 );
               })}

@@ -7,15 +7,21 @@ import {
   TableCell,
   Pagination,
 } from "@nextui-org/react";
-import { ResourceType, columns } from "./data";
+import { ResourceType, resourceColumns } from "./data";
 import { RenderCell } from "./render-cell";
 import { useState, useMemo } from "react";
 
-interface TableRecoureProps {
-  resources: ResourceType[];
+interface Column {
+  key: string;
+  label: string;
 }
 
-export const TableWrapper = ({ resources }: TableRecoureProps) => {
+interface RecoureTableProps {
+  resources: ResourceType[];
+  columns?: Column[];
+}
+
+export const ResourceTableWrapper = ({ resources, columns = resourceColumns }: RecoureTableProps) => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 14;
 
