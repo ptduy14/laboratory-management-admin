@@ -3,12 +3,12 @@ import React from "react";
 import { DeleteIcon } from "@/components/icons/table/delete-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { EditIcon } from "@/components/icons/table/edit-icon";
-import { ResourceType } from "./data";
+import { Resource } from "./data";
 import { StatusResourceName } from "@/enums/status-resource";
 import { UnitEnumNames } from "@/enums/unit";
 
 interface Props {
-  resouce: ResourceType;
+  resouce: Resource;
   columnKey: string | React.Key;
 }
 
