@@ -12,7 +12,7 @@ import { columns, Account } from "./data";
 import { RenderCell } from "./render-cell";
 
 interface AccountTableProps {
-  setAccounts?: React.Dispatch<React.SetStateAction<Account[]>>;
+  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
   accounts: Account[];
   paginate: boolean;
 }

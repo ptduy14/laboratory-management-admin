@@ -34,7 +34,7 @@ export default function UpdateAccount({
   setAccounts,
 }: {
   accountId: number;
-  setAccounts?: React.Dispatch<React.SetStateAction<Account[]>>;
+  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
 }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -69,7 +69,7 @@ export default function UpdateAccount({
   };
 
   const handleDeleteImgFromCloud = async () => {
-    if (getValues("photo") !== undefined) {
+    if (setCurrentAccountPhoto !== undefined) {
       let publicId = getPublicIdFromUrl(currentAccountPhoto);
       try {
         const res = await CloudinaryService.deleteImg(publicId!);
@@ -85,8 +85,9 @@ export default function UpdateAccount({
 
   const onSubmit: SubmitHandler<UpdateAccountSchemaType> = async (data) => {
     let account: Account;
+    console.log(data.role)
     try {
-      if (!data.photo[0]) {
+      if (!Array.isArray(data.photo) && data.photo === currentAccountPhoto) {
         const { data: upadtedAccount } = await UserService.updateById(
           accountId.toString(),
           data
@@ -178,7 +179,7 @@ export default function UpdateAccount({
                         className="w-full h-48"
                         radius="sm"
                         src={
-                          previewImage ? previewImage : getValues("photo") || ""
+                          previewImage ? previewImage : currentAccountPhoto || ""
                         }
                       />
                       <div className="mt-3">

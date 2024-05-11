@@ -10,7 +10,7 @@ import { StatusNames } from "@/enums/status";
 interface Props {
   account: Account; 
   columnKey: string | React.Key;
-  setAccounts?: React.Dispatch<React.SetStateAction<Account[]>>;
+  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
 }
 
 export const RenderCell = ({ account, columnKey, setAccounts }: Props) => {
