@@ -17,12 +17,12 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { UnitEnum, UnitEnumNames } from "@/enums/unit";
 import { StatusResource, StatusResourceName } from "@/enums/status-resource";
-import { CategoryType } from "../sidebar/sidebar";
+import { Category } from "../category/category-table/data";
 import { CategoryService } from "@/services/categoryService";
 
 export const AddResource = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     getAllCategory();
@@ -156,7 +156,7 @@ export const AddResource = () => {
                           {categories.map((category) => {
                             if (category.status !== 0) return
                             return (
-                                <option value={category.id}>{category.name}</option>
+                                <option key={category.id} value={category.id}>{category.name}</option>
                               )
                           })}
                         </select>
