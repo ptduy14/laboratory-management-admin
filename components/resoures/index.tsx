@@ -5,17 +5,19 @@ import React, { useEffect, useState } from "react";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { LoaderTable } from "../loader/loader-table";
-import { ResourceType } from "./resource-table/data";
+import { Resource } from "./resource-table/data";
 import { ResouceService } from "@/services/resourceService";
 import { ResourceTableWrapper } from "./resource-table/resource-table";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "./resource-table/data";
 import { AddResource } from "./add-resource";
+import { originOptions } from "./resource-table/data";
 
 export const Resources = () => {
-  const [resources, setResources] = useState<ResourceType[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [searchFilterValue, setSearchFilterValue] = useState("");
   const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
+  const [originFilter, setOriginFilter] = React.useState<Selection>('all');
 
   useEffect(() => {
     getAllResoueces();
@@ -45,7 +47,12 @@ export const Resources = () => {
       filteredResources = filteredResources.filter((resource) => {
         return Array.from(statusFilter).includes(resource.status.toString())
       })
+    }
 
+    if (originFilter !== "all" && Array.from(originFilter).length !== originOptions.length) {
+      filteredResources = filteredResources.filter((resource) => {
+        return Array.from(originFilter).includes(resource.origin)
+      })
     }
 
     return filteredResources;
@@ -90,7 +97,7 @@ export const Resources = () => {
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                  Status
+                  Trạng thái
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -104,6 +111,29 @@ export const Resources = () => {
                 {statusOptions.map((status) => (
                   <DropdownItem key={status.uid} className="capitalize">
                     {status.name}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+          <div className="flex gap-3">
+            <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                  Xuất xứ
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={originFilter}
+                selectionMode="multiple"
+                onSelectionChange={setOriginFilter}
+              >
+                {originOptions.map((origin) => (
+                  <DropdownItem key={origin.uid} className="capitalize">
+                    {origin.name}
                   </DropdownItem>
                 ))}
               </DropdownMenu>

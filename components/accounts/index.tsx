@@ -7,7 +7,7 @@ import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { SearchIcon } from "../icons/searchicon";
-import { TableWrapper } from "./account-table/table";
+import { AccountTableWrapper } from "./account-table/account-table";
 import { AddAccount } from "./add-account";
 import { UserService } from "@/services/userService";
 import { Account } from "./account-table/data";
@@ -159,7 +159,7 @@ export const Accounts = () => {
           <>
             <span className="text-default-400 text-small">Total {accounts.length} accounts</span>
             <div style={{ marginBottom: '16px' }}></div>
-            <TableWrapper accounts={filteredItems} setAccounts={setAccounts} paginate={true}/>
+            <AccountTableWrapper accounts={filteredItems} setAccounts={setAccounts} paginate={true}/>
           </>
           : (
             <LoaderTable />

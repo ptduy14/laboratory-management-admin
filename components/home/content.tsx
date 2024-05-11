@@ -11,7 +11,7 @@ import NextLink from "next/link";
 import { useSession } from "next-auth/react";
 import jwtManager from "@/config/jwtManager";
 import { UserService } from "@/services/userService";
-import { TableWrapper } from "../accounts/account-table/table";
+import { AccountTableWrapper } from "../accounts/account-table/account-table";
 import { Account } from "../accounts/account-table/data";
 
 const Chart = dynamic(
@@ -84,7 +84,7 @@ export const Content = () => {
           View All
         </Link>
       </div>
-      <TableWrapper accounts={accounts} paginate={false} setAccounts={setAccounts}/>
+      <AccountTableWrapper accounts={accounts} paginate={false} setAccounts={setAccounts}/>
     </div>
   </div>
   )

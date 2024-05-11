@@ -11,13 +11,13 @@ import {
 import { columns, Account } from "./data";
 import { RenderCell } from "./render-cell";
 
-interface TableAccountProps {
+interface AccountTableProps {
   setAccounts?: React.Dispatch<React.SetStateAction<Account[]>>;
   accounts: Account[];
   paginate: boolean;
 }
 
-export const TableWrapper = ({ setAccounts, accounts, paginate }: TableAccountProps) => {
+export const AccountTableWrapper = ({ setAccounts, accounts, paginate }: AccountTableProps) => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
 

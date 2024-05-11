@@ -13,23 +13,18 @@ import { getCategoryIcon } from "./getCategoryIcon";
 import { ResoucesIcon } from "../icons/resources-icon";
 import axios from "axios";
 import { PlusSquareIcon } from "../icons/plus-square-icon";
+import { Category } from "../category/category-table/data";
 
 export interface RoomType {
   id: number;
   name: string;
 }
 
-export interface CategoryType {
-  id: number;
-  name: string;
-  status: number;
-}
-
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
   const [rooms, setRooms] = useState<RoomType[]>([]);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     getAllRoom();

@@ -1,7 +1,7 @@
-import { CategoryType } from "@/components/sidebar/sidebar";
+import { Category } from "@/components/category/category-table/data";
 import { StatusResource, StatusResourceName } from "@/enums/status-resource";
 
-export interface ResourceType {
+export interface Resource {
   id: number;
   createBy: number;
   updateBy: number;
@@ -13,7 +13,7 @@ export interface ResourceType {
   remark: string | null;
   unit: number;
   status: 2;
-  category: CategoryType;
+  category: Category;
 }
 
 export const resourceColumns = [
@@ -63,6 +63,14 @@ export const originOptions = [
   {
     name: "Việt Nam",
     uid: "Việt Nam"
+  },
+  {
+    name: "Pháp",
+    uid: "Pháp"
+  },
+  {
+    name: "Nhật Bản",
+    uid: "Nhật Bản"
   }
 ]
 

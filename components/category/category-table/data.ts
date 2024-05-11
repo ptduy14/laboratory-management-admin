@@ -1,3 +1,9 @@
+export interface Category {
+  id: number;
+  name: string;
+  status: number;
+}
+
 export const resourceFromCategoryColumns = [
     {
         key: "name",

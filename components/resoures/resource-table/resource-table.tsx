@@ -7,7 +7,7 @@ import {
   TableCell,
   Pagination,
 } from "@nextui-org/react";
-import { ResourceType, resourceColumns } from "./data";
+import { Resource, resourceColumns } from "./data";
 import { RenderCell } from "./render-cell";
 import { useState, useMemo } from "react";
 
@@ -17,7 +17,7 @@ interface Column {
 }
 
 interface RecoureTableProps {
-  resources: ResourceType[];
+  resources: Resource[];
   columns?: Column[];
 }
 
