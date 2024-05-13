@@ -3,45 +3,24 @@ import { signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { LoginFormSchemaType, LoginFormSchema } from "./schema/loginFormSchema";
 
-import {
-  loginFormValidation,
-  errorsType,
-} from "@/validations/loginFormValidation";
-
-export interface UserInputType {
-  email: string;
-  password: string;
-}
-
-const initUserInput: UserInputType = {
-  email: "",
-  password: "",
-};
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const Login = () => {
   const router = useRouter();
-  const [userInput, setUserInput] = useState<UserInputType>(initUserInput);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<errorsType>({
-    email: "",
-    password: "",
-  });
 
-  const handleLogin = async () => {
-    setErrors(loginFormValidation(userInput));
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormSchemaType>({
+    resolver: zodResolver(LoginFormSchema)
+  })
 
-    console.log(errors);
-
-    if (errors.email || errors.password) {
-      return;
-    }
-
-    setLoading(true);
+  const onSubmit: SubmitHandler<LoginFormSchemaType> = async (data) => {
 
     const result = await signIn("credentials", {
-      email: userInput.email,
-      password: userInput.password,
+      email: data.email,
+      password: data.password,
       redirect: false,
     });
 
@@ -54,6 +33,8 @@ export const Login = () => {
       toast.error("Sai thông tin đăng nhập !!");
       setLoading(false);
     }
+
+    console.log(loading)
   };
 
   const handleGoogleLogin = async () => {
@@ -69,7 +50,7 @@ export const Login = () => {
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
-        handleLogin();
+        handleSubmit(onSubmit);
       }
     };
   
@@ -137,18 +118,11 @@ export const Login = () => {
                   } border placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5`}
                   type="email"
                   placeholder="Email"
-                  value={userInput.email}
-                  onChange={(e) => {
-                    setUserInput((prev) => ({
-                      ...prev,
-                      email: e.target.value,
-                    }));
-                    setErrors((prev) => ({ ...prev, email: "" }));
-                  }}
                   disabled={loading}
+                  {...register('email')}
                 />
                 {errors.email && (
-                  <span className="text-red-500 text-sm">{errors.email}</span>
+                  <span className="text-red-500 text-sm">{errors.email.message}</span>
                 )}
                 <input
                   className={`w-full px-8 py-4 rounded-lg font-medium  ${
@@ -158,23 +132,16 @@ export const Login = () => {
                   } border placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5`}
                   type="password"
                   placeholder="Password"
-                  value={userInput.password}
-                  onChange={(e) => {
-                    setUserInput((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    }));
-                    setErrors((prev) => ({ ...prev, password: "" }));
-                  }}
                   disabled={loading}
+                  {...register("password")}
                 />
                 {errors.password && (
                   <span className="text-red-500 text-sm">
-                    {errors.password}
+                    {errors.password.message}
                   </span>
                 )}
                 <button
-                  onClick={handleLogin}
+                  onClick={handleSubmit(onSubmit)}
                   className={`mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none relative ${
                     loading ? "pointer-events-none" : ""
                   }`}
