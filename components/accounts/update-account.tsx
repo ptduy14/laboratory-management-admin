@@ -85,12 +85,14 @@ export default function UpdateAccount({
 
   const onSubmit: SubmitHandler<UpdateAccountSchemaType> = async (data) => {
     let account: Account;
-    console.log(data)
     try {
-      if (!Array.isArray(data.photo) && data.photo === currentAccountPhoto) {
+      if (!Array.isArray(data.photo)) {
         const { data: upadtedAccount } = await UserService.updateById(
           accountId.toString(),
-          data
+          {
+            ...data,
+            photo: currentAccountPhoto ? currentAccountPhoto : "",
+          }
         );
         account = upadtedAccount;
       } else {
@@ -179,7 +181,9 @@ export default function UpdateAccount({
                         className="w-full h-48"
                         radius="sm"
                         src={
-                          previewImage ? previewImage : currentAccountPhoto || ""
+                          previewImage
+                            ? previewImage
+                            : currentAccountPhoto || ""
                         }
                       />
                       <div className="mt-3">
