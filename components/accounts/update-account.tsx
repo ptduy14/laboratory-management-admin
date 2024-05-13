@@ -85,7 +85,7 @@ export default function UpdateAccount({
 
   const onSubmit: SubmitHandler<UpdateAccountSchemaType> = async (data) => {
     let account: Account;
-    console.log(data.role)
+    console.log(data)
     try {
       if (!Array.isArray(data.photo) && data.photo === currentAccountPhoto) {
         const { data: upadtedAccount } = await UserService.updateById(
@@ -275,6 +275,7 @@ export default function UpdateAccount({
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           defaultValue={getValues("role")}
                           {...register("role")}
+                          onChange={(e) => console.log(typeof e.target.value)}
                         >
                           <option value={RoleEnum.ADMIN}>
                             {RoleNames[RoleEnum.ADMIN]}
