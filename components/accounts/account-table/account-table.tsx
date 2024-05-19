@@ -17,7 +17,11 @@ interface AccountTableProps {
   paginate: boolean;
 }
 
-export const AccountTableWrapper = ({ setAccounts, accounts, paginate }: AccountTableProps) => {
+export const AccountTableWrapper = ({
+  setAccounts,
+  accounts,
+  paginate,
+}: AccountTableProps) => {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
 
@@ -35,17 +39,19 @@ export const AccountTableWrapper = ({ setAccounts, accounts, paginate }: Account
       aria-label="Example static collection table"
       bottomContentPlacement="outside"
       bottomContent={
-        paginate ? (<div className="flex w-full justify-center">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={(page) => setPage(page)}
-        />
-      </div>) : null
+        paginate ? (
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={pages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+        ) : null
       }
       classNames={{
         wrapper: "min-h-[222px]",
@@ -59,7 +65,11 @@ export const AccountTableWrapper = ({ setAccounts, accounts, paginate }: Account
           <TableRow key={item.id}>
             {(columnKey) => (
               <TableCell>
-                {RenderCell({ account: item, columnKey: columnKey, setAccounts: setAccounts })}
+                {RenderCell({
+                  account: item,
+                  columnKey: columnKey,
+                  setAccounts: setAccounts,
+                })}
               </TableCell>
             )}
           </TableRow>

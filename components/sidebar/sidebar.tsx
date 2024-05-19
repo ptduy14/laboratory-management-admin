@@ -46,7 +46,6 @@ export const SidebarWrapper = () => {
       }
     }
   };
-
   return (
     <aside className="h-screen z-[202] sticky top-0">
       {collapsed ? (
@@ -86,7 +85,7 @@ export const SidebarWrapper = () => {
               />
             </SidebarMenu>
             <SidebarMenu title="Danh Mục">
-              {categories.map((category) => {
+              {/* {categories.map((category) => {
                 return (
                   <SidebarItem
                     key={category.id}
@@ -96,7 +95,7 @@ export const SidebarWrapper = () => {
                     href={`/categories/${category.id}/resources`}
                   />
                 );
-              })}
+              })} */}
               <SidebarItem
                 isActive={pathname === ""}
                 title="Thêm danh mục"

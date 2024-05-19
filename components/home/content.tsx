@@ -84,7 +84,7 @@ export const Content = () => {
           View All
         </Link>
       </div>
-      <AccountTableWrapper accounts={accounts} paginate={false} setAccounts={setAccounts}/>
+      {/* <AccountTableWrapper accounts={accounts} paginate={false} setAccounts={setAccounts}/> */}
     </div>
   </div>
   )
