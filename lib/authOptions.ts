@@ -56,7 +56,7 @@ const authOptions: NextAuthOptions = {
             }
             userVerifyData = data;
           } catch (error: any) {
-            console.log("error: ", error.response.data);
+            console.log("error: ", error.response.data.message);
             return false;
           }
         }
