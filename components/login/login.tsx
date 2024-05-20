@@ -1,23 +1,36 @@
 "use client";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { LoginFormSchemaType, LoginFormSchema } from "./schema/loginFormSchema";
-
+import jwtManager from "@/config/jwtManager";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const Login = () => {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormSchemaType>({
+    resolver: zodResolver(LoginFormSchema),
+  });
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormSchemaType>({
-    resolver: zodResolver(LoginFormSchema)
-  })
+  useEffect(() => {
+    const token = jwtManager.getToken();
+    if (status === "authenticated" && session && !token) {
+      jwtManager.setToken(session.user.access_token)
+      router.push("/");
+      toast.success("Đăng nhập thành công !!");
+    }
+  }, [session, status]);
 
   const onSubmit: SubmitHandler<LoginFormSchemaType> = async (data) => {
-
+    setLoading(true)
     const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -26,40 +39,34 @@ export const Login = () => {
 
     console.log("waiting for server...");
 
-    if (result?.ok) {
-      router.push("/");
-      toast.success("Đăng nhập thành công !!");
-    } else {
+    if (!result?.ok) {
       toast.error("Sai thông tin đăng nhập !!");
-      setLoading(false);
+      setLoading(false)
     }
 
-    console.log(loading)
+    console.log(loading);
   };
 
   const handleGoogleLogin = async () => {
-    const result = await signIn("google", {
+    await signIn("google", {
       redirect: false,
+      callbackUrl: `${window.location.origin}/login`,
     });
-
-    if (result?.ok) {
-      console.log("ok");
-    }
   };
 
   useEffect(() => {
     const handleKeyDown = (e: any) => {
-      if (e.key === 'Enter') {
+      if (e.key === "Enter") {
         handleSubmit(onSubmit);
       }
     };
-  
-    document.addEventListener('keydown', handleKeyDown);
+
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [errors])
+  }, [errors]);
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
@@ -119,10 +126,12 @@ export const Login = () => {
                   type="email"
                   placeholder="Email"
                   disabled={loading}
-                  {...register('email')}
+                  {...register("email")}
                 />
                 {errors.email && (
-                  <span className="text-red-500 text-sm">{errors.email.message}</span>
+                  <span className="text-red-500 text-sm">
+                    {errors.email.message}
+                  </span>
                 )}
                 <input
                   className={`w-full px-8 py-4 rounded-lg font-medium  ${

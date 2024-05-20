@@ -26,7 +26,7 @@ const authOptions: NextAuthOptions = {
             email: credentials?.email,
             password: credentials?.password,
           });
-  
+
           if (res.status == 201 && res.data && isAccess(res.data)) {
             return res.data;
           }
@@ -50,11 +50,11 @@ const authOptions: NextAuthOptions = {
           const payload = handleTransformData(user, account);
           try {
             // axiosConfig();
-            const { data } = await AuthService.ggAccessTokenVerify(payload);
-            if (!isAccess(data)) {
+            const res = await AuthService.ggAccessTokenVerify(payload);
+            if (!isAccess(res.data)) {
               return false;
             }
-            userVerifyData = data;
+            userVerifyData = res.data;
           } catch (error: any) {
             console.log("error: ", error.response.data.message);
             return false;

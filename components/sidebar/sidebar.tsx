@@ -11,9 +11,11 @@ import { RoomService } from "@/services/roomService";
 import { CategoryService } from "@/services/categoryService";
 import { getCategoryIcon } from "./getCategoryIcon";
 import { ResoucesIcon } from "../icons/resources-icon";
-import axios from "axios";
 import { PlusSquareIcon } from "../icons/plus-square-icon";
 import { Category } from "../category/category-table/data";
+import jwtManager from "@/config/jwtManager";
+import { useSession } from "next-auth/react";
+import useSWR from "swr";
 
 export interface RoomType {
   id: number;
@@ -21,31 +23,50 @@ export interface RoomType {
 }
 
 export const SidebarWrapper = () => {
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
-  const [rooms, setRooms] = useState<RoomType[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  // const [categories, setCategories] = useState<Category[]>([]);
 
+  const token = jwtManager.getToken();
   useEffect(() => {
-    getAllRoom();
-    getAllCategory();
-  }, []);
-
-  const getAllRoom = async () => {
-    const { data } = await RoomService.getAll();
-    setRooms(data);
-  };
-
-  const getAllCategory = async () => {
-    try {
-      const { data } = await CategoryService.getAll();
-      setCategories(data);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.message);
-      }
+    if (!token && status === "authenticated") {
+      jwtManager.setToken(session.user.access_token);
     }
-  };
+  }, [session, status]);
+
+  const { data: rooms } = useSWR("/rooms", async (url) => {
+    const { data } = await RoomService.getAll(url);
+    return data;
+  });
+
+  const { data: categories } = useSWR("/categories", async (url) => {
+    const { data } = await CategoryService.getAll(url);
+    return data;
+  });
+
+  console.log(categories);
+
+  // useEffect(() => {
+  //   getAllRoom();
+  //   getAllCategory();
+  // }, []);
+
+  // const getAllRoom = async () => {
+  //   const { data } = await RoomService.getAll();
+  //   setRooms(data);
+  // };
+
+  // const getAllCategory = async () => {
+  //   try {
+  //     const { data } = await CategoryService.getAll();
+  //     setCategories(data);
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       console.log(error.response?.data.message);
+  //     }
+  //   }
+  // };
   return (
     <aside className="h-screen z-[202] sticky top-0">
       {collapsed ? (
@@ -57,10 +78,10 @@ export const SidebarWrapper = () => {
         })}
       >
         <div className={Sidebar.Header()}>
-        <img
-              src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Logo_ctuet.png"
-              className="w-20 mx-auto"
-            />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Logo_ctuet.png"
+            className="w-20 mx-auto"
+          />
         </div>
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
@@ -85,17 +106,19 @@ export const SidebarWrapper = () => {
               />
             </SidebarMenu>
             <SidebarMenu title="Danh Mục">
-              {/* {categories.map((category) => {
+              {categories?.data.map((category: any) => {
                 return (
                   <SidebarItem
                     key={category.id}
-                    isActive={pathname === `/categories/${category.id}/resources`}
+                    isActive={
+                      pathname === `/categories/${category.id}/resources`
+                    }
                     title={category.name}
                     icon={getCategoryIcon(category.id)}
                     href={`/categories/${category.id}/resources`}
                   />
                 );
-              })} */}
+              })}
               <SidebarItem
                 isActive={pathname === ""}
                 title="Thêm danh mục"
@@ -104,7 +127,7 @@ export const SidebarWrapper = () => {
               />
             </SidebarMenu>
             <SidebarMenu title="Phòng thí nghiệm">
-              {rooms.map((room) => {
+              {rooms?.map((room: any) => {
                 return (
                   <SidebarItem
                     key={room.id}

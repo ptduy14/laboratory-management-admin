@@ -9,7 +9,6 @@ import { CardTransactions } from "./card-transactions";
 import { Link } from "@nextui-org/react";
 import NextLink from "next/link";
 import { useSession } from "next-auth/react";
-import jwtManager from "@/config/jwtManager";
 import { UserService } from "@/services/userService";
 import { AccountTableWrapper } from "../accounts/account-table/account-table";
 import { Account } from "../accounts/account-table/data";
@@ -24,14 +23,6 @@ const Chart = dynamic(
 export const Content = () => {
   const { data: session } = useSession();
   const [accounts, setAccounts] = useState<Account[]>([])
-
-  const token = jwtManager.getToken();
-  useEffect(() => {
-    if (!token && session) {
-      jwtManager.setToken(session.user.access_token)
-    }
-    getAllAccounts();
-  }, [session])
 
   const getAllAccounts = async () => {
     const { data } = await UserService.getAll();
