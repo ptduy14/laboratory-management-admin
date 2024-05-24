@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { UserService } from "@/services/userService";
 import { AccountTableWrapper } from "../accounts/account-table/account-table";
 import { Account } from "../accounts/account-table/data";
+import { LoaderTable } from "../loader/loader-table";
 import useSWR from "swr";
 
 const Chart = dynamic(
@@ -23,61 +24,63 @@ const Chart = dynamic(
 
 export const Content = () => {
   // const [accounts, setAccounts] = useState<Account[]>([])
-  const { data: accounts } = useSWR('/users/get', async (url) => {
+  const { data: accounts, isLoading: isLoadingFetchAccountData } = useSWR("/users/get?page=1", async (url) => {
     const { data } = await UserService.getAll(url);
     return data;
-  })
-
-  console.log(accounts?.data)
+  });
 
   return (
     <div className="h-full lg:px-6">
-    <div className="flex justify-center gap-4 xl:gap-6 pt-3 px-4 lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full">
-      <div className="mt-6 gap-6 flex flex-col w-full">
-        {/* Card Section Top */}
-        <div className="flex flex-col gap-2">
-          <h3 className="text-xl font-semibold">Tài nguyên phòng thí nghiệm</h3>
-          <div className="grid md:grid-cols-2 grid-cols-1 2xl:grid-cols-3 gap-5  justify-center w-full">
-            <CardEquipment />
-            <CardTool />
-            <CardChemical />
+      <div className="flex justify-center gap-4 xl:gap-6 pt-3 px-4 lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full">
+        <div className="mt-6 gap-6 flex flex-col w-full">
+          {/* Card Section Top */}
+          <div className="flex flex-col gap-2">
+            <h3 className="text-xl font-semibold">
+              Tài nguyên phòng thí nghiệm
+            </h3>
+            <div className="grid md:grid-cols-2 grid-cols-1 2xl:grid-cols-3 gap-5  justify-center w-full">
+              <CardEquipment />
+              <CardTool />
+              <CardChemical />
+            </div>
+          </div>
+
+          {/* Chart */}
+          <div className="h-full flex flex-col gap-2">
+            <h3 className="text-xl font-semibold">
+              Số liệu thống kê tài nguyên sử dụng trong tuần
+            </h3>
+            <div className="w-full bg-default-50 shadow-lg rounded-2xl p-6 ">
+              <Chart />
+            </div>
           </div>
         </div>
 
-        {/* Chart */}
-        <div className="h-full flex flex-col gap-2">
-          <h3 className="text-xl font-semibold">Số liệu thống kê tài nguyên sử dụng trong tuần</h3>
-          <div className="w-full bg-default-50 shadow-lg rounded-2xl p-6 ">
-            <Chart />
+        {/* Left Section */}
+        <div className="mt-4 gap-2 flex flex-col xl:max-w-md w-full">
+          <h3 className="text-xl font-semibold">Section</h3>
+          <div className="flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col">
+            <CardAgents />
+            <CardTransactions />
           </div>
         </div>
       </div>
 
-      {/* Left Section */}
-      <div className="mt-4 gap-2 flex flex-col xl:max-w-md w-full">
-        <h3 className="text-xl font-semibold">Section</h3>
-        <div className="flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col">
-          <CardAgents />
-          <CardTransactions />
+      {/* Table Latest Users */}
+      <div className="flex flex-col justify-center w-full py-5 px-4 lg:px-0  max-w-[90rem] mx-auto gap-3">
+        <div className="flex  flex-wrap justify-between">
+          <h3 className="text-center text-xl font-semibold">Accounts</h3>
+          <Link
+            href="/accounts"
+            as={NextLink}
+            color="primary"
+            className="cursor-pointer"
+          >
+            View All
+          </Link>
         </div>
+        {isLoadingFetchAccountData ? <LoaderTable /> : <AccountTableWrapper accounts={accounts?.data} paginate={false} />}
       </div>
     </div>
-
-    {/* Table Latest Users */}
-    <div className="flex flex-col justify-center w-full py-5 px-4 lg:px-0  max-w-[90rem] mx-auto gap-3">
-      <div className="flex  flex-wrap justify-between">
-        <h3 className="text-center text-xl font-semibold">Accounts</h3>
-        <Link
-          href="/accounts"
-          as={NextLink}
-          color="primary"
-          className="cursor-pointer"
-        >
-          View All
-        </Link>
-      </div>
-      {/* <AccountTableWrapper accounts={accounts?.data} paginate={false}/> */}
-    </div>
-  </div>
-  )
-}
+  );
+};

@@ -53,6 +53,7 @@ export default function UpdateAccount({
 
   const { data } = useSWR<Account>(isOpen ? `/users/get/${accountId.toString()}` : null, async (url: string) => {
     const { data } =  await UserService.getById(url);
+    setCurrentAccountPhoto(data.photo);
     reset({ ...data });
     setIsLoading(false);
     return data
@@ -203,17 +204,8 @@ export default function UpdateAccount({
                     <div className="w-2/3 max-h-80">
                       <Input
                         className="mb-7"
-                        label="Email"
-                        variant="bordered"
-                        errorMessage={errors.email?.message}
-                        isInvalid={errors.email?.message ? true : false}
-                        defaultValue={getValues("email")}
-                        {...register("email")}
-                      />
-                      <Input
-                        className="mb-7"
                         label="First Name"
-                        placeholder="Enter your email"
+                        placeholder="Enter your first name"
                         variant="bordered"
                         errorMessage={errors.firstName?.message}
                         isInvalid={errors.firstName?.message ? true : false}

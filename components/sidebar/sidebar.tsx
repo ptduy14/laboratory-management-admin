@@ -35,8 +35,6 @@ export const SidebarWrapper = () => {
     return data;
   });
 
-  console.log(rooms)
-
   // useEffect(() => {
   //   getAllRoom();
   //   getAllCategory();

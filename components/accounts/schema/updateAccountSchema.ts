@@ -8,12 +8,6 @@ export const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export const UpdateAccountSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Trường này không được trống" })
-    .regex(/^[a-zA-Z0-9._%+-]+@student\.ctuet\.edu\.vn$/, {
-      message: "Địa chỉ email không hợp lệ",
-    }),
   firstName: z.string().min(1, { message: "Trường này không được trống" }),
   lastName: z.string().min(1, { message: "Trường này không được trống" }),
   address: z.string().min(1, { message: "Trường này không được trống" }),
