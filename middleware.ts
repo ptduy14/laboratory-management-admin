@@ -9,7 +9,6 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        console.log('check: ',req.nextUrl.pathname)
         if (!token) {
           return false;
         }

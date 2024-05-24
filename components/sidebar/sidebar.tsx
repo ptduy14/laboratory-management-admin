@@ -35,6 +35,8 @@ export const SidebarWrapper = () => {
     return data;
   });
 
+  console.log(rooms)
+
   // useEffect(() => {
   //   getAllRoom();
   //   getAllCategory();
@@ -115,7 +117,7 @@ export const SidebarWrapper = () => {
               />
             </SidebarMenu>
             <SidebarMenu title="Phòng thí nghiệm">
-              {/* {rooms?.map((room: any) => {
+              {rooms?.data.map((room: any) => {
                 return (
                   <SidebarItem
                     key={room.id}
@@ -123,7 +125,7 @@ export const SidebarWrapper = () => {
                     title={room.name.replace("PTN", "").trim()}
                   />
                 );
-              })} */}
+              })}
             </SidebarMenu>
           </div>
         </div>
