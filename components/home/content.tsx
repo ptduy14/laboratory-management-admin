@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { UserService } from "@/services/userService";
 import { AccountTableWrapper } from "../accounts/account-table/account-table";
 import { Account } from "../accounts/account-table/data";
+import useSWR from "swr";
 
 const Chart = dynamic(
   () => import("../charts/steam").then((mod) => mod.Steam),
@@ -21,13 +22,13 @@ const Chart = dynamic(
 );
 
 export const Content = () => {
-  const { data: session } = useSession();
-  const [accounts, setAccounts] = useState<Account[]>([])
+  // const [accounts, setAccounts] = useState<Account[]>([])
+  const { data: accounts } = useSWR('/users/get', async (url) => {
+    const { data } = await UserService.getAll(url);
+    return data;
+  })
 
-  const getAllAccounts = async () => {
-    const { data } = await UserService.getAll();
-    setAccounts(data)
-  }
+  console.log(accounts?.data)
 
   return (
     <div className="h-full lg:px-6">
@@ -75,7 +76,7 @@ export const Content = () => {
           View All
         </Link>
       </div>
-      {/* <AccountTableWrapper accounts={accounts} paginate={false} setAccounts={setAccounts}/> */}
+      {/* <AccountTableWrapper accounts={accounts?.data} paginate={false}/> */}
     </div>
   </div>
   )

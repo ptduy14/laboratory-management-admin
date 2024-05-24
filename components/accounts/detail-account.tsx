@@ -17,21 +17,28 @@ import { Account } from "./account-table/data";
 import { LoaderImageText } from "../loader/loader-image-text";
 import { RoleNames } from "@/enums/role";
 import { StatusNames } from "@/enums/status";
+import useSWR from "swr";
 
 export const DetailAccount = ({ accountId }: { accountId: number }) => {
-  const [account, setAccount] = useState<Account>();
+  // const [account, setAccount] = useState<Account>();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  useEffect(() => {
-    if (isOpen) {
-      getAccountById();
-    }
-  }, [isOpen]);
+  const { data: account } = useSWR<Account>(isOpen ? `/users/get/${accountId.toString()}` : null, async (url: string) => {
+    const { data } =  await UserService.getById(url);
+    return data
+  })
 
-  const getAccountById = async () => {
-    const { data } = await UserService.getById(accountId.toString());
-    setAccount(data);
-  };
+
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     getAccountById();
+  //   }
+  // }, [isOpen]);
+
+  // const getAccountById = async () => {
+  //   const { data } = await UserService.getById(accountId.toString());
+  //   setAccount(data);
+  // };
 
   return (
     <div>

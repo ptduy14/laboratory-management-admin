@@ -25,7 +25,7 @@ export function Providers({ children, themeProps, session }: ProvidersProps) {
           attribute="class"
           {...themeProps}
         >
-          {pathname === "/login" ? children : <Layout>{children}</Layout>}
+          {pathname === "/login" || pathname.startsWith('/api') ? children : <Layout>{children}</Layout>}
           <ToastContainer />
         </NextThemesProvider>
       </NextUIProvider>

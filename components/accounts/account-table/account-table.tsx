@@ -10,30 +10,21 @@ import {
 } from "@nextui-org/react";
 import { columns, Account } from "./data";
 import { RenderCell } from "./render-cell";
+import { metaType } from "@/types/meta";
 
 interface AccountTableProps {
-  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
   accounts: Account[];
   paginate: boolean;
+  meta?: metaType;
+  setPage?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const AccountTableWrapper = ({
-  setAccounts,
   accounts,
   paginate,
+  meta,
+  setPage,
 }: AccountTableProps) => {
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 5;
-
-  const pages = Math.ceil(accounts.length / rowsPerPage);
-
-  const items = React.useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return accounts.slice(start, end);
-  }, [page, accounts]);
-
   return (
     <Table
       aria-label="Example static collection table"
@@ -46,9 +37,13 @@ export const AccountTableWrapper = ({
               showControls
               showShadow
               color="primary"
-              page={page}
-              total={pages}
-              onChange={(page) => setPage(page)}
+              page={meta?.page}
+              total={meta?.pages ? meta?.pages : 0}
+              onChange={(page) => {
+                if (setPage) {
+                  setPage(page);
+                }
+              }}
             />
           </div>
         ) : null
@@ -60,7 +55,7 @@ export const AccountTableWrapper = ({
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={items} emptyContent={"No account found"}>
+      <TableBody items={accounts} emptyContent={"No account found"}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
@@ -68,7 +63,6 @@ export const AccountTableWrapper = ({
                 {RenderCell({
                   account: item,
                   columnKey: columnKey,
-                  setAccounts: setAccounts,
                 })}
               </TableCell>
             )}

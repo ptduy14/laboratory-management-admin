@@ -13,8 +13,6 @@ import { getCategoryIcon } from "./getCategoryIcon";
 import { ResoucesIcon } from "../icons/resources-icon";
 import { PlusSquareIcon } from "../icons/plus-square-icon";
 import { Category } from "../category/category-table/data";
-import jwtManager from "@/config/jwtManager";
-import { useSession } from "next-auth/react";
 import useSWR from "swr";
 
 export interface RoomType {
@@ -23,17 +21,9 @@ export interface RoomType {
 }
 
 export const SidebarWrapper = () => {
-  const { data: session, status } = useSession();
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
   // const [categories, setCategories] = useState<Category[]>([]);
-
-  const token = jwtManager.getToken();
-  useEffect(() => {
-    if (!token && status === "authenticated") {
-      jwtManager.setToken(session.user.access_token);
-    }
-  }, [session, status]);
 
   const { data: rooms } = useSWR("/rooms", async (url) => {
     const { data } = await RoomService.getAll(url);
@@ -44,8 +34,6 @@ export const SidebarWrapper = () => {
     const { data } = await CategoryService.getAll(url);
     return data;
   });
-
-  console.log(categories);
 
   // useEffect(() => {
   //   getAllRoom();
@@ -127,7 +115,7 @@ export const SidebarWrapper = () => {
               />
             </SidebarMenu>
             <SidebarMenu title="Phòng thí nghiệm">
-              {rooms?.map((room: any) => {
+              {/* {rooms?.map((room: any) => {
                 return (
                   <SidebarItem
                     key={room.id}
@@ -135,7 +123,7 @@ export const SidebarWrapper = () => {
                     title={room.name.replace("PTN", "").trim()}
                   />
                 );
-              })}
+              })} */}
             </SidebarMenu>
           </div>
         </div>

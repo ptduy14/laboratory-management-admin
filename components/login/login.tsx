@@ -9,7 +9,7 @@ import jwtManager from "@/config/jwtManager";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const Login = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const {
@@ -21,13 +21,13 @@ export const Login = () => {
   });
 
   useEffect(() => {
-    const token = jwtManager.getToken();
-    if (status === "authenticated" && session && !token) {
+    if (status === "authenticated" && session) {
       jwtManager.setToken(session.user.access_token)
+      update({ hasAccessTokenLocal: true});
       router.push("/");
       toast.success("Đăng nhập thành công !!");
     }
-  }, [session, status]);
+  }, [status]);
 
   const onSubmit: SubmitHandler<LoginFormSchemaType> = async (data) => {
     setLoading(true)
@@ -50,7 +50,7 @@ export const Login = () => {
   const handleGoogleLogin = async () => {
     await signIn("google", {
       redirect: false,
-      callbackUrl: `${window.location.origin}/login`,
+      callbackUrl: `${window.location.origin}/api/auth/google-callback`,
     });
   };
 

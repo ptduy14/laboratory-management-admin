@@ -39,7 +39,7 @@ AxiosInstance.interceptors.response.use(
         window.location.href = "/";
       }
     }
-    // console.log(error)
+    console.log(error.response?.data)
     return Promise.reject(error);
   }
 );

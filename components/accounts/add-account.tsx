@@ -21,11 +21,11 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 type AddAccountProps = {
-  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>,
+  mutate: React.Dispatch<React.SetStateAction<Account[]>>,
   accounts: Account[]
 }
 
-export const AddAccount = ({ setAccounts, accounts } : AddAccountProps) => {
+export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isVisible, setIsVisible] = React.useState(false);
   const {
@@ -33,6 +33,7 @@ export const AddAccount = ({ setAccounts, accounts } : AddAccountProps) => {
     handleSubmit,
     formState: { errors },
     clearErrors,
+    reset
   } = useForm<AddAccountSchemaType>({
     resolver: zodResolver(AddAccountSchema),
   });
@@ -42,12 +43,14 @@ export const AddAccount = ({ setAccounts, accounts } : AddAccountProps) => {
   const onSubmit: SubmitHandler<AddAccountSchemaType> = async (dataField) => {
     try {
       const { data } = await AccountService.createAccount(dataField)
-      setAccounts([...accounts, data])
-      toast.success("Thêm tài khoản thành công !!")
-      onClose();
+      //mutate([...accounts, data])
+      //toast.success("Thêm tài khoản thành công !!")
+      //onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message)
+      } else {
+        toast.error('Đã có lỗi xảy ra. Vui lòng liên hệ Admin')
       }
     }
   };
@@ -55,6 +58,7 @@ export const AddAccount = ({ setAccounts, accounts } : AddAccountProps) => {
   const handleCloseModal = () => {
     clearErrors();
     onClose();
+    reset();
   };
 
   return (
@@ -153,7 +157,7 @@ export const AddAccount = ({ setAccounts, accounts } : AddAccountProps) => {
                         htmlFor="roles"
                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                       >
-                        Select an option
+                        Select role
                       </label>
                       <select
                         defaultValue="admin"

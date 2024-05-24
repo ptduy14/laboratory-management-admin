@@ -14,56 +14,19 @@ import { Account } from "./account-table/data";
 import { LoaderTable } from "../loader/loader-table";
 import { statusOptions } from "./account-table/data";
 import { roleOptions } from "./account-table/data";
+import useSWR from "swr";
 
 export const Accounts = () => {
-  const [accounts, setAccounts] = useState<Account[]>([]);
   const [searchFilterValue, setSearchFilterValue] = useState("");
   const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
   const [roleFilter, setRoleFilter] = React.useState<Selection>('all');
 
-  useEffect(() => {
-    getAccounts();
-  }, []);
+  const [pages, setPage] = useState(1);
 
-  const getAccounts = async () => {
-    const { data } = await UserService.getAll();
-    setAccounts(data);
-  };
-
-  const onSearchChange = (value?: string) => {
-    if (value) {
-      setSearchFilterValue(value)
-    } else {
-      setSearchFilterValue("")
-    }
-  }
-
-  const handleFilteredItems = () => {
-    let filteredAccounts = [...accounts];
-
-    if (searchFilterValue) {
-      filteredAccounts = filteredAccounts.filter((account) => {
-        const accountEmail = account.email.toLowerCase();
-        return accountEmail.substring(0, accountEmail.indexOf('@')).includes(searchFilterValue.toLowerCase())
-      })
-    }
-
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredAccounts = filteredAccounts.filter((account) => {
-        return Array.from(statusFilter).includes(account.status.toString())
-      })
-    }
-
-    if (roleFilter !== "all" && Array.from(roleFilter).length !== roleOptions.length) {
-      filteredAccounts = filteredAccounts.filter((account) => {
-        return Array.from(roleFilter).includes(account.role.toString())
-      })
-    }
-
-    return filteredAccounts;
-  }
-
-  const filteredItems = handleFilteredItems();
+  const { data: accounts, mutate: updateAccountList } = useSWR(`/users/get?page=${pages}`, async (url) => {
+    const { data } = await UserService.getAll(url);
+    return data;
+  })
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -98,7 +61,7 @@ export const Accounts = () => {
             isClearable
             placeholder="Search accounts by Email"
             value={searchFilterValue}
-            onValueChange={onSearchChange}
+            onValueChange={() => {}}
           />
           <div className="flex gap-3">
             <Dropdown>
@@ -148,18 +111,18 @@ export const Accounts = () => {
           </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddAccount setAccounts={setAccounts} accounts={accounts}/>
+          <AddAccount accounts={accounts?.data} mutate={updateAccountList}/>
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        {accounts.length > 0 ?
+        {accounts?.data.length > 0 ?
           <>
-            <span className="text-default-400 text-small">Total {accounts.length} accounts</span>
+            <span className="text-default-400 text-small">Total {accounts.data.length} accounts</span>
             <div style={{ marginBottom: '16px' }}></div>
-            <AccountTableWrapper accounts={filteredItems} setAccounts={setAccounts} paginate={true}/>
+            <AccountTableWrapper accounts={accounts.data} meta={accounts.meta} paginate={true} setPage={setPage}/>
           </>
           : (
             <LoaderTable />

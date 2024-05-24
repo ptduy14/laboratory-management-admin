@@ -28,13 +28,12 @@ import { toast } from "react-toastify";
 import { Status, StatusNames } from "@/enums/status";
 import { Account } from "./account-table/data";
 import { getPublicIdFromUrl } from "@/utils/getPublicIdFromUrl";
+import useSWR, { mutate } from "swr"
 
 export default function UpdateAccount({
   accountId,
-  setAccounts,
 }: {
   accountId: number;
-  setAccounts: React.Dispatch<React.SetStateAction<Account[]>>;
 }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -52,21 +51,23 @@ export default function UpdateAccount({
     resolver: zodResolver(UpdateAccountSchema),
   });
 
-  useEffect(() => {
-    if (isOpen) {
-      getAccountById();
-    }
-  }, [isOpen]);
-
-  const getAccountById = async () => {
-    const { data } = await UserService.getById(accountId.toString());
-    let account: UpdateAccountSchemaType = {
-      ...data,
-    };
-    setCurrentAccountPhoto(data.photo);
-    reset({ ...account });
+  const { data } = useSWR<Account>(isOpen ? `/users/get/${accountId.toString()}` : null, async (url: string) => {
+    const { data } =  await UserService.getById(url);
+    reset({ ...data });
     setIsLoading(false);
-  };
+    return data
+  })
+
+  // const getAccountById = async () => {
+  //   const { data } = await UserService.getById(accountId.toString());
+  //   let account = {
+  //     ...data,
+  //   };
+  //   console.log(acc)
+  //   setCurrentAccountPhoto(data.photo);
+  //   reset({ ...account });
+  //   setIsLoading(false);
+  // };
 
   const handleDeleteImgFromCloud = async () => {
     if (setCurrentAccountPhoto !== undefined) {
@@ -112,19 +113,11 @@ export default function UpdateAccount({
       }
       toast.success("Cập nhật thành công !!");
 
-      if (setAccounts !== undefined) {
-        // cập nhật lại list account sau khi update
-        setAccounts((prev) => {
-          let newAccounts = prev.map((accountItem) => {
-            if (accountItem.id === account.id) {
-              return account;
-            }
-            return accountItem;
-          });
+      // cần cập nhật lại data ở đây
+      mutate((key) => typeof key === 'string' && key.startsWith('/users/get?page='))
+      // cập nhật lại cache của detail account id
+      mutate(`/users/get/${accountId.toString()}`);
 
-          return newAccounts;
-        });
-      }
       reset({ ...account });
       onClose();
     } catch (error) {
