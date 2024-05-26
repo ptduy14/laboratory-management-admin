@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 const GoogleCallback = () => {
   const { data: session, status, update } = useSession();
   const router = useRouter();
-  console.log(session);
 
   useEffect(() => {
     const accessToken = jwtManager.getToken(); 
