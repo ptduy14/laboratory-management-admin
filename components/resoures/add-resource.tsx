@@ -19,19 +19,16 @@ import { UnitEnum, UnitEnumNames } from "@/enums/unit";
 import { StatusResource, StatusResourceName } from "@/enums/status-resource";
 import { Category } from "../category/category-table/data";
 import { CategoryService } from "@/services/categoryService";
+import useSWR from "swr";
 
 export const AddResource = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [categories, setCategories] = useState<Category[]>([]);
+  // const [categories, setCategories] = useState<Category[]>([]);
 
-  useEffect(() => {
-    getAllCategory();
-  }, []);
-
-  const getAllCategory = async () => {
-    const { data } = await CategoryService.getAll();
-    setCategories(data);
-  };
+  const { data: categories } = useSWR("/categories", async (url) => {
+    const { data } = await CategoryService.getAll(url);
+    return data;
+  });
 
   const handleCloseModal = () => {
     onClose();
@@ -153,7 +150,7 @@ export const AddResource = () => {
                           id="category"
                           className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
-                          {categories.map((category) => {
+                          {categories?.data.map((category: any) => {
                             if (category.status !== 0) return
                             return (
                                 <option key={category.id} value={category.id}>{category.name}</option>
@@ -172,7 +169,7 @@ export const AddResource = () => {
                   >
                     Close
                   </Button>
-                  <Button color="primary">Add Account</Button>
+                  <Button color="primary">Add Resource</Button>
                 </ModalFooter>
               </>
             )}

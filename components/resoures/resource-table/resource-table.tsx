@@ -10,29 +10,27 @@ import {
 import { Resource, resourceColumns } from "./data";
 import { RenderCell } from "./render-cell";
 import { useState, useMemo } from "react";
-
-interface Column {
-  key: string;
-  label: string;
-}
+import { metaType } from "@/types/meta";
 
 interface RecoureTableProps {
   resources: Resource[];
-  columns?: Column[];
+  meta: metaType
+  setPage?: React.Dispatch<React.SetStateAction<number>>;
+  page?: number
 }
 
-export const ResourceTableWrapper = ({ resources, columns = resourceColumns }: RecoureTableProps) => {
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 14;
+export const ResourceTableWrapper = ({ resources, meta, setPage, page }: RecoureTableProps) => {
+  // const [page, setPage] = useState(1);
+  // const rowsPerPage = 14;
 
-  const pages = Math.ceil(resources.length / rowsPerPage);
+  // const pages = Math.ceil(resources.length / rowsPerPage);
 
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
+  // const items = useMemo(() => {
+  //   const start = (page - 1) * rowsPerPage;
+  //   const end = start + rowsPerPage;
 
-    return resources.slice(start, end);
-  }, [page, resources]);
+  //   return resources.slice(start, end);
+  // }, [page, resources]);
   return (
     <Table
       aria-label="Example static collection table"
@@ -45,16 +43,16 @@ export const ResourceTableWrapper = ({ resources, columns = resourceColumns }: R
               showShadow
               color="primary"
               page={page}
-              total={pages}
-              onChange={(page) => setPage(page)}
+              total={meta.pages}
+              onChange={(newPage) => setPage && setPage(newPage)}
             />
         </div>
       }
     >
-      <TableHeader columns={columns}>
+      <TableHeader columns={resourceColumns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={items} emptyContent={"No resource found"}>
+      <TableBody items={resources} emptyContent={"No resource found"}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
