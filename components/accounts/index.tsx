@@ -1,7 +1,7 @@
 "use client";
-import { Button, Input, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import { Button, Input, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination } from "@nextui-org/react";
 import Link from "next/link";
-import React, {useEffect, useState } from "react";
+import React, {useEffect, useMemo, useState } from "react";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
@@ -23,10 +23,30 @@ export const Accounts = () => {
 
   const [pages, setPage] = useState(1);
 
-  const { data: accounts, mutate: updateAccountList } = useSWR(`/users/get?page=${pages}`, async (url) => {
+  const { data: accounts, mutate: updateAccountList, isLoading: isFetchingAccounts } = useSWR(`/users/get?page=${pages}`, async (url) => {
     const { data } = await UserService.getAll(url);
     return data;
-  })
+  });
+
+  const handleFilteredAccounts = useMemo(() => {
+    let filteredAccounts = isFetchingAccounts ? [] : [...accounts.data];
+
+    if (statusFilter !== 'all' && Array.from(statusFilter).length !== statusOptions.length) {
+      filteredAccounts = filteredAccounts.filter((account) => {
+        return Array.from(statusFilter).includes(account.status.toString());
+      })
+    }
+
+    if (roleFilter !== 'all' && Array.from(roleFilter).length !== roleOptions.length) {
+      filteredAccounts = filteredAccounts.filter((account) => {
+        return Array.from(roleFilter).includes(account.role.toString());
+      })
+    }
+
+    return filteredAccounts;
+  }, [accounts?.data, statusFilter, roleFilter])
+
+  let filteredAccounts = handleFilteredAccounts;  
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -118,11 +138,11 @@ export const Accounts = () => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        {accounts?.data.length > 0 ?
+        {!isFetchingAccounts ?
           <>
             <span className="text-default-400 text-small">Total {accounts.data.length} accounts</span>
             <div style={{ marginBottom: '16px' }}></div>
-            <AccountTableWrapper accounts={accounts.data} meta={accounts.meta} paginate={true} setPage={setPage}/>
+            <AccountTableWrapper accounts={filteredAccounts} meta={accounts.meta} paginate={true} setPage={setPage}/>
           </>
           : (
             <LoaderTable />
