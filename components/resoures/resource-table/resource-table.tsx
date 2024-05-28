@@ -23,8 +23,6 @@ export const ResourceTableWrapper = ({ resources, meta, setPage, page }: Recoure
   // const [page, setPage] = useState(1);
   // const rowsPerPage = 14;
 
-  // const pages = Math.ceil(resources.length / rowsPerPage);
-
   // const items = useMemo(() => {
   //   const start = (page - 1) * rowsPerPage;
   //   const end = start + rowsPerPage;

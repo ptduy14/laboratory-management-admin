@@ -1,7 +1,7 @@
 "use client";
 import { Button, Input, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { LoaderTable } from "../loader/loader-table";
@@ -21,7 +21,7 @@ export const Resources = () => {
   const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
   const [originFilter, setOriginFilter] = React.useState<Selection>('all');
 
-  const { data: resources } = useSWR(`/items?page=${page}`, async (url) => {
+  const { data: resources, isLoading: isFetchingResouces } = useSWR(`/items?page=${page}`, async (url) => {
     const { data } = await ResouceService.getAll(url);
     return data;
   })
@@ -43,29 +43,25 @@ export const Resources = () => {
   //   }
   // }
 
-  // const handleFilteredItems = () => {
-  //   let filteredResources = [...resources];
+  const handleFilteredItems = useMemo(() => {
+    let filteredResources = isFetchingResouces ? [] : [...resources.data];
 
-  //   if (searchFilterValue) {
-  //     filteredResources = filteredResources.filter((resource) => resource.name.toLowerCase().includes(searchFilterValue.toLowerCase()))
-  //   }
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
+      filteredResources = filteredResources.filter((resource) => {
+        return Array.from(statusFilter).includes(resource.status.toString())
+      })
+    }
 
-  //   if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-  //     filteredResources = filteredResources.filter((resource) => {
-  //       return Array.from(statusFilter).includes(resource.status.toString())
-  //     })
-  //   }
+    if (originFilter !== "all" && Array.from(originFilter).length !== originOptions.length) {
+      filteredResources = filteredResources.filter((resource) => {
+        return Array.from(originFilter).includes(resource.origin)
+      })
+    }
 
-  //   if (originFilter !== "all" && Array.from(originFilter).length !== originOptions.length) {
-  //     filteredResources = filteredResources.filter((resource) => {
-  //       return Array.from(originFilter).includes(resource.origin)
-  //     })
-  //   }
+    return filteredResources;
+  }, [resources?.data, statusFilter, originFilter])
 
-  //   return filteredResources;
-  // }
-
-  // const filteredItems = handleFilteredItems();
+  const filteredResources = handleFilteredItems;
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -155,12 +151,12 @@ export const Resources = () => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        {resources?.data.length > 0 ? 
+        {!isFetchingResouces ? 
         (
           <>
-          <span className="text-default-400 text-small">Tổng số sản phẩm - tài nguyên của hệ thống: {resources?.meta.numberRecords} </span>
+          <span className="text-default-400 text-small">Tổng số sản phẩm - tài nguyên của hệ thống: {resources.meta.numberRecords} </span>
         <div style={{ marginBottom: '16px' }}></div>
-        <ResourceTableWrapper resources={resources.data} meta={resources.meta} setPage={setPage} page={page}/></>
+        <ResourceTableWrapper resources={filteredResources} meta={resources.meta} setPage={setPage} page={page}/></>
         )
          : <LoaderTable />}
       </div>
