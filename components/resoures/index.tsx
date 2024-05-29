@@ -15,33 +15,15 @@ import { originOptions } from "./resource-table/data";
 import useSWR from "swr";
 
 export const Resources = () => {
-  // const [resources, setResources] = useState<Resource[]>([]);
-  // const [searchFilterValue, setSearchFilterValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
   const [originFilter, setOriginFilter] = React.useState<Selection>('all');
 
-  const { data: resources, isLoading: isFetchingResouces } = useSWR(`/items?page=${page}`, async (url) => {
+  const { data: resources, isLoading: isFetchingResouces } = useSWR(`/items?page=${page}&keyword=${searchValue}`, async (url) => {
     const { data } = await ResouceService.getAll(url);
     return data;
   })
-
-  // useEffect(() => {
-  //   getAllResoueces();
-  // }, []);
-
-  // const getAllResoueces = async () => {
-  //   const { data } = await ResouceService.getAll();
-  //   setResources(data);
-  // };
-
-  // const onSearchChange = (value?: string) => {
-  //   if (value) {
-  //     setSearchFilterValue(value)
-  //   } else {
-  //     setSearchFilterValue("")
-  //   }
-  // }
 
   const handleFilteredItems = useMemo(() => {
     let filteredResources = isFetchingResouces ? [] : [...resources.data];
@@ -59,9 +41,10 @@ export const Resources = () => {
     }
 
     return filteredResources;
-  }, [resources?.data, statusFilter, originFilter])
+  }, [resources?.data, statusFilter, originFilter, searchValue])
 
   const filteredResources = handleFilteredItems;
+
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -86,16 +69,16 @@ export const Resources = () => {
       <h3 className="text-xl font-semibold">Tài nguyên</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-        {/* <Input
+         <Input
             classNames={{
               input: "w-full",
               mainWrapper: "w-full",
             }}
             isClearable
             placeholder="Search accounts by Email"
-            value={searchFilterValue}
-            onValueChange={onSearchChange}
-          /> */}
+            value={searchValue}
+            onValueChange={(value) => setSearchValue(value)}
+          /> 
           <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
