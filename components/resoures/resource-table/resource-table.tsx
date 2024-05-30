@@ -20,7 +20,7 @@ interface RecoureTableProps {
   columns?: {key: string, label: string}[]
 }
 
-export const ResourceTableWrapper = ({ resources, meta, setPage, page }: RecoureTableProps) => {
+export const ResourceTableWrapper = ({ resources, meta, setPage, page, columns }: RecoureTableProps) => {
   // const [page, setPage] = useState(1);
   // const rowsPerPage = 14;
 
@@ -48,7 +48,7 @@ export const ResourceTableWrapper = ({ resources, meta, setPage, page }: Recoure
         </div>
       }
     >
-      <TableHeader columns={resourceColumns}>
+      <TableHeader columns={columns ? columns : resourceColumns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody items={resources} emptyContent={"No resource found"}>
