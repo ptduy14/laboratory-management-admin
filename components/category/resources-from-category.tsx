@@ -10,21 +10,27 @@ import { useRouter } from 'next/navigation'
 import { toast } from "react-toastify";
 import { ResourceTableWrapper } from "../resoures/resource-table/resource-table";
 import { Resource } from "../resoures/resource-table/data";
-import { resourceFromCategoryColumns } from "./category-table/data";
+import { resourcesFromCategoryColumns } from "./category-table/data";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "../resoures/resource-table/data";
 import { originOptions } from "../resoures/resource-table/data";
+import useSWR from "swr";
 
 export const ResourcesFromCategory = ({ id }: { id: string }) => {
-  const [resources, setResources] = useState<Resource[]>([]);
+  const [page, setPage] = useState(1)
   const [searchFilterValue, setSearchFilterValue] = useState("");
   const [statusFilter, setStatusFilter] = useState<Selection>('all');
   const [originFilter, setOriginFilter] = useState<Selection>('all');
   const router = useRouter()
 
-  useEffect(() => {
-    getResourcesFromCategory();
-  }, [])
+  const { data: resourcesFromCategory, isLoading: isFetchingResourcesFromCategory } = useSWR(`/items/category/${id}?page=${page}`, async (url) => {
+    const { data } = await ResouceService.getByCategory(url)
+    return data
+  })
+
+  // useEffect(() => {
+  //   getResourcesFromCategory();
+  // }, [])
 
   const onSearchChange = (value?: string) => {
     if (value) {
@@ -35,7 +41,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
   }
 
   const handleFilteredItems = () => {
-    let filteredResources = [...resources];
+    let filteredResources = isFetchingResourcesFromCategory ? [] : [...resourcesFromCategory.data];
 
     if (searchFilterValue) {
       filteredResources = filteredResources.filter((resource) => resource.name.toLowerCase().includes(searchFilterValue.toLowerCase()))
@@ -53,16 +59,16 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
 
   const filteredItems = handleFilteredItems();
 
-  const getResourcesFromCategory = async () => {
-    try {
-        const { data } = await ResouceService.getByCategory(id);
-        setResources(data);
-    } catch (error) {
-        if (axios.isAxiosError(error))
-        router.push('/')
-        toast.error("Không tìm thấy dữ liệu")
-    }
-  }
+  // const getResourcesFromCategory = async () => {
+  //   try {
+  //       const { data } = await ResouceService.getByCategory(id);
+  //       setResources(data);
+  //   } catch (error) {
+  //       if (axios.isAxiosError(error))
+  //       router.push('/')
+  //       toast.error("Không tìm thấy dữ liệu")
+  //   }
+  // }
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -151,12 +157,12 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-      {resources.length > 0 ? 
+      {!isFetchingResourcesFromCategory ? 
         (
           <>
-          <span className="text-default-400 text-small">Tổng số "cái này sẽ thêm sau": {resources.length} </span>
+          <span className="text-default-400 text-small">Tổng số "cái này sẽ thêm sau": {resourcesFromCategory.data.length} </span>
         <div style={{ marginBottom: '16px' }}></div>
-        <ResourceTableWrapper resources={filteredItems} columns={resourceFromCategoryColumns}/></>
+        <ResourceTableWrapper resources={filteredItems} columns={resourcesFromCategoryColumns} meta={resourcesFromCategory.meta}/></>
         )
          : <LoaderTable />}
       </div>

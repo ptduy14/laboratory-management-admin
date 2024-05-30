@@ -16,7 +16,8 @@ interface RecoureTableProps {
   resources: Resource[];
   meta: metaType
   setPage?: React.Dispatch<React.SetStateAction<number>>;
-  page?: number
+  page?: number,
+  columns?: {key: string, label: string}[]
 }
 
 export const ResourceTableWrapper = ({ resources, meta, setPage, page }: RecoureTableProps) => {

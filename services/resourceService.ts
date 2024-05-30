@@ -4,7 +4,7 @@ export const ResouceService = {
     getAll: async (url: string) => {
         return await AxiosInstance.get(url);
     },
-    getByCategory: async (id: string) => {
-        return await AxiosInstance.get(`/items/category/${id}`);
+    getByCategory: async (url: string) => {
+        return await AxiosInstance.get(url);
     }
 }
