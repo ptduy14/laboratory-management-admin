@@ -162,7 +162,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
           <>
           <span className="text-default-400 text-small">Tổng số "cái này sẽ thêm sau": {resourcesFromCategory.data.length} </span>
         <div style={{ marginBottom: '16px' }}></div>
-        <ResourceTableWrapper resources={filteredItems} columns={resourcesFromCategoryColumns} meta={resourcesFromCategory.meta}/></>
+        <ResourceTableWrapper resources={filteredItems} columns={resourcesFromCategoryColumns} meta={resourcesFromCategory.meta} setPage={setPage}/></>
         )
          : <LoaderTable />}
       </div>
