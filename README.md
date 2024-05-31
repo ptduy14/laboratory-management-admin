@@ -1,5 +1,7 @@
 # Laboratory Management Admin using NextJS and NexUI
 
+thanks to @Siumauricio and contributors for creating and perfecting this base template
+
 This is a project that uses NextJS and NextUI to build an admin dashboard for lab management
 
 NextJS: [NextJS](https://nextjs.org/) </br>
