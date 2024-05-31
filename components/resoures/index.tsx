@@ -75,7 +75,7 @@ export const Resources = () => {
               mainWrapper: "w-full",
             }}
             isClearable
-            placeholder="Search accounts by Email"
+            placeholder="Search resources by name"
             value={searchValue}
             onValueChange={(value) => setSearchValue(value)}
           /> 
