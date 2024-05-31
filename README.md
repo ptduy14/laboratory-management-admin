@@ -14,10 +14,6 @@ You may need to wait for fetching data because we used free hosting :)))
 
 If you want to use this API please contact locnguyen071102@gmail.com
 
-
-### Dashboard Resources Page
-![Dashboard Resources Page](./public/resources.png)
-
 ### Sample structure
 ```
 ├── components
