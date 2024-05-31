@@ -8,7 +8,7 @@ NextUI: [NextUI](https://nextui.org/)
 You can see the demo here: [https://nextui-dashboard-template.vercel.app/](https://laboratory-management-admin.vercel.app/) </br>
 And public API: https://laboratory-management-system.onrender.com/apis
 
-You may need to wait for fetching data because we use free hosting :)))
+You may need to wait for fetching data because we used free hosting :)))
 
 If you want to use this API please contact locnguyen071102@gmail.com
 
