@@ -4,6 +4,7 @@ import { GoogleLoginData } from "@/services/authService";
 import { RoleEnum } from "@/enums/role";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { Status } from "@/enums/status";
 
 let userVerifyData: object | null;
 
@@ -108,10 +109,7 @@ const handleTransformData = (user: any, account: any): GoogleLoginData => {
 };
 
 const isAccess = (data: any): boolean => {
-  return (
-    data.userInfo.role === RoleEnum.ADMIN ||
-    data.userInfo.role === RoleEnum.MANAGER
-  );
+  return ((data.userInfo.role === RoleEnum.ADMIN || data.userInfo.role === RoleEnum.MANAGER) && data.userInfo.status === Status.ACTIVE);
 };
 
 export default authOptions;
