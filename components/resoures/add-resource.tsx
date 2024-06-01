@@ -16,7 +16,7 @@ import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { UnitEnum, UnitEnumNames } from "@/enums/unit";
-import { StatusResource, StatusResourceName } from "@/enums/status-resource";
+import { StatusResource, StatusResourceName } from "@/enums/resource-status";
 import { Category } from "../category/category-table/data";
 import { CategoryService } from "@/services/categoryService";
 import useSWR from "swr";

@@ -4,7 +4,7 @@ import { DeleteIcon } from "@/components/icons/table/delete-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { EditIcon } from "@/components/icons/table/edit-icon";
 import { Resource } from "./data";
-import { StatusResourceName } from "@/enums/status-resource";
+import { ResourceStatusName } from "@/enums/resource-status";
 import { UnitEnumNames } from "@/enums/unit";
 
 interface Props {
@@ -49,7 +49,7 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
           }
         >
           <span className="capitalize text-xs">
-            {StatusResourceName[cellValue]}
+            {ResourceStatusName[cellValue]}
           </span>
         </Chip>
       );
