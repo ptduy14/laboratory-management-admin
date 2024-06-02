@@ -25,8 +25,7 @@ AxiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const access_token = jwtManager.getToken();
-    if (error.response && error.response.status === 401 && access_token) {
+    if (error.response && error.response.status === 401 || error.response.status === 400) {
       await signOut({
         redirect: false,
       });
