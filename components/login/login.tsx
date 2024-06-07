@@ -21,13 +21,13 @@ export const Login = () => {
   });
 
   useEffect(() => {
-    if (status === "authenticated" && session) {
+    if (status === "authenticated" && session && !session.user.hasAccessTokenLocal) {
       jwtManager.setToken(session.user.access_token)
       update({ hasAccessTokenLocal: true});
       router.push("/");
       toast.success("Đăng nhập thành công !!");
     }
-  }, [status]);
+  }, [status, session]);
 
   const onSubmit: SubmitHandler<LoginFormSchemaType> = async (data) => {
     setLoading(true)
@@ -43,8 +43,6 @@ export const Login = () => {
       toast.error("Sai thông tin đăng nhập !!");
       setLoading(false)
     }
-
-    console.log(loading);
   };
 
   const handleGoogleLogin = async () => {
