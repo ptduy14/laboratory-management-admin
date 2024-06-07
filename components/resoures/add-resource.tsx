@@ -16,7 +16,7 @@ import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { UnitEnum, UnitEnumNames } from "@/enums/unit";
-import { StatusResource, StatusResourceName } from "@/enums/resource-status";
+import { ResourceStatus, ResourceStatusName } from "@/enums/resource-status";
 import { Category } from "../category/category-table/data";
 import { CategoryService } from "@/services/categoryService";
 import useSWR from "swr";
@@ -115,14 +115,14 @@ export const AddResource = () => {
                           Trạng thái
                         </label>
                         <select
-                          defaultValue={StatusResource.NORMAL_OPERATION}
+                          defaultValue={ResourceStatus.NORMAL_OPERATION}
                           id="status"
                           className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
-                          <option value={StatusResource.NORMAL_OPERATION}>
+                          <option value={ResourceStatus.NORMAL_OPERATION}>
                             {
-                              StatusResourceName[
-                                StatusResource.NORMAL_OPERATION
+                              ResourceStatusName[
+                                ResourceStatus.NORMAL_OPERATION
                               ]
                             }
                           </option>

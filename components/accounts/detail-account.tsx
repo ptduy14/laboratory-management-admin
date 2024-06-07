@@ -16,7 +16,7 @@ import { UserService } from "@/services/userService";
 import { Account } from "./account-table/data";
 import { LoaderImageText } from "../loader/loader-image-text";
 import { RoleNames } from "@/enums/role";
-import { StatusNames } from "@/enums/status";
+import { AccountStatusNames } from "@/enums/account-status";
 import useSWR from "swr";
 
 export const DetailAccount = ({ accountId }: { accountId: number }) => {
@@ -135,7 +135,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                             }
                           >
                             <span className="capitalize text-xs">
-                              {StatusNames[account.status]}
+                              {AccountStatusNames[account.status]}
                             </span>
                           </Chip>
                         </span>

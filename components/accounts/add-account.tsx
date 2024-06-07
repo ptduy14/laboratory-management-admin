@@ -19,9 +19,10 @@ import { AddAccountSchema } from "./schema/addAccountSchema";
 import { AddAccountSchemaType } from "./schema/addAccountSchema";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { AccountStatus } from "@/enums/account-status";
 
 type AddAccountProps = {
-  mutate: React.Dispatch<React.SetStateAction<Account[]>>,
+  mutate: any,
   accounts: Account[]
 }
 
@@ -41,11 +42,14 @@ export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const onSubmit: SubmitHandler<AddAccountSchemaType> = async (dataField) => {
+    dataField = {...dataField, status: AccountStatus.ACTIVE}
+
     try {
       const { data } = await AccountService.createAccount(dataField)
-      //mutate([...accounts, data])
-      //toast.success("Thêm tài khoản thành công !!")
-      //onClose();
+      console.log(data);
+      mutate();
+      toast.success("Thêm tài khoản thành công !!")
+      onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message)

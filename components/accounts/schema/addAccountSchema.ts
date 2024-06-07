@@ -22,11 +22,10 @@ export const AddAccountSchema = z
       .string()
       .min(1, { message: "Trường này không được trống" }),
     role: z.string().min(1, { message: "Trường này không được trống" }),
-    status: z.coerce.number(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Mật khẩu không khớp",
     path: ["confirmPassword"],
   });
 
-export type AddAccountSchemaType = z.infer<typeof AddAccountSchema>;
+export type AddAccountSchemaType = z.infer<typeof AddAccountSchema> & {status: number};
