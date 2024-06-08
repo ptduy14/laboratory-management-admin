@@ -4,7 +4,7 @@ import { DeleteIcon } from "@/components/icons/table/delete-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import { EditIcon } from "@/components/icons/table/edit-icon";
 import { Resource } from "./data";
-import { StatusResourceName } from "@/enums/status-resource";
+import { ResourceStatusName } from "@/enums/resource-status";
 import { UnitEnumNames } from "@/enums/unit";
 
 interface Props {
@@ -49,7 +49,7 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
           }
         >
           <span className="capitalize text-xs">
-            {StatusResourceName[cellValue]}
+            {ResourceStatusName[cellValue]}
           </span>
         </Chip>
       );
@@ -57,14 +57,14 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
       return (
         <div className="flex items-center gap-4 ">
           <div>
-            <Tooltip content="Details">
-              <button onClick={() => console.log("View user", resouce.id)}>
+            <Tooltip content="Chi tiết">
+              <button onClick={() => console.log("Chi tiết", resouce.id)}>
                 <EyeIcon size={20} fill="#979797" />
               </button>
             </Tooltip>
           </div>
           <div>
-            <Tooltip content="Edit user" color="secondary">
+            <Tooltip content="Chỉnh sửa" color="secondary">
               <button onClick={() => console.log("Edit user", resouce.id)}>
                 <EditIcon size={20} fill="#979797" />
               </button>
@@ -72,7 +72,7 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
           </div>
           <div>
             <Tooltip
-              content="Delete user"
+              content="Xóa"
               color="danger"
               onClick={() => console.log("Delete user", resouce.id)}
             >

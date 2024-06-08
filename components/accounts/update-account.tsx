@@ -25,7 +25,7 @@ import { ACCEPTED_IMAGE_TYPES } from "./schema/updateAccountSchema";
 import { CloudinaryService } from "@/services/cloudinaryService";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Status, StatusNames } from "@/enums/status";
+import { AccountStatus, AccountStatusNames } from "@/enums/account-status";
 import { Account } from "./account-table/data";
 import { getPublicIdFromUrl } from "@/utils/getPublicIdFromUrl";
 import useSWR, { mutate } from "swr"
@@ -244,11 +244,11 @@ export default function UpdateAccount({
                           {...register("status")}
                           onChange={(e) => console.log(typeof e.target.value)}
                         >
-                          <option value={Status.ACTIVE}>
-                            {StatusNames[Status.ACTIVE]}
+                          <option value={AccountStatus.ACTIVE}>
+                            {AccountStatusNames[AccountStatus.ACTIVE]}
                           </option>
-                          <option value={Status.INACTIVE}>
-                            {StatusNames[Status.INACTIVE]}
+                          <option value={AccountStatus.INACTIVE}>
+                            {AccountStatusNames[AccountStatus.INACTIVE]}
                           </option>
                         </select>
                       </div>

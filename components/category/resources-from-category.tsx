@@ -15,6 +15,7 @@ import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "../resoures/resource-table/data";
 import { originOptions } from "../resoures/resource-table/data";
 import useSWR from "swr";
+import { CategoryService } from "@/services/categoryService";
 
 export const ResourcesFromCategory = ({ id }: { id: string }) => {
   const [page, setPage] = useState(1)
@@ -26,6 +27,11 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
   const { data: resourcesFromCategory, isLoading: isFetchingResourcesFromCategory } = useSWR(`/items/category/${id}?page=${page}`, async (url) => {
     const { data } = await ResouceService.getByCategory(url)
     return data
+  })
+
+  const {data: category} = useSWR(`/categories/${id}`, async (url) => {
+    const { data } = await CategoryService.getById(url)
+    return data;
   })
 
   // useEffect(() => {
@@ -51,7 +57,6 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
       filteredResources = filteredResources.filter((resource) => {
         return Array.from(statusFilter).includes(resource.status.toString())
       })
-
     }
 
     return filteredResources;
@@ -82,7 +87,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
         </li>
 
         <li className="flex gap-2">
-          <span>Cái này sẽ thêm sau</span>
+          <span>{category?.name.toLowerCase()}</span>
           <span> / </span>{" "}
         </li>
         <li className="flex gap-2">
@@ -90,7 +95,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
         </li>
       </ul>
 
-      <h3 className="text-xl font-semibold">All Cái này sẽ thêm sau</h3>
+      <h3 className="text-xl font-semibold">Danh sách {category?.name.toLowerCase()}</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
         <Input
@@ -152,7 +157,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           <Button color="primary">
-            Thêm "sẽ thêm sau"
+            Thêm {category?.name.toLowerCase()}
           </Button>
         </div>
       </div>
@@ -160,7 +165,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
       {!isFetchingResourcesFromCategory ? 
         (
           <>
-          <span className="text-default-400 text-small">Tổng số "cái này sẽ thêm sau": {resourcesFromCategory.data.length} </span>
+          <span className="text-default-400 text-small">Tổng số {category?.name.toLowerCase()}: {resourcesFromCategory.data.length} </span>
         <div style={{ marginBottom: '16px' }}></div>
         <ResourceTableWrapper resources={filteredItems} columns={resourcesFromCategoryColumns} meta={resourcesFromCategory.meta} setPage={setPage}/></>
         )

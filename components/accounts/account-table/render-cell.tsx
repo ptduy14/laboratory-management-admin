@@ -5,7 +5,7 @@ import { Account } from "./data";
 import { DetailAccount } from "../detail-account";
 import { RoleNames } from "@/enums/role";
 import UpdateAccount from "../update-account";
-import { StatusNames } from "@/enums/status";
+import { AccountStatusNames } from "@/enums/account-status";
 
 interface Props {
   account: Account; 
@@ -42,7 +42,7 @@ export const RenderCell = ({ account, columnKey }: Props) => {
           }
         >
           <span className="capitalize text-xs">
-            {StatusNames[cellValue]}
+            {AccountStatusNames[cellValue]}
           </span>
         </Chip>
       );

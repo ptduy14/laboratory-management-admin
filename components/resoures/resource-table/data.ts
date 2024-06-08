@@ -1,5 +1,5 @@
 import { Category } from "@/components/category/category-table/data";
-import { StatusResource, StatusResourceName } from "@/enums/status-resource";
+import { ResourceStatus, ResourceStatusName } from "@/enums/resource-status";
 
 export interface Resource {
   id: number;
@@ -76,19 +76,19 @@ export const originOptions = [
 
 export const statusOptions = [
   {
-    uid: StatusResource.NORMAL_OPERATION,
-    name: StatusResourceName[StatusResource.NORMAL_OPERATION]
+    uid: ResourceStatus.NORMAL_OPERATION,
+    name: ResourceStatusName[ResourceStatus.NORMAL_OPERATION]
   },
   {
-    uid: StatusResource.STILL_IN_GOOD_USE,
-    name: StatusResourceName[StatusResource.STILL_IN_GOOD_USE]
+    uid: ResourceStatus.STILL_IN_GOOD_USE,
+    name: ResourceStatusName[ResourceStatus.STILL_IN_GOOD_USE]
   },
   {
-    uid: StatusResource.AWAITING_REPAIR,
-    name: StatusResourceName[StatusResource.AWAITING_REPAIR]
+    uid: ResourceStatus.AWAITING_REPAIR,
+    name: ResourceStatusName[ResourceStatus.AWAITING_REPAIR]
   },
   {
-    uid: StatusResource.MALFUNCTIONING,
-    name: StatusResourceName[StatusResource.MALFUNCTIONING]
+    uid: ResourceStatus.MALFUNCTIONING,
+    name: ResourceStatusName[ResourceStatus.MALFUNCTIONING]
   }
 ]
