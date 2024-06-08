@@ -25,7 +25,7 @@ AxiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 401 || error.response.status === 400 ) {
       await signOut({
         redirect: false,
       });

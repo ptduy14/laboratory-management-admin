@@ -17,18 +17,34 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { UnitEnum, UnitEnumNames } from "@/enums/unit";
 import { ResourceStatus, ResourceStatusName } from "@/enums/resource-status";
-import { Category } from "../category/category-table/data";
 import { CategoryService } from "@/services/categoryService";
 import useSWR from "swr";
+import {
+  AddResourceSchema,
+  AddResourceSchemaType,
+} from "./schema/addResourceSchema";
 
 export const AddResource = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  // const [categories, setCategories] = useState<Category[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    reset,
+  } = useForm<AddResourceSchemaType>({
+    resolver: zodResolver(AddResourceSchema),
+  });
 
   const { data: categories } = useSWR("/categories", async (url) => {
     const { data } = await CategoryService.getAll(url);
     return data;
   });
+
+  const onSubmit: SubmitHandler<AddResourceSchemaType> = (data) => {
+    console.log(data)
+  }
 
   const handleCloseModal = () => {
     onClose();
@@ -38,7 +54,7 @@ export const AddResource = () => {
     <div>
       <>
         <Button onPress={onOpen} color="primary">
-          Add Resource
+          Thêm tài nguyên
         </Button>
         <Modal
           isOpen={isOpen}
@@ -50,26 +66,48 @@ export const AddResource = () => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Add Resource
+                  Thêm tài nguyên
                 </ModalHeader>
                 <ModalBody>
                   <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                     <div className="w-full max-h-80">
-                      <Input className="mb-7" label="Tên" variant="bordered" />
+                      <Input
+                        className="mb-7"
+                        label="Tên"
+                        variant="bordered"
+                        errorMessage={errors.name?.message}
+                        isInvalid={
+                          errors.name?.message ? true : false
+                        }
+                        {...register("name")}
+                      />
                       <Input
                         className="mb-7"
                         label="Xuất xứ"
                         variant="bordered"
+                        errorMessage={errors.origin?.message}
+                        isInvalid={errors.origin?.message ? true : false}
+                        {...register("origin")}
                       />
                       <Input
                         className="mb-7"
                         label="Số seri"
                         variant="bordered"
+                        errorMessage={errors.serial_number?.message}
+                        isInvalid={
+                          errors.serial_number?.message ? true : false
+                        }
+                        {...register("serial_number")}
                       />
                       <Input
                         className="mb-7"
                         label="Dung tích"
                         variant="bordered"
+                        errorMessage={errors.specification?.message}
+                        isInvalid={
+                          errors.specification?.message ? true : false
+                        }
+                        {...register("specification")}
                       />
                       <div className="mb-7">
                         <label
@@ -82,6 +120,7 @@ export const AddResource = () => {
                           defaultValue={UnitEnum.BOTTLE}
                           id="units"
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          {...register("unit")}
                         >
                           <option value={UnitEnum.BOTTLE}>
                             {UnitEnumNames[UnitEnum.BOTTLE]}
@@ -118,6 +157,7 @@ export const AddResource = () => {
                           defaultValue={ResourceStatus.NORMAL_OPERATION}
                           id="status"
                           className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          {...register("status")}
                         >
                           <option value={ResourceStatus.NORMAL_OPERATION}>
                             {
@@ -126,17 +166,40 @@ export const AddResource = () => {
                               ]
                             }
                           </option>
+                          <option value={ResourceStatus.STILL_IN_GOOD_USE}>
+                            {
+                              ResourceStatusName[
+                                ResourceStatus.STILL_IN_GOOD_USE
+                              ]
+                            }
+                          </option>
+                          <option value={ResourceStatus.AWAITING_REPAIR}>
+                            {ResourceStatusName[ResourceStatus.AWAITING_REPAIR]}
+                          </option>
+                          <option value={ResourceStatus.MALFUNCTIONING}>
+                            {ResourceStatusName[ResourceStatus.MALFUNCTIONING]}
+                          </option>
                         </select>
                       </div>
                       <Input
                         className="mb-7"
                         label="Số lượng"
                         variant="bordered"
+                        errorMessage={errors.quantity?.message}
+                        isInvalid={
+                          errors.quantity?.message ? true : false
+                        }
+                        {...register("quantity")}
                       />
                       <Input
                         className="mb-7"
                         label="Chú thích"
                         variant="bordered"
+                        errorMessage={errors.remark?.message}
+                        isInvalid={
+                          errors.remark?.message ? true : false
+                        }
+                        {...register("remark")}
                       />
                       <div className="mb-7">
                         <label
@@ -146,15 +209,18 @@ export const AddResource = () => {
                           Danh mục
                         </label>
                         <select
-                          defaultValue="admin"
+                          defaultValue={categories?.data[0]}
                           id="category"
                           className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          {...register("categoryId")}
                         >
                           {categories?.data.map((category: any) => {
-                            if (category.status !== 0) return
+                            if (category.status !== 0) return;
                             return (
-                                <option key={category.id} value={category.id}>{category.name}</option>
-                              )
+                              <option key={category.id} value={category.id}>
+                                {category.name}
+                              </option>
+                            );
                           })}
                         </select>
                       </div>
@@ -167,9 +233,9 @@ export const AddResource = () => {
                     variant="flat"
                     onClick={handleCloseModal}
                   >
-                    Close
+                    Đóng
                   </Button>
-                  <Button color="primary">Add Resource</Button>
+                  <Button color="primary" onClick={handleSubmit(onSubmit)}>Thêm tài nguyên</Button>
                 </ModalFooter>
               </>
             )}
