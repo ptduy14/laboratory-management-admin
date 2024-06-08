@@ -1,10 +1,9 @@
 import { z } from "zod";
 
+// common schema
 export const AddResourceSchema = z.object({
     name: z.string().min(1, {message: "Trường này không được trống"}),
-    origin: z.string().min(1, {message: "Trường này không được trống"}),
-    serial_number: z.string().optional(),
-    specification: z.string().min(1, {message: "Trường này không được trống"}),
+    origin: z.string().optional(),
     quantity: z.number({message: "Trường này không được trống"}),
     remark: z.string().optional(),
     unit: z.number(),
@@ -12,4 +11,22 @@ export const AddResourceSchema = z.object({
     categoryId: z.number()
 })
 
-export type AddResourceSchemaType = z.infer<typeof AddResourceSchema>
+// chemical schema
+export const AddResourceChemicalSchema = AddResourceSchema.extend({
+    specification: z.string().min(1, {message: "Trường này không được trống"}),
+})
+
+// equipment schema
+export const AddResourceEquipmentSchema = AddResourceSchema.extend({
+    serial_number: z.string().optional(),
+})
+
+// tool schema
+export const AddResourceToolSchema = AddResourceSchema.extend({
+    specification_tool: z.string().optional(),
+})
+
+export type AddResourceChemicalSchemaType = z.infer<typeof AddResourceChemicalSchema>
+export type AddResourceEquipmentSchemaType = z.infer<typeof AddResourceEquipmentSchema>
+export type AddResourceToolSchemaType = z.infer<typeof AddResourceToolSchema>
+export type AddResourceSchemaUnion = AddResourceChemicalSchemaType | AddResourceEquipmentSchemaType | AddResourceToolSchemaType;

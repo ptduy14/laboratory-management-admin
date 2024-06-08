@@ -31,7 +31,6 @@ export const ResourceTableWrapper = ({ resources, meta, setPage, page, columns }
   //   return resources.slice(start, end);
   // }, [page, resources]);
 
-  console.log(meta.page)
 
   return (
     <Table
