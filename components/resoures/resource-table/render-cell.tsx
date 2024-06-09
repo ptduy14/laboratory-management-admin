@@ -26,9 +26,7 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
       return cellValue !== "" ? (
         cellValue
       ) : (
-        <Chip size="sm" variant="flat" color={"warning"}>
-          <span className="capitalize text-xs">Unknow</span>
-        </Chip>
+        <span className="capitalize text-sm">-</span>
       );
     case "category":
       return cellValue.name;
