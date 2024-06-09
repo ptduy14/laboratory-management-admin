@@ -12,7 +12,9 @@ export const AddResourceCommonForm = ({
   const {
     register,
     formState: { errors },
-  } = useFormContext();
+  } = useFormContext(); 
+
+  console.log(errors)
 
   return (
     <>
@@ -59,7 +61,7 @@ export const AddResourceCommonForm = ({
         variant="bordered"
         errorMessage={errors.quantity?.message?.toString()}
         isInvalid={errors.quantity?.message ? true : false}
-        {...register("quantity")}
+        {...register("quantity", {valueAsNumber: true})}
       />
       <Input
         className="mb-7"
@@ -78,7 +80,7 @@ export const AddResourceCommonForm = ({
           defaultValue={UnitEnum.BOTTLE}
           id="units"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          {...register("unit")} 
+          {...register("unit", {valueAsNumber: true})} 
         >
           <option value={UnitEnum.BOTTLE}>
             {UnitEnumNames[UnitEnum.BOTTLE]}
@@ -106,7 +108,7 @@ export const AddResourceCommonForm = ({
           defaultValue={ResourceStatus.NORMAL_OPERATION}
           id="status"
           className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          {...register("status")} 
+          {...register("status", {valueAsNumber: true})} 
         >
           <option value={ResourceStatus.NORMAL_OPERATION}>
             {ResourceStatusName[ResourceStatus.NORMAL_OPERATION]}

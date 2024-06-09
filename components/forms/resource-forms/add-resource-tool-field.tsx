@@ -11,7 +11,7 @@ export const AddResourceToolField = () => {
       className="mb-7"
       label="Dung tích"
       variant="bordered"
-      {...register("specification_tool")}
+      {...register("specification_tool", {valueAsNumber: true})}
     />
   );
 };

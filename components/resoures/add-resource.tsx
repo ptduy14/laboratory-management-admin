@@ -34,9 +34,7 @@ import { z } from "zod";
 
 export const AddResource = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [schema, setSchema] = useState<z.ZodType<AddResourceSchemaUnion>>(
-    AddResourceEquipmentSchema
-  );
+  const [schema, setSchema] = useState<z.ZodType<AddResourceSchemaUnion>>(AddResourceEquipmentSchema);
 
   const methods = useForm<AddResourceSchemaUnion>({
     resolver: zodResolver(schema),
@@ -53,30 +51,26 @@ export const AddResource = () => {
     let newSchema = getAddResourceSchema(categoryId);
     setSchema(newSchema);
     methods.reset(undefined, { keepValues: true }); // Reset form with new schema
-  }, [categoryId]);
+  }, [categoryId, categories]);
 
   const getAddResourceSchema = (categoryId: number) => {
-    let categoryName = categories?.data.forEach((category: Category) => {
-      // cause category.id and categoryId not same type so use `==`
-      if (category.id == categoryId) {
-        return category.name;
-      }
-    });
-
-    switch (categoryName) {
+    let category = categories?.data.find((category: Category) => {
+      return category.id === categoryId;
+    })
+    console.log(category?.name)
+    switch (category?.name) {
       case "Thiết bị":
         return AddResourceEquipmentSchema;
       case "Dụng cụ":
         return AddResourceToolSchema;
       default:
+        console.log('ok')
         return AddResourceChemicalSchema;
     }
   };
 
-  console.log(categoryId)
-
+  // consider to use useMemo to memorize this result
   const RenderAdditionField = (categoryId: number) => {
-    console.log(categoryId)
     switch (Number(categoryId)) {
       case 1:
         return <AddResourceEquipmentField />;
