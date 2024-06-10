@@ -19,6 +19,7 @@ import { ResourceStatusName } from "@/enums/resource-status";
 import { HandoverStatusName } from "@/enums/handover-status";
 import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
 import useSWR from "swr";
+import { UnitEnumNames } from "@/enums/unit";
 
 export const DetailResource = ({ resourceId }: { resourceId: number }) => {
   // const [account, setAccount] = useState<Account>();
@@ -29,8 +30,6 @@ export const DetailResource = ({ resourceId }: { resourceId: number }) => {
       return data;
     }
   );
-
-  console.log(resource)
 
   return (
     <div>
@@ -56,69 +55,69 @@ export const DetailResource = ({ resourceId }: { resourceId: number }) => {
               <ModalBody>
                 {!isFetchingResource && resource ? (
                   <div className="space-y-4">
-                    <label className="flex mb-1.5">
+                    <label className="flex items-center mb-1.5">
                       <span className="w-1/2 block font-semibold">
-                        Resource id
+                        Resource id:
                       </span>
-                      <span className="w-1/2 block font-light">
+                      <span className="w-1/2 block font-light text-sm">
                         {resourceId}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
+                    <label className="flex items-center mb-1.5">
                       <span className="w-1/2 block font-semibold">
-                        Tên tài nguyên
+                        Tên tài nguyên:
                       </span>
-                      <span className="w-1/2 block font-light">
+                      <span className="w-1/2 block font-light text-sm">
                         {resource.name}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
-                      <span className="w-1/2 block font-semibold">Xuất xứ</span>
-                      <span className="w-1/2 block font-light">
+                    <label className="flex items-center mb-1.5">
+                      <span className="w-1/2 block font-semibold">Xuất xứ:</span>
+                      <span className="w-1/2 block font-light text-sm">
                         {resource.origin || "-"}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
-                      <span className="w-1/2 block font-semibold">Số seri</span>
-                      <span className="w-1/2 block font-light">
+                    <label className="flex items-center mb-1.5">
+                      <span className="w-1/2 block font-semibold">Số seri:</span>
+                      <span className="w-1/2 block font-light text-sm">
                         {resource.serial_number || "-"}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
+                    <label className="flex items-center mb-1.5">
                       <span className="w-1/2 block font-semibold">
-                        Dung tích
+                        Dung tích:
                       </span>
-                      <span className="w-1/2 block font-light">
+                      <span className="w-1/2 block font-light text-sm">
                         {resource.specification || "-"}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
+                    <label className="flex items-center mb-1.5">
                       <span className="w-1/2 block font-semibold">
-                        Số lượng
+                        Số lượng:
                       </span>
-                      <span className="w-1/2 block font-light">
+                      <span className="w-1/2 block font-light text-sm">
                         {resource.quantity || "-"}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
+                    <label className="flex items-center mb-1.5">
                       <span className="w-1/2 block font-semibold">
-                        Chú thích
+                        Chú thích:
                       </span>
-                      <span className="w-1/2 block font-light">
+                      <span className="w-1/2 block font-light text-sm">
                         {resource.remark || "-"}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
-                      <span className="w-1/2 block font-semibold">Đơn vị</span>
-                      <span className="w-1/2 block font-light">
-                        {resource.unit || "-"}
+                    <label className="flex items-center mb-1.5">
+                      <span className="w-1/2 block font-semibold">Đơn vị:</span>
+                      <span className="w-1/2 block font-light text-sm">
+                        {UnitEnumNames[resource.unit]}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
+                    <label className="flex items-center mb-1.5">
                       <span className="w-1/2 block font-semibold">
                         Trạng thái:
                       </span>
-                      <span className="w-1/2 block font-light">
+                      <span className="w-1/2 block font-light text-sm">
                         <Chip
                           size="sm"
                           variant="flat"
@@ -136,19 +135,19 @@ export const DetailResource = ({ resourceId }: { resourceId: number }) => {
                         </Chip>
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
+                    <label className="flex items-center mb-1.5">
                       <span className="w-1/2 block font-semibold">
-                        Trạn thái bàn giao
+                        Trạng thái bàn giao
                       </span>
-                      <span className="w-1/2 block font-light">
+                      <span className="w-1/2 block font-light text-sm">
                         {HandoverStatusName[resource.handoverStatus]}
                       </span>
                     </label>
-                    <label className="flex mb-1.5">
+                    <label className="flex items-center mb-1.5">
                       <span className="w-1/2 block font-semibold">
                         Danh mục
                       </span>
-                      <span className="w-1/2 block font-light">
+                      <span className="w-1/2 block font-light text-sm">
                         {resource.category.name}
                       </span>
                     </label>

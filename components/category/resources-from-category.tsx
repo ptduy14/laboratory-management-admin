@@ -14,8 +14,9 @@ import { resourcesFromCategoryColumns } from "./category-table/data";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "../resoures/resource-table/data";
 import { originOptions } from "../resoures/resource-table/data";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { CategoryService } from "@/services/categoryService";
+import { AddResourceFromCatetory } from "./add-resource-from-catetory";
 
 export const ResourcesFromCategory = ({ id }: { id: string }) => {
   const [page, setPage] = useState(1)
@@ -24,19 +25,16 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
   const [originFilter, setOriginFilter] = useState<Selection>('all');
   const router = useRouter()
 
-  const { data: resourcesFromCategory, isLoading: isFetchingResourcesFromCategory } = useSWR(`/items/category/${id}?page=${page}`, async (url) => {
+  // will improve later
+  const { data: resourcesFromCategory, isLoading: isFetchingResourcesFromCategory, mutate: updateResourcesFormCategoryList } = useSWR(`/items/category/${id}?page=${page}`, async (url) => {
     const { data } = await ResourceService.getByCategory(url)
     return data
   })
 
-  const {data: category} = useSWR(`/categories/${id}`, async (url) => {
+  const {data: category, isLoading: isFetchingCategory} = useSWR(`/categories/${id}`, async (url) => {
     const { data } = await CategoryService.getById(url)
     return data;
   })
-
-  // useEffect(() => {
-  //   getResourcesFromCategory();
-  // }, [])
 
   const onSearchChange = (value?: string) => {
     if (value) {
@@ -46,34 +44,23 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
     }
   }
 
-  const handleFilteredItems = () => {
-    let filteredResources = isFetchingResourcesFromCategory ? [] : [...resourcesFromCategory.data];
+  // const handleFilteredItems = () => {
+  //   let filteredResources = isFetchingResourcesFromCategory ? [] : [...resourcesFromCategory.data];
 
-    if (searchFilterValue) {
-      filteredResources = filteredResources.filter((resource) => resource.name.toLowerCase().includes(searchFilterValue.toLowerCase()))
-    }
-
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredResources = filteredResources.filter((resource) => {
-        return Array.from(statusFilter).includes(resource.status.toString())
-      })
-    }
-
-    return filteredResources;
-  }
-
-  const filteredItems = handleFilteredItems();
-
-  // const getResourcesFromCategory = async () => {
-  //   try {
-  //       const { data } = await ResouceService.getByCategory(id);
-  //       setResources(data);
-  //   } catch (error) {
-  //       if (axios.isAxiosError(error))
-  //       router.push('/')
-  //       toast.error("Không tìm thấy dữ liệu")
+  //   if (searchFilterValue) {
+  //     filteredResources = filteredResources.filter((resource) => resource.name.toLowerCase().includes(searchFilterValue.toLowerCase()))
   //   }
+
+  //   if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
+  //     filteredResources = filteredResources.filter((resource) => {
+  //       return Array.from(statusFilter).includes(resource.status.toString())
+  //     })
+  //   }
+
+  //   return filteredResources;
   // }
+
+  // const filteredItems = handleFilteredItems();
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -155,11 +142,11 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
             </Dropdown>
           </div>
         </div>
-        <div className="flex flex-row gap-3.5 flex-wrap">
-          <Button color="primary">
-            Thêm {category?.name.toLowerCase()}
-          </Button>
-        </div>
+        {isFetchingCategory || (
+          <div className="flex flex-row gap-3.5 flex-wrap">
+            <AddResourceFromCatetory mutate={updateResourcesFormCategoryList} category={category}/>
+          </div>
+        )}
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
       {!isFetchingResourcesFromCategory ? 
@@ -167,7 +154,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
           <>
           <span className="text-default-400 text-small">Tổng số {category?.name.toLowerCase()}: {resourcesFromCategory.data.length} </span>
         <div style={{ marginBottom: '16px' }}></div>
-        <ResourceTableWrapper resources={filteredItems} columns={resourcesFromCategoryColumns} meta={resourcesFromCategory.meta} setPage={setPage}/></>
+        <ResourceTableWrapper resources={resourcesFromCategory.data} columns={resourcesFromCategoryColumns} meta={resourcesFromCategory.meta} setPage={setPage}/></>
         )
          : <LoaderTable />}
       </div>
