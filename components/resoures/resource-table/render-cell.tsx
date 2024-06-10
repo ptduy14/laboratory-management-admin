@@ -6,6 +6,7 @@ import { EditIcon } from "@/components/icons/table/edit-icon";
 import { Resource } from "./data";
 import { ResourceStatusName } from "@/enums/resource-status";
 import { UnitEnumNames } from "@/enums/unit";
+import UpdateResouce from "../update-resource";
 
 interface Props {
   resouce: Resource;
@@ -62,11 +63,7 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
             </Tooltip>
           </div>
           <div>
-            <Tooltip content="Chỉnh sửa" color="secondary">
-              <button onClick={() => console.log("Edit user", resouce.id)}>
-                <EditIcon size={20} fill="#979797" />
-              </button>
-            </Tooltip>
+            <UpdateResouce resourceId={resouce.id}/>
           </div>
           <div>
             <Tooltip
