@@ -1,6 +1,6 @@
 export enum HandoverStatus {
-    NOT_HANDED_OVER = 0,
-    HANDED_OVER = 1
+    NOT_HANDED_OVER = 1,
+    HANDED_OVER = 0
 }
 
 interface HandoverStatusNameType {

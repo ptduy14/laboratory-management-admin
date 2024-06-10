@@ -14,7 +14,7 @@ import { EditIcon } from "@/components/icons/table/edit-icon";
 import { useForm, SubmitHandler, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { ResouceService } from "@/services/resourceService";
+import { ResourceService } from "@/services/resourceService";
 import { LoaderImageText } from "../loader/loader-image-text";
 import { RoleEnum, RoleNames } from "@/enums/role";
 import { CloudinaryService } from "@/services/cloudinaryService";
@@ -46,7 +46,7 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
   });
 
   const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(isOpen ? `/items/${resourceId.toString()}` : null, async (url: string) => {
-      const { data } = await ResouceService.getById(url);
+      const { data } = await ResourceService.getById(url);
       methods.reset({ ...data, categoryId: data.category.id });
       return data;
     }
@@ -82,7 +82,7 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
 
   const onSubmit: SubmitHandler<UpdateResourceSchemaUnionType> = async (data) => {
     try {
-        const { data: resourceUpdated } = await ResouceService.update(resourceId, data);
+        const { data: resourceUpdated } = await ResourceService.update(resourceId, data);
         mutate((key) => typeof key === 'string' && key.startsWith(`/items?page=`));
         methods.reset();
         toast.success('Cập nhật thành công');
@@ -134,7 +134,7 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
                   </form>
                 )}
               </ModalBody>
-              <ModalFooter>
+              {isFetchingResource || <ModalFooter>
                 <Button
                   color="danger"
                   variant="flat"
@@ -149,7 +149,7 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
                 >
                   Update
                 </Button>
-              </ModalFooter>
+              </ModalFooter>}
             </>
           )}
         </ModalContent>

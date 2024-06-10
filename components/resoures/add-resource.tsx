@@ -27,7 +27,7 @@ import {
 import { AddResourceCommonForm } from "../forms/resource-forms/add-resource-common-form";
 import { Category } from "../category/category-table/data";
 import { z } from "zod";
-import { ResouceService } from "@/services/resourceService";
+import { ResourceService } from "@/services/resourceService";
 
 export const AddResource = ({ mutate } : { mutate: any}) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -66,7 +66,7 @@ export const AddResource = ({ mutate } : { mutate: any}) => {
 
   const onSubmit: SubmitHandler<AddResourceSchemaUnionType> = async (data) => {
     try {
-      const {data: newResource} = await ResouceService.create(data);
+      const {data: newResource} = await ResourceService.create(data);
       console.log(newResource)
       mutate()
       methods.reset()

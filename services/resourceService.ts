@@ -2,7 +2,7 @@ import AxiosInstance from "@/config/axiosInstance";
 import { AddResourceSchemaUnionType } from "@/components/resoures/schema/addResourceSchema";
 import { UpdateResourceSchemaUnionType } from "@/components/resoures/schema/updateResourceSchema";
 
-export const ResouceService = {
+export const ResourceService = {
     getAll: async (url: string) => {
         return await AxiosInstance.get(url);
     },

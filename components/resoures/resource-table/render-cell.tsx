@@ -7,6 +7,7 @@ import { Resource } from "./data";
 import { ResourceStatusName } from "@/enums/resource-status";
 import { UnitEnumNames } from "@/enums/unit";
 import UpdateResouce from "../update-resource";
+import { DetailResource } from "../detail-resource";
 
 interface Props {
   resouce: Resource;
@@ -56,11 +57,7 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
       return (
         <div className="flex items-center gap-4 ">
           <div>
-            <Tooltip content="Chi tiết">
-              <button onClick={() => console.log("Chi tiết", resouce.id)}>
-                <EyeIcon size={20} fill="#979797" />
-              </button>
-            </Tooltip>
+            <DetailResource resourceId={resouce.id}/>
           </div>
           <div>
             <UpdateResouce resourceId={resouce.id}/>
