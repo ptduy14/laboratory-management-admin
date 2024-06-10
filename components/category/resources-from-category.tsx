@@ -4,7 +4,7 @@ import { HouseIcon } from "../icons/breadcrumb/house-icon";
 import { Input, Button, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 import { LoaderTable } from "../loader/loader-table";
 import { useEffect, useState } from "react";
-import { ResouceService } from "@/services/resourceService";
+import { ResourceService } from "@/services/resourceService";
 import axios from "axios";
 import { useRouter } from 'next/navigation'
 import { toast } from "react-toastify";
@@ -25,7 +25,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
   const router = useRouter()
 
   const { data: resourcesFromCategory, isLoading: isFetchingResourcesFromCategory } = useSWR(`/items/category/${id}?page=${page}`, async (url) => {
-    const { data } = await ResouceService.getByCategory(url)
+    const { data } = await ResourceService.getByCategory(url)
     return data
   })
 

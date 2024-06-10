@@ -20,23 +20,20 @@ import { ResourceStatus, ResourceStatusName } from "@/enums/resource-status";
 import { CategoryService } from "@/services/categoryService";
 import useSWR from "swr";
 import {
+  AddResourceCommonSchema,
   AddResourceChemicalSchema,
-  AddResourceEquipmentSchema,
-  AddResourceToolSchema,
-  AddResourceSchemaUnion,
+  AddResourceSchemaUnionType,
 } from "./schema/addResourceSchema";
 import { AddResourceCommonForm } from "../forms/resource-forms/add-resource-common-form";
 import { Category } from "../category/category-table/data";
-import { AddResourceToolField } from "../forms/resource-forms/add-resource-tool-field";
-import { AddResourceChemicalField } from "../forms/resource-forms/add-resource-chemical-field";
-import { AddResourceEquipmentField } from "../forms/resource-forms/add-resource-equipment-field";
 import { z } from "zod";
+import { ResourceService } from "@/services/resourceService";
 
-export const AddResource = () => {
+export const AddResource = ({ mutate } : { mutate: any}) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [schema, setSchema] = useState<z.ZodType<AddResourceSchemaUnion>>(AddResourceEquipmentSchema);
+  const [schema, setSchema] = useState<z.ZodType<AddResourceSchemaUnionType>>(AddResourceCommonSchema);
 
-  const methods = useForm<AddResourceSchemaUnion>({
+  const methods = useForm<AddResourceSchemaUnionType>({
     resolver: zodResolver(schema),
   });
 
@@ -47,6 +44,7 @@ export const AddResource = () => {
     return data;
   });
 
+  // need to improment later
   useEffect(() => {
     let newSchema = getAddResourceSchema(categoryId);
     setSchema(newSchema);
@@ -57,35 +55,34 @@ export const AddResource = () => {
     let category = categories?.data.find((category: Category) => {
       return category.id === categoryId;
     })
-    console.log(category?.name)
+
     switch (category?.name) {
-      case "Thiết bị":
-        return AddResourceEquipmentSchema;
-      case "Dụng cụ":
-        return AddResourceToolSchema;
-      default:
-        console.log('ok')
+      case "Hóa chất":
         return AddResourceChemicalSchema;
-    }
-  };
-
-  // consider to use useMemo to memorize this result
-  const RenderAdditionField = (categoryId: number) => {
-    switch (Number(categoryId)) {
-      case 1:
-        return <AddResourceEquipmentField />;
-      case 2:
-        return <AddResourceToolField />;
       default:
-        return <AddResourceChemicalField/>
+        return AddResourceCommonSchema;
     }
   };
 
-  const onSubmit: SubmitHandler<AddResourceSchemaUnion> = (data) => {
+  const onSubmit: SubmitHandler<AddResourceSchemaUnionType> = async (data) => {
+    try {
+      const {data: newResource} = await ResourceService.create(data);
+      console.log(newResource)
+      mutate()
+      methods.reset()
+      toast.success('Thêm tài nguyên thành công')
+      onClose()
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.message)
+        toast.error('Đã có lỗi vui lòng liên hệ admin')
+      }
+    }
     console.log(data);
   };
 
   const handleCloseModal = () => {
+    methods.clearErrors()
     onClose();
   };
 
@@ -112,7 +109,6 @@ export const AddResource = () => {
                     <div className="w-full max-h-80">
                       <FormProvider {...methods}>
                         <AddResourceCommonForm categories={categories?.data} />
-                        {categoryId && RenderAdditionField(categoryId)}
                       </FormProvider>
                     </div>
                   </form>

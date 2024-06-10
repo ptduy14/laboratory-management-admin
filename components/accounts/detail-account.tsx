@@ -23,7 +23,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
   // const [account, setAccount] = useState<Account>();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { data: account } = useSWR<Account>(isOpen ? `/users/get/${accountId.toString()}` : null, async (url: string) => {
+  const { data: account, isLoading: isFetchingAccount } = useSWR<Account>(isOpen ? `/users/get/${accountId.toString()}` : null, async (url: string) => {
     const { data } =  await UserService.getById(url);
     return data
   })
@@ -62,7 +62,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                 Account Detail
               </ModalHeader>
               <ModalBody>
-                {account ? (
+                {!isFetchingAccount && account ? (
                   <div className="flex justify-between">
                     <div className="w-1/3 pr-10">
                       <Avatar

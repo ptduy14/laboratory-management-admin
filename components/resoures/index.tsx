@@ -6,7 +6,7 @@ import { ExportIcon } from "@/components/icons/accounts/export-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { LoaderTable } from "../loader/loader-table";
 import { Resource } from "./resource-table/data";
-import { ResouceService } from "@/services/resourceService";
+import { ResourceService } from "@/services/resourceService";
 import { ResourceTableWrapper } from "./resource-table/resource-table";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "./resource-table/data";
@@ -20,8 +20,8 @@ export const Resources = () => {
   const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
   const [originFilter, setOriginFilter] = React.useState<Selection>('all');
 
-  const { data: resources, isLoading: isFetchingResouces } = useSWR(`/items?page=${page}&keyword=${searchValue}`, async (url) => {
-    const { data } = await ResouceService.getAll(url);
+  const { data: resources, isLoading: isFetchingResouces, mutate: updateResourceList } = useSWR(`/items?page=${page}&keyword=${searchValue}`, async (url) => {
+    const { data } = await ResourceService.getAll(url);
     return data;
   })
 
@@ -127,7 +127,7 @@ export const Resources = () => {
           </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddResource/>
+          <AddResource mutate={updateResourceList}/>
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>

@@ -1,7 +1,7 @@
 import { OK, z } from "zod";
 
 // common schema
-export const AddResourceCommonSchema = z.object({
+export const UpdateResourceCommonSchema = z.object({
     name: z.string().min(1, {message: "Trường này không được trống"}),
     origin: z.string().optional(),
     quantity: z.coerce.number({invalid_type_error: "Trường này phải là số"}).min(1, {message: "Trường này không được rộng"}),
@@ -14,10 +14,10 @@ export const AddResourceCommonSchema = z.object({
 })
 
 // chemical schema
-export const AddResourceChemicalSchema = AddResourceCommonSchema.extend({
+export const UpdateResourceChemicalSchema = UpdateResourceCommonSchema.extend({
     specification: z.string().min(1, {message: "Trường này không được trống"})
 })
 
-export type AddResourceCommonSchemaType = z.infer<typeof AddResourceCommonSchema>
-export type AddResourceChemicalSchemaType = z.infer<typeof AddResourceChemicalSchema>
-export type AddResourceSchemaUnionType = AddResourceCommonSchemaType | AddResourceChemicalSchemaType;
+export type UpdateResourceCommonSchemaType = z.infer<typeof UpdateResourceCommonSchema>
+export type UpdateResourceChemicalSchemaType = z.infer<typeof UpdateResourceChemicalSchema>
+export type UpdateResourceSchemaUnionType = UpdateResourceCommonSchemaType | UpdateResourceChemicalSchemaType;
