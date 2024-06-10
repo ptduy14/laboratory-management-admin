@@ -84,6 +84,7 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
     try {
         const { data: resourceUpdated } = await ResourceService.update(resourceId, data);
         mutate((key) => typeof key === 'string' && key.startsWith(`/items?page=`));
+        mutate(`/items/${resourceId.toString()}`)
         methods.reset();
         toast.success('Cập nhật thành công');
         onClose();
