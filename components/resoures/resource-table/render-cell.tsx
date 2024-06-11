@@ -8,6 +8,7 @@ import { ResourceStatusName } from "@/enums/resource-status";
 import { UnitEnumNames } from "@/enums/unit";
 import UpdateResouce from "../update-resource";
 import { DetailResource } from "../detail-resource";
+import { HandoverStatusName } from "@/enums/handover-status";
 
 interface Props {
   resouce: Resource;
@@ -35,6 +36,16 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
 
     case "unit":
       return UnitEnumNames[cellValue];
+    case "handoverStatus":
+      return (
+        <Tooltip content={cellValue === 0 ? "Đã bàn giao" : "Chưa bàn giao"}>
+          <Chip size="sm" variant="flat" color={cellValue === 0 ? "success" : "warning"}>
+          <span className="capitalize text-xs">
+            {cellValue === 0 ? "ĐBG" : "CBG"}
+          </span>
+        </Chip>
+      </Tooltip>
+      )
     case "status":
       return (
         <Chip

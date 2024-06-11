@@ -69,7 +69,7 @@ export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
     <div>
       <>
         <Button onPress={onOpen} color="primary">
-          Add Account
+          Thêm Account
         </Button>
         <Modal
           isOpen={isOpen}

@@ -26,6 +26,10 @@ export const resourcesFromCategoryColumns = [
         label: "ĐƠN VỊ",
       },
       {
+        key: "handoverStatus",
+        label: "BÀN GIAO",
+      },
+      {
         key: "status",
         label: "TRẠNG THÁI",
       },
