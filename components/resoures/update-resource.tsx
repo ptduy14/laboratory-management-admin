@@ -25,27 +25,31 @@ import { getPublicIdFromUrl } from "@/utils/getPublicIdFromUrl";
 import useSWR, { mutate } from "swr";
 import { Resource } from "./resource-table/data";
 import {
-    UpdateResourceCommonSchema,
-    UpdateResourceChemicalSchema,
-    UpdateResourceSchemaUnionType,
+  UpdateResourceCommonSchema,
+  UpdateResourceChemicalSchema,
+  UpdateResourceSchemaUnionType,
 } from "./schema/updateResourceSchema";
 import { z } from "zod";
 import { UpdateResourceCommonForm } from "../forms/resource-forms/update-resource-common-form";
 import { CategoryService } from "@/services/categoryService";
 import { Category } from "../category/category-table/data";
-import { useSWRConfig } from "swr"
+import { useSWRConfig } from "swr";
 import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
 
 export default function UpdateResouce({ resourceId }: { resourceId: number }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const [schema, setSchema] = useState<z.ZodType<UpdateResourceSchemaUnionType>>(UpdateResourceCommonSchema);
-  const { mutate } = useSWRConfig()
+  const [schema, setSchema] = useState<z.ZodType<UpdateResourceSchemaUnionType>>(
+    UpdateResourceCommonSchema
+  );
+  const { mutate } = useSWRConfig();
 
   const methods = useForm<UpdateResourceSchemaUnionType>({
-    resolver: zodResolver(schema)
+    resolver: zodResolver(schema),
   });
 
-  const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(isOpen ? `/items/${resourceId.toString()}` : null, async (url: string) => {
+  const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
+    isOpen ? `/items/${resourceId.toString()}` : null,
+    async (url: string) => {
       const { data } = await ResourceService.getById(url);
       methods.reset({ ...data, categoryId: data.category.id });
       return data;
@@ -57,11 +61,10 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
     return data;
   });
 
-
   let categoryIdSelected: number = methods.watch("categoryId");
 
-   // need to improment later
-   useEffect(() => {
+  // need to improment later
+  useEffect(() => {
     let newSchema = getUpdateResourceSchema(categoryIdSelected);
     setSchema(newSchema);
     methods.reset(undefined, { keepValues: true }); // Reset form with new schema
@@ -70,10 +73,10 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
   const getUpdateResourceSchema = (id: number) => {
     let category = categories?.data.find((category: Category) => {
       return category.id === id;
-    })
+    });
     switch (category?.name) {
       case "Hóa chất":
-        console.log('ok')
+        console.log("ok");
         return UpdateResourceChemicalSchema;
       default:
         return UpdateResourceCommonSchema;
@@ -82,19 +85,19 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
 
   const onSubmit: SubmitHandler<UpdateResourceSchemaUnionType> = async (data) => {
     try {
-        const { data: resourceUpdated } = await ResourceService.update(resourceId, data);
-        mutate((key) => typeof key === 'string' && key.startsWith(`/items?page=`));
-        mutate(`/items/${resourceId.toString()}`);
-        mutate((key) => typeof key === 'string' && key.startsWith(`/items/category/`));
-        methods.reset();
-        toast.success('Cập nhật thành công');
-        onClose();
+      const { data: resourceUpdated } = await ResourceService.update(resourceId, data);
+      mutate((key) => typeof key === "string" && key.startsWith(`/items?page=`));
+      mutate(`/items/${resourceId.toString()}`);
+      mutate((key) => typeof key === "string" && key.startsWith(`/items/category/`));
+      methods.reset();
+      toast.success("Cập nhật thành công");
+      onClose();
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.log(error)
-        }
+      if (axios.isAxiosError(error)) {
+        console.log(error);
+      }
     }
-  }
+  };
 
   const handleCloseModal = () => {
     onClose();
@@ -111,47 +114,34 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
         </Tooltip>
       </div>
 
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        size="3xl"
-        placement="top-center"
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl" placement="top-center">
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Cập nhật tài nguyên
-              </ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Cập nhật tài nguyên</ModalHeader>
               <ModalBody>
                 {isFetchingResource ? (
                   <LoaderSkeletonForm />
                 ) : (
                   <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                     <div className="w-full max-h-80">
-                        <FormProvider {...methods}>
-                            <UpdateResourceCommonForm categories={categories?.data}/>
-                        </FormProvider>
+                      <FormProvider {...methods}>
+                        <UpdateResourceCommonForm categories={categories?.data} />
+                      </FormProvider>
                     </div>
                   </form>
                 )}
               </ModalBody>
-              {isFetchingResource || <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="flat"
-                  onClick={handleCloseModal}
-                >
-                  Close
-                </Button>
-                <Button
-                  color="primary"
-                  variant="flat"
-                  onClick={methods.handleSubmit(onSubmit)}
-                >
-                  Update
-                </Button>
-              </ModalFooter>}
+              {isFetchingResource || (
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onClick={handleCloseModal}>
+                    Close
+                  </Button>
+                  <Button color="primary" variant="flat" onClick={methods.handleSubmit(onSubmit)}>
+                    Update
+                  </Button>
+                </ModalFooter>
+              )}
             </>
           )}
         </ModalContent>

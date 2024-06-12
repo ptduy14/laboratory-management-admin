@@ -14,11 +14,7 @@ import { ResoucesIcon } from "../icons/resources-icon";
 import { PlusSquareIcon } from "../icons/plus-square-icon";
 import { Category } from "../category/category-table/data";
 import useSWR from "swr";
-
-export interface RoomType {
-  id: number;
-  name: string;
-}
+import { RoomType } from "@/types/room";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
