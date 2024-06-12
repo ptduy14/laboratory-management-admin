@@ -8,6 +8,8 @@ import { ResourceStatusName } from "@/enums/resource-status";
 import { UnitEnumNames } from "@/enums/unit";
 import UpdateResouce from "../update-resource";
 import { DetailResource } from "../detail-resource";
+import { HandoverStatusName } from "@/enums/handover-status";
+import { TransferResource } from "../transfer-resource";
 
 interface Props {
   resouce: Resource;
@@ -19,55 +21,52 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
   const cellValue = resouce[columnKey];
   switch (columnKey) {
     case "specification":
-      return cellValue !== "" ? (
-        cellValue
-      ) : (
-          <span className="capitalize text-sm">-</span>
-      );
+      return cellValue !== "" ? cellValue : <span className="capitalize text-sm">-</span>;
     case "origin":
-      return cellValue !== "" ? (
-        cellValue
-      ) : (
-        <span className="capitalize text-sm">-</span>
-      );
+      return cellValue !== "" ? cellValue : <span className="capitalize text-sm">-</span>;
     case "category":
       return cellValue.name;
 
     case "unit":
       return UnitEnumNames[cellValue];
+    case "handoverStatus":
+      return (
+        <Tooltip content={cellValue === 0 ? "Đã bàn giao" : "Chưa bàn giao"}>
+          <Chip size="sm" variant="flat" color={cellValue === 0 ? "success" : "warning"}>
+            <span className="capitalize text-xs">{cellValue === 0 ? "ĐBG" : "CBG"}</span>
+          </Chip>
+        </Tooltip>
+      );
     case "status":
       return (
         <Chip
           size="sm"
           variant="flat"
           color={
-            cellValue === 0 || cellValue === 1
-              ? "success"
-              : cellValue === 2
-              ? "warning"
-              : "danger"
-          }
-        >
-          <span className="capitalize text-xs">
-            {ResourceStatusName[cellValue]}
-          </span>
+            cellValue === 0 || cellValue === 1 ? "success" : cellValue === 2 ? "warning" : "danger"
+          }>
+          <span className="capitalize text-xs">{ResourceStatusName[cellValue]}</span>
         </Chip>
       );
     case "actions":
       return (
         <div className="flex items-center gap-4 ">
+          {resouce.handoverStatus == 1 && (
+            <div>
+              <TransferResource resource={resouce}/>
+            </div>
+          )}
           <div>
-            <DetailResource resourceId={resouce.id}/>
+            <DetailResource resourceId={resouce.id} />
           </div>
           <div>
-            <UpdateResouce resourceId={resouce.id}/>
+            <UpdateResouce resourceId={resouce.id} />
           </div>
           <div>
             <Tooltip
               content="Xóa"
               color="danger"
-              onClick={() => console.log("Delete user", resouce.id)}
-            >
+              onClick={() => console.log("Delete user", resouce.id)}>
               <button>
                 <DeleteIcon size={20} fill="#FF0080" />
               </button>

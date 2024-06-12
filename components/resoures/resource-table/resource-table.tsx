@@ -14,52 +14,44 @@ import { metaType } from "@/types/meta";
 
 interface RecoureTableProps {
   resources: Resource[];
-  meta: metaType
+  meta: metaType;
   setPage?: React.Dispatch<React.SetStateAction<number>>;
-  page?: number,
-  columns?: {key: string, label: string}[]
+  page?: number;
+  columns?: { key: string; label: string }[];
 }
 
-export const ResourceTableWrapper = ({ resources, meta, setPage, page, columns }: RecoureTableProps) => {
-  // const [page, setPage] = useState(1);
-  // const rowsPerPage = 14;
-
-  // const items = useMemo(() => {
-  //   const start = (page - 1) * rowsPerPage;
-  //   const end = start + rowsPerPage;
-
-  //   return resources.slice(start, end);
-  // }, [page, resources]);
-
-
+export const ResourceTableWrapper = ({
+  resources,
+  meta,
+  setPage,
+  page,
+  columns,
+}: RecoureTableProps) => {
   return (
     <Table
       aria-label="Example static collection table"
       bottomContentPlacement="outside"
       bottomContent={
-          <div className="flex w-full justify-center">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              color="primary"
-              page={meta.page}
-              total={meta.pages}
-              onChange={(newPage) => setPage && setPage(newPage)}
-            />
+        <div className="flex w-full justify-center">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            color="primary"
+            page={meta.page}
+            total={meta.pages}
+            onChange={(newPage) => setPage && setPage(newPage)}
+          />
         </div>
-      }
-    >
+      }>
       <TableHeader columns={columns ? columns : resourceColumns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+        {(column) => <TableColumn key={column.key} width={column.key === "name" ? "14%" : undefined}>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody items={resources} emptyContent={"No resource found"}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
-              <TableCell>
-                {RenderCell({ resouce: item, columnKey: columnKey })}
-              </TableCell>
+              <TableCell>{RenderCell({ resouce: item, columnKey: columnKey })}</TableCell>
             )}
           </TableRow>
         )}

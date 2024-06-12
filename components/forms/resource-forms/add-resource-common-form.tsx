@@ -6,8 +6,10 @@ import { useFormContext } from "react-hook-form";
 
 export const AddResourceCommonForm = ({
   categories,
+  isHiddenCategorySelect
 }: {
-  categories: Category[];
+  categories?: Category[],
+  isHiddenCategorySelect?: boolean
 }) => {
   const {
     register,
@@ -18,7 +20,7 @@ export const AddResourceCommonForm = ({
 
   return (
     <>
-      <div className="mb-7">
+      <div className="mb-7" hidden={isHiddenCategorySelect}>
         <label
           htmlFor="category"
           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -26,12 +28,13 @@ export const AddResourceCommonForm = ({
           Danh mục
         </label>
         <select
-          defaultValue={categories[0].id}
+          defaultValue={categories?.[0]?.id}
           id="category"
           className="mb-7 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           {...register("categoryId", { valueAsNumber: true })}
+          hidden={isHiddenCategorySelect}
         >
-          {categories.map((category: any) => {
+          {categories?.map((category: any) => {
             if (category.status !== 0) return;
             return (
               <option key={category.id} value={category.id}>

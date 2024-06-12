@@ -11,6 +11,7 @@ import {
 import { columns, Account } from "./data";
 import { RenderCell } from "./render-cell";
 import { metaType } from "@/types/meta";
+import { useSession } from "next-auth/react";
 
 interface AccountTableProps {
   accounts: Account[];
@@ -25,6 +26,7 @@ export const AccountTableWrapper = ({
   meta,
   setPage,
 }: AccountTableProps) => {
+  const { data: session } = useSession();
   return (
     <Table
       aria-label="Example static collection table"

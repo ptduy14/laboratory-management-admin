@@ -1,5 +1,13 @@
 "use client";
-import { Button, Input, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import {
+  Button,
+  Input,
+  Selection,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
@@ -17,34 +25,37 @@ import useSWR from "swr";
 export const Resources = () => {
   const [searchValue, setSearchValue] = useState("");
   const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
-  const [originFilter, setOriginFilter] = React.useState<Selection>('all');
+  const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
+  const [originFilter, setOriginFilter] = React.useState<Selection>("all");
 
-  const { data: resources, isLoading: isFetchingResouces, mutate: updateResourceList } = useSWR(`/items?page=${page}&keyword=${searchValue}`, async (url) => {
+  const {
+    data: resources,
+    isLoading: isFetchingResouces,
+    mutate: updateResourceList,
+  } = useSWR(`/items?page=${page}&keyword=${searchValue}`, async (url) => {
     const { data } = await ResourceService.getAll(url);
     return data;
-  })
+  });
 
   const handleFilteredItems = useMemo(() => {
     let filteredResources = isFetchingResouces ? [] : [...resources.data];
 
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
       filteredResources = filteredResources.filter((resource) => {
-        return Array.from(statusFilter).includes(resource.status.toString())
-      })
+        return Array.from(statusFilter).includes(resource.status.toString());
+      });
     }
 
     if (originFilter !== "all" && Array.from(originFilter).length !== originOptions.length) {
       filteredResources = filteredResources.filter((resource) => {
-        return Array.from(originFilter).includes(resource.origin)
-      })
+        return Array.from(originFilter).includes(resource.origin);
+      });
     }
 
     return filteredResources;
-  }, [resources?.data, statusFilter, originFilter, searchValue])
+  }, [resources?.data, statusFilter, originFilter, searchValue]);
 
   const filteredResources = handleFilteredItems;
-
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -69,7 +80,7 @@ export const Resources = () => {
       <h3 className="text-xl font-semibold">Tài nguyên</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-         <Input
+          <Input
             classNames={{
               input: "w-full",
               mainWrapper: "w-full",
@@ -78,7 +89,7 @@ export const Resources = () => {
             placeholder="Search resources by name"
             value={searchValue}
             onValueChange={(value) => setSearchValue(value)}
-          /> 
+          />
           <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
@@ -92,8 +103,7 @@ export const Resources = () => {
                 closeOnSelect={false}
                 selectedKeys={statusFilter}
                 selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
+                onSelectionChange={setStatusFilter}>
                 {statusOptions.map((status) => (
                   <DropdownItem key={status.uid} className="capitalize">
                     {status.name}
@@ -115,8 +125,7 @@ export const Resources = () => {
                 closeOnSelect={false}
                 selectedKeys={originFilter}
                 selectionMode="multiple"
-                onSelectionChange={setOriginFilter}
-              >
+                onSelectionChange={setOriginFilter}>
                 {originOptions.map((origin) => (
                   <DropdownItem key={origin.uid} className="capitalize">
                     {origin.name}
@@ -127,21 +136,29 @@ export const Resources = () => {
           </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddResource mutate={updateResourceList}/>
+          <AddResource mutate={updateResourceList} />
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        {!isFetchingResouces ? 
-        (
+        {!isFetchingResouces ? (
           <>
-          <span className="text-default-400 text-small">Tổng số sản phẩm - tài nguyên của hệ thống: {resources.meta.numberRecords} </span>
-        <div style={{ marginBottom: '16px' }}></div>
-        <ResourceTableWrapper resources={filteredResources} meta={resources.meta} setPage={setPage} page={page}/></>
-        )
-         : <LoaderTable />}
+            <span className="text-default-400 text-small">
+              Tổng số sản phẩm - tài nguyên của hệ thống: {resources.meta.numberRecords}{" "}
+            </span>
+            <div style={{ marginBottom: "16px" }}></div>
+            <ResourceTableWrapper
+              resources={filteredResources}
+              meta={resources.meta}
+              setPage={setPage}
+              page={page}
+            />
+          </>
+        ) : (
+          <LoaderTable />
+        )}
       </div>
     </div>
   );
