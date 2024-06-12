@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { ChevronUpIcon } from "../icons/sidebar/chevron-up-icon";
 import { Accordion, AccordionItem, Link } from "@nextui-org/react";
 import clsx from "clsx";
-import { RoomType } from "./sidebar";
+import { RoomType } from "@/types/room";
 
 interface Props {
   icon: React.ReactNode;
