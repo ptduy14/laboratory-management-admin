@@ -11,7 +11,7 @@ import { CategoryColumns } from "./category-table/data";
 import { LoaderTable } from "../loader/loader-table";
 
 export const Categories = () => {
-  const { data: categories, isLoading: isFetchingCategories } = useSWR(
+  const { data: categories, isLoading: isFetchingCategories, mutate: updateCategoriesList } = useSWR(
     `/categories`,
     async (url) => {
       const { data } = await CategoryService.getAll(url);
@@ -42,7 +42,7 @@ export const Categories = () => {
       <h3 className="text-xl font-semibold">Tất cả danh mục</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddCategory />
+          <AddCategory mutate={updateCategoriesList}/>
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
