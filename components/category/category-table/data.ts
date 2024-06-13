@@ -1,3 +1,5 @@
+import { late } from "zod";
+
 export interface Category {
   id: number;
   name: string;
@@ -37,4 +39,19 @@ export const resourcesFromCategoryColumns = [
         key: "actions",
         label: "ACTIONS",
       },
+]
+
+export const CategoryColumns = [
+  {
+    key: "name",
+    label: "TÊN DANH MỤC"
+  },
+  {
+    key: "status",
+    label: "TRẠNG THÁI"
+  },
+  {
+    key: "actions",
+    label: "ACTIONS"
+  }
 ]

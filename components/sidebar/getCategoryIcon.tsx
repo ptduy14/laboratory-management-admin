@@ -11,6 +11,6 @@ export const getCategoryIcon = (categoryId: number) => {
         case 3:
           return <ChemicalIcon />;
         default:
-          return null; // Trả về null nếu không có biểu tượng tương ứng
+          return <ChemicalIcon />; // Trả về null nếu không có biểu tượng tương ứng
       }
 }
