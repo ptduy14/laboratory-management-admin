@@ -1,6 +1,6 @@
 import { Categories } from "@/components/category"
 
-export const categories = () => {
+const categories = () => {
     return <Categories />
 }
 
