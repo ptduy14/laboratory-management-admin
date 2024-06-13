@@ -152,7 +152,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
       {!isFetchingResourcesFromCategory ? 
         (
           <>
-          <span className="text-default-400 text-small">Tổng số {category?.name.toLowerCase()}: {resourcesFromCategory.data.length} </span>
+          <span className="text-default-400 text-small">Tổng số {category?.name.toLowerCase()}: {resourcesFromCategory.meta.numberRecords} </span>
         <div style={{ marginBottom: '16px' }}></div>
         <ResourceTableWrapper resources={resourcesFromCategory.data} columns={resourcesFromCategoryColumns} meta={resourcesFromCategory.meta} setPage={setPage}/></>
         )

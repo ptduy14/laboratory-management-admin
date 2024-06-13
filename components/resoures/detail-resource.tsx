@@ -20,10 +20,11 @@ import { HandoverStatusName } from "@/enums/handover-status";
 import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
 import useSWR from "swr";
 import { UnitEnumNames } from "@/enums/unit";
+import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 
-export const DetailResource = ({ resourceId }: { resourceId: number }) => {
+export const DetailResource = ({ resourceId, disclosure }: { resourceId: number, disclosure: UseDisclosureReturn }) => {
   // const [account, setAccount] = useState<Account>();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = disclosure;
 
   const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
     isOpen ? `/items/${resourceId.toString()}` : null,
@@ -35,13 +36,6 @@ export const DetailResource = ({ resourceId }: { resourceId: number }) => {
 
   return (
     <div>
-      <div>
-        <Tooltip content="Details">
-          <button onClick={onOpen}>
-            <EyeIcon size={20} fill="#979797" />
-          </button>
-        </Tooltip>
-      </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl" placement="top-center">
         <ModalContent>
           {(onClose) => (

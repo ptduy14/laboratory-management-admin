@@ -1,4 +1,13 @@
-import { User, Tooltip, Chip } from "@nextui-org/react";
+import {
+  User,
+  Tooltip,
+  Chip,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@nextui-org/react";
 import React from "react";
 import { DeleteIcon } from "@/components/icons/table/delete-icon";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
@@ -10,6 +19,11 @@ import UpdateResouce from "../update-resource";
 import { DetailResource } from "../detail-resource";
 import { HandoverStatusName } from "@/enums/handover-status";
 import { TransferResource } from "../transfer-resource";
+import { VerticalDotsIcon } from "@/components/icons/vertical-dots-icons";
+import { ViewIcon } from "@/components/icons/sidebar/view-icon";
+import { useDisclosure } from "@nextui-org/react";
+import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import { Actions } from "./actions";
 
 interface Props {
   resouce: Resource;
@@ -50,29 +64,56 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
       );
     case "actions":
       return (
-        <div className="flex items-center gap-4 ">
-          {resouce.handoverStatus == 1 && (
-            <div>
-              <TransferResource resource={resouce}/>
-            </div>
-          )}
-          <div>
-            <DetailResource resourceId={resouce.id} />
-          </div>
-          <div>
-            <UpdateResouce resourceId={resouce.id} />
-          </div>
-          <div>
-            <Tooltip
-              content="Xóa"
-              color="danger"
-              onClick={() => console.log("Delete user", resouce.id)}>
-              <button>
-                <DeleteIcon size={20} fill="#FF0080" />
-              </button>
-            </Tooltip>
-          </div>
-        </div>
+        <Actions resource={resouce}/>
+        // <div className="relative flex justify-end items-center gap-2">
+        //   <Dropdown>
+        //     <DropdownTrigger>
+        //       <Button isIconOnly size="sm" variant="light">
+        //         <VerticalDotsIcon className="text-default-300" />
+        //       </Button>
+        //     </DropdownTrigger>
+        //     <DropdownMenu aria-label="Example with disabled actions">
+        //       <DropdownItem key="transfer" startContent={<ViewIcon />}>
+        //         xxxx
+        //       </DropdownItem>
+        //       <DropdownItem key="detail" startContent={<EyeIcon size={20} fill="#979797" />}>
+        //         <DetailResource resourceId={resouce.id} />
+        //       </DropdownItem>
+        //       <DropdownItem key="edit" startContent={<EditIcon size={20} fill="#979797" />}>
+        //         <UpdateResouce resourceId={resouce.id} />
+        //       </DropdownItem>
+        //       <DropdownItem key="delete" startContent={<DeleteIcon size={20} fill="#FF0080" />}>
+        //         Xóa
+        //       </DropdownItem>
+        //     </DropdownMenu>
+        //   </Dropdown>
+        // </div>
+        // <DetailResource resourceId={resouce.id} />
+        // <UpdateResouce resourceId={resouce.id} />
+
+        // <div className="flex items-center gap-4 ">
+        //   {resouce.handoverStatus == 1 && (
+        //     <div>
+        //       <TransferResource resource={resouce}/>
+        //     </div>
+        //   )}
+        //   <div>
+        //     <DetailResource resourceId={resouce.id} />
+        //   </div>
+        //   <div>
+        //     <UpdateResouce resourceId={resouce.id} />
+        //   </div>
+        //   <div>
+        //     <Tooltip
+        //       content="Xóa"
+        //       color="danger"
+        //       onClick={() => console.log("Delete user", resouce.id)}>
+        //       <button>
+        //         <DeleteIcon size={20} fill="#FF0080" />
+        //       </button>
+        //     </Tooltip>
+        //   </div>
+        // </div>
       );
     default:
       return cellValue;

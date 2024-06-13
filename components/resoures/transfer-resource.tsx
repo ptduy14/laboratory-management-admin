@@ -24,15 +24,16 @@ import axios from "axios";
 import { RoomResourceService } from "@/services/roomResourceService";
 import { mutate } from "swr";
 import { toast } from "react-toastify";
+import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 
-export const TransferResource = ({ resource }: { resource: Resource }) => {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+export const TransferResource = ({ resource, disclosure }: { resource: Resource, disclosure: UseDisclosureReturn }) => {
+  const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
 
   const methods = useForm<transferResourceSchemaType>({
     resolver: zodResolver(transferResourceSchema),
     defaultValues: {
       itemId: resource.id,
-      status: 0
+      status: 0,
     },
   });
 
@@ -71,11 +72,6 @@ export const TransferResource = ({ resource }: { resource: Resource }) => {
 
   return (
     <>
-      <Tooltip content="Bàn giao tài nguyên" color="primary">
-        <button onClick={onOpen}>
-          <ViewIcon />
-        </button>
-      </Tooltip>
       <Modal size="xl" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
