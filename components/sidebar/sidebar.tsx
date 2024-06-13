@@ -105,9 +105,9 @@ export const SidebarWrapper = () => {
               })}
               <SidebarItem
                 isActive={pathname === ""}
-                title="Thêm danh mục"
+                title="Quản lí danh mục"
                 icon={<PlusSquareIcon />}
-                href=""
+                href="/categories"
               />
             </SidebarMenu>
             <SidebarMenu title="Phòng thí nghiệm">

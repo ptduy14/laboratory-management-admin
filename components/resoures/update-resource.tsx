@@ -128,10 +128,10 @@ export default function UpdateResouce({ resourceId, disclosure }: { resourceId: 
               {isFetchingResource || (
                 <ModalFooter>
                   <Button color="danger" variant="flat" onClick={handleCloseModal}>
-                    Close
+                    Đóng
                   </Button>
                   <Button color="primary" variant="flat" onClick={methods.handleSubmit(onSubmit)}>
-                    Update
+                    Cập nhật
                   </Button>
                 </ModalFooter>
               )}
