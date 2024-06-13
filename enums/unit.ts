@@ -14,7 +14,7 @@ interface UnitEnumNamesType {
 
 export const UnitEnumNames: UnitEnumNamesType = {
     [UnitEnum.BOTTLE]: "Chai",
-    [UnitEnum.PEACE]: "Thùng",
+    [UnitEnum.PEACE]: "Cái",
     [UnitEnum.SET]: "Bộ",
     [UnitEnum.BOX]: "Hộp",
     [UnitEnum.BAG]: "Túi",

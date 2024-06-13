@@ -35,9 +35,10 @@ import { CategoryService } from "@/services/categoryService";
 import { Category } from "../category/category-table/data";
 import { useSWRConfig } from "swr";
 import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
+import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 
-export default function UpdateResouce({ resourceId }: { resourceId: number }) {
-  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+export default function UpdateResouce({ resourceId, disclosure }: { resourceId: number, disclosure: UseDisclosureReturn }) {
+  const { isOpen, onOpen, onClose, onOpenChange } = disclosure;
   const [schema, setSchema] = useState<z.ZodType<UpdateResourceSchemaUnionType>>(
     UpdateResourceCommonSchema
   );
@@ -106,14 +107,6 @@ export default function UpdateResouce({ resourceId }: { resourceId: number }) {
 
   return (
     <>
-      <div>
-        <Tooltip content="cập nhật tài nguyên" color="secondary">
-          <button onClick={onOpen}>
-            <EditIcon size={20} fill="#979797" />
-          </button>
-        </Tooltip>
-      </div>
-
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl" placement="top-center">
         <ModalContent>
           {(onClose) => (

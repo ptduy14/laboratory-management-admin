@@ -45,7 +45,7 @@ export const ResourceTableWrapper = ({
         </div>
       }>
       <TableHeader columns={columns ? columns : resourceColumns}>
-        {(column) => <TableColumn key={column.key} width={column.key === "name" ? "14%" : undefined}>{column.label}</TableColumn>}
+        {(column) => <TableColumn key={column.key} width={column.key === "name" ? "15%" : undefined}>{column.label}</TableColumn>}
       </TableHeader>
       <TableBody items={resources} emptyContent={"No resource found"}>
         {(item) => (
