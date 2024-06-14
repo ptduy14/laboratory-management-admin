@@ -15,6 +15,9 @@ import { PlusSquareIcon } from "../icons/plus-square-icon";
 import { Category } from "../category/category-table/data";
 import useSWR from "swr";
 import { RoomType } from "@/types/room";
+import { CategoryStatus } from "@/enums/category-status";
+import { RoomStatus } from "@/enums/room-status";
+
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
@@ -90,21 +93,23 @@ export const SidebarWrapper = () => {
               />
             </SidebarMenu>
             <SidebarMenu title="Danh Mục">
-              {categories?.data.map((category: any) => {
-                return (
-                  <SidebarItem
-                    key={category.id}
-                    isActive={
-                      pathname === `/categories/${category.id}/resources`
-                    }
-                    title={category.name}
-                    icon={getCategoryIcon(category.id)}
-                    href={`/categories/${category.id}/resources`}
-                  />
-                );
+              {categories?.data.map((category: Category) => {
+                if (category.status === CategoryStatus.ACTIVE) {
+                  return (
+                    <SidebarItem
+                      key={category.id}
+                      isActive={
+                        pathname === `/categories/${category.id}/resources`
+                      }
+                      title={category.name}
+                      icon={getCategoryIcon(category.id)}
+                      href={`/categories/${category.id}/resources`}
+                    />
+                  );
+                }
               })}
               <SidebarItem
-                isActive={pathname === ""}
+                isActive={pathname === "/categories"}
                 title="Quản lí danh mục"
                 icon={<PlusSquareIcon />}
                 href="/categories"
@@ -112,14 +117,22 @@ export const SidebarWrapper = () => {
             </SidebarMenu>
             <SidebarMenu title="Phòng thí nghiệm">
               {rooms?.data.map((room: any) => {
-                return (
-                  <SidebarItem
-                    key={room.id}
-                    isActive={pathname === `/rooms/${room.id}`}
-                    title={room.name.replace("PTN", "").trim()}
-                  />
-                );
+                if (room.status === RoomStatus.ACTIVE) {
+                  return (
+                    <SidebarItem
+                      key={room.id}
+                      isActive={pathname === `/rooms/${room.id}`}
+                      title={room.name}
+                    />
+                  );
+                }
               })}
+              <SidebarItem
+                isActive={pathname === "/rooms"}
+                title="Quản lí PTN"
+                icon={<PlusSquareIcon />}
+                href="/rooms"
+              />
             </SidebarMenu>
           </div>
         </div>

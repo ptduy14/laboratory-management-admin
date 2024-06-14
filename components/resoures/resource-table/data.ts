@@ -14,7 +14,7 @@ export interface Resource {
   unit: number;
   status: 2;
   category: Category;
-  handoverStatus: number
+  handover: number
 }
 
 export const resourceColumns = [
@@ -35,12 +35,12 @@ export const resourceColumns = [
     label: "SỐ LƯỢNG",
   },
   {
-    key: "unit",
-    label: "ĐƠN VỊ",
+    key: "handover",
+    label: "ĐÃ BÀN GIAO",
   },
   {
-    key: "handoverStatus",
-    label: "BÀN GIAO",
+    key: "unit",
+    label: "ĐƠN VỊ",
   },
   {
     key: "status",

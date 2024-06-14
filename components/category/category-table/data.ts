@@ -1,5 +1,3 @@
-import { late } from "zod";
-
 export interface Category {
   id: number;
   name: string;
@@ -24,12 +22,12 @@ export const resourcesFromCategoryColumns = [
         label: "SỐ LƯỢNG",
       },
       {
-        key: "unit",
-        label: "ĐƠN VỊ",
+        key: "handover",
+        label: "ĐÃ BÀN GIAO",
       },
       {
-        key: "handoverStatus",
-        label: "BÀN GIAO",
+        key: "unit",
+        label: "ĐƠN VỊ",
       },
       {
         key: "status",
