@@ -6,6 +6,7 @@ import { DetailAccount } from "../detail-account";
 import { RoleNames } from "@/enums/role";
 import UpdateAccount from "../update-account";
 import { AccountStatusNames } from "@/enums/account-status";
+import { DeleteAccount } from "../delete-account";
 
 interface Props {
   account: Account; 
@@ -52,17 +53,7 @@ export const RenderCell = ({ account, columnKey }: Props) => {
         <div className="flex items-center gap-4 ">
           <DetailAccount accountId={account.id} />
           <UpdateAccount accountId={account.id} />
-          <div>
-            <Tooltip
-              content="Delete user"
-              color="danger"
-              onClick={() => console.log("Delete user", account.id)}
-            >
-              <button>
-                <DeleteIcon size={20} fill="#FF0080" />
-              </button>
-            </Tooltip>
-          </div>
+          <DeleteAccount accountId={account.id} />
         </div>
       );
     default:

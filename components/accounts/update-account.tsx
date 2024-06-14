@@ -12,10 +12,7 @@ import {
 } from "@nextui-org/react";
 import { EditIcon } from "@/components/icons/table/edit-icon";
 import { useForm, SubmitHandler } from "react-hook-form";
-import {
-  UpdateAccountSchema,
-  UpdateAccountSchemaType,
-} from "./schema/updateAccountSchema";
+import { UpdateAccountSchema, UpdateAccountSchemaType } from "./schema/updateAccountSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { UserService } from "@/services/userService";
@@ -28,13 +25,9 @@ import { toast } from "react-toastify";
 import { AccountStatus, AccountStatusNames } from "@/enums/account-status";
 import { Account } from "./account-table/data";
 import { getPublicIdFromUrl } from "@/utils/getPublicIdFromUrl";
-import useSWR, { mutate } from "swr"
+import useSWR, { mutate } from "swr";
 
-export default function UpdateAccount({
-  accountId,
-}: {
-  accountId: number;
-}) {
+export default function UpdateAccount({ accountId }: { accountId: number }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -51,13 +44,16 @@ export default function UpdateAccount({
     resolver: zodResolver(UpdateAccountSchema),
   });
 
-  const { data } = useSWR<Account>(isOpen ? `/users/get/${accountId.toString()}` : null, async (url: string) => {
-    const { data } =  await UserService.getById(url);
-    setCurrentAccountPhoto(data.photo);
-    reset({ ...data });
-    setIsLoading(false);
-    return data
-  })
+  const { data } = useSWR<Account>(
+    isOpen ? `/users/get/${accountId.toString()}` : null,
+    async (url: string) => {
+      const { data } = await UserService.getById(url);
+      setCurrentAccountPhoto(data.photo);
+      reset({ ...data });
+      setIsLoading(false);
+      return data;
+    }
+  );
 
   // const getAccountById = async () => {
   //   const { data } = await UserService.getById(accountId.toString());
@@ -89,18 +85,13 @@ export default function UpdateAccount({
     let account: Account;
     try {
       if (!Array.isArray(data.photo)) {
-        const { data: upadtedAccount } = await UserService.updateById(
-          accountId.toString(),
-          {
-            ...data,
-            photo: currentAccountPhoto ? currentAccountPhoto : "",
-          }
-        );
+        const { data: upadtedAccount } = await UserService.updateById(accountId.toString(), {
+          ...data,
+          photo: currentAccountPhoto ? currentAccountPhoto : "",
+        });
         account = upadtedAccount;
       } else {
-        const { data: cloudinaryData } = await CloudinaryService.uploadImg(
-          data.photo[0]
-        );
+        const { data: cloudinaryData } = await CloudinaryService.uploadImg(data.photo[0]);
         let newData = {
           ...data,
           photo: cloudinaryData.url,
@@ -115,7 +106,7 @@ export default function UpdateAccount({
       toast.success("Cập nhật thành công !!");
 
       // cần cập nhật lại data ở đây
-      mutate((key) => typeof key === 'string' && key.startsWith('/users/get?page='))
+      mutate((key) => typeof key === "string" && key.startsWith("/users/get?page="));
       // cập nhật lại cache của detail account id
       mutate(`/users/get/${accountId.toString()}`);
 
@@ -153,18 +144,11 @@ export default function UpdateAccount({
         </Tooltip>
       </div>
 
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        size="3xl"
-        placement="top-center"
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl" placement="top-center">
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Account Update
-              </ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Account Update</ModalHeader>
               <ModalBody>
                 {isLoading ? (
                   <LoaderImageText />
@@ -174,17 +158,12 @@ export default function UpdateAccount({
                       <Avatar
                         className="w-full h-48"
                         radius="sm"
-                        src={
-                          previewImage
-                            ? previewImage
-                            : currentAccountPhoto || ""
-                        }
+                        src={previewImage ? previewImage : currentAccountPhoto || ""}
                       />
                       <div className="mt-3">
                         <label
                           className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                          htmlFor="small_size"
-                        >
+                          htmlFor="small_size">
                           Avata
                         </label>
                         <input
@@ -192,8 +171,7 @@ export default function UpdateAccount({
                           id="small_size"
                           type="file"
                           {...register("photo")}
-                          onChange={handlePreviewImage}
-                        ></input>
+                          onChange={handlePreviewImage}></input>
                         {errors.photo?.message ? (
                           <span className="text-xs text-danger">
                             {errors?.photo?.message.toString()}
@@ -233,8 +211,7 @@ export default function UpdateAccount({
                       <div className="mb-7">
                         <label
                           htmlFor="status"
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                           Select status
                         </label>
                         <select
@@ -242,8 +219,7 @@ export default function UpdateAccount({
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           defaultValue={getValues("status")}
                           {...register("status")}
-                          onChange={(e) => console.log(typeof e.target.value)}
-                        >
+                          onChange={(e) => console.log(typeof e.target.value)}>
                           <option value={AccountStatus.ACTIVE}>
                             {AccountStatusNames[AccountStatus.ACTIVE]}
                           </option>
@@ -255,8 +231,7 @@ export default function UpdateAccount({
                       <div className="mb-7">
                         <label
                           htmlFor="roles"
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                           Select an role
                         </label>
                         <select
@@ -264,17 +239,10 @@ export default function UpdateAccount({
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           defaultValue={getValues("role")}
                           {...register("role")}
-                          onChange={(e) => console.log(typeof e.target.value)}
-                        >
-                          <option value={RoleEnum.ADMIN}>
-                            {RoleNames[RoleEnum.ADMIN]}
-                          </option>
-                          <option value={RoleEnum.MANAGER}>
-                            {RoleNames[RoleEnum.MANAGER]}
-                          </option>
-                          <option value={RoleEnum.USER}>
-                            {RoleNames[RoleEnum.USER]}
-                          </option>
+                          onChange={(e) => console.log(typeof e.target.value)}>
+                          <option value={RoleEnum.ADMIN}>{RoleNames[RoleEnum.ADMIN]}</option>
+                          <option value={RoleEnum.MANAGER}>{RoleNames[RoleEnum.MANAGER]}</option>
+                          <option value={RoleEnum.USER}>{RoleNames[RoleEnum.USER]}</option>
                         </select>
                       </div>
                     </div>
@@ -282,18 +250,10 @@ export default function UpdateAccount({
                 )}
               </ModalBody>
               <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="flat"
-                  onClick={handleCloseModal}
-                >
+                <Button color="danger" variant="flat" onClick={handleCloseModal}>
                   Close
                 </Button>
-                <Button
-                  color="primary"
-                  variant="flat"
-                  onClick={handleSubmit(onSubmit)}
-                >
+                <Button color="primary" variant="flat" onClick={handleSubmit(onSubmit)}>
                   Update
                 </Button>
               </ModalFooter>

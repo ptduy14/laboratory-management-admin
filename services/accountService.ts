@@ -4,5 +4,8 @@ import { AddAccountSchemaType } from "@/components/accounts/schema/addAccountSch
 export const AccountService = {
     createAccount: async (payload: AddAccountSchemaType) => {
         return await AxiosInstance.post('/auths/' + payload.role + '-create', payload);
+    },
+    delete: async (accountId: string) => {
+        return await AxiosInstance.delete(`/users/${accountId}`)
     }
 }
