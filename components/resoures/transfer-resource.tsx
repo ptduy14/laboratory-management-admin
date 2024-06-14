@@ -46,7 +46,7 @@ export const TransferResource = ({ resource, disclosure }: { resource: Resource,
   );
 
   const onSubmit: SubmitHandler<transferResourceSchemaType> = async (data) => {
-    if (data.quantity > resource.quantity) {
+    if (data.quantity > (resource.quantity - resource.handover)) {
       methods.setError("quantity", { type: "invalid", message: "Số lượng bàn giao không hợp lệ" });
     }
 
