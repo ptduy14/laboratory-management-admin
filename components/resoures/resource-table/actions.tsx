@@ -19,11 +19,13 @@ import UpdateResouce from "../update-resource";
 import { Resource } from "./data";
 import { useDisclosure } from "@nextui-org/react";
 import { TransferResource } from "../transfer-resource";
+import { DeleteResource } from "../delete-resource";
 
 export const Actions = ({ resource }: { resource: Resource }) => {
   const transferModalDisclosure = useDisclosure();
   const detailModalDisclosure = useDisclosure();
   const updateModalDisclosure = useDisclosure();
+  const deleteModalDisclosure = useDisclosure();
   
   return (
     <div className="relative flex justify-end items-center gap-2">
@@ -47,6 +49,10 @@ export const Actions = ({ resource }: { resource: Resource }) => {
             if (key === "update") {
                 updateModalDisclosure.onOpen();
             }
+
+            if (key === "delete") {
+              deleteModalDisclosure.onOpen();
+          }
           }}>
           <DropdownItem key="transfer" startContent={<ViewIcon />}>
             Bàn giao tài nguyên
@@ -65,6 +71,7 @@ export const Actions = ({ resource }: { resource: Resource }) => {
       <TransferResource resource={resource} disclosure={transferModalDisclosure} />
       <DetailResource resourceId={resource.id} disclosure={detailModalDisclosure} />
       <UpdateResouce resourceId={resource.id} disclosure={updateModalDisclosure}/>
+      <DeleteResource resourceId={resource.id} disclosure={deleteModalDisclosure}/>
     </div>
   );
 };

@@ -17,5 +17,8 @@ export const ResourceService = {
     },
     update: async (resourceId: number, payload: UpdateResourceSchemaUnionType) => {
         return await AxiosInstance.patch(`/items/${resourceId}`, payload);
+    },
+    delete: async (resourceId: string) => {
+        return await AxiosInstance.delete(`/items/${resourceId}`)
     }
 }
