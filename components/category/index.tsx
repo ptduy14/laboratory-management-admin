@@ -31,7 +31,7 @@ export const Categories = () => {
         </li>
 
         <li className="flex gap-2">
-          <span>Danh mục tài nguyên</span>
+          <span>Danh mục</span>
           <span> / </span>{" "}
         </li>
         <li className="flex gap-2">

@@ -14,5 +14,8 @@ export const CategoryService = {
     },
     update: async (id: number, payload: UpdateCategorySchemaType) => {
         return await AxiosInstance.patch(`/categories/${id}`, payload)
+    },
+    delete: async (categoryId: string) => {
+        return await AxiosInstance.delete(`/categories/${categoryId}`)
     }
 }
