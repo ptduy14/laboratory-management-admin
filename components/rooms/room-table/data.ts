@@ -21,7 +21,7 @@ export const RoomColumns = [
     },
     {
         key: "quantity",
-        label: "SỐ LƯỢNG TÀI NGUYÊN TRONG PHÒNG"
+        label: "SỐ LƯỢNG TÀI NGUYÊN ĐÃ BÀN GIAO"
     },
     {
         key: "actions",

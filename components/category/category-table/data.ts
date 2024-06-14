@@ -26,6 +26,10 @@ export const resourcesFromCategoryColumns = [
         label: "ĐÃ BÀN GIAO",
       },
       {
+        key: "available",
+        label: "CÓ SẴNG",
+      },
+      {
         key: "unit",
         label: "ĐƠN VỊ",
       },

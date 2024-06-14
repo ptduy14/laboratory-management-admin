@@ -20,9 +20,15 @@ import { HandoverStatusName } from "@/enums/handover-status";
 import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
 import useSWR from "swr";
 import { UnitEnumNames } from "@/enums/unit";
-import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 
-export const DetailResource = ({ resourceId, disclosure }: { resourceId: number, disclosure: UseDisclosureReturn }) => {
+export const DetailResource = ({
+  resourceId,
+  disclosure,
+}: {
+  resourceId: number;
+  disclosure: UseDisclosureReturn;
+}) => {
   // const [account, setAccount] = useState<Account>();
   const { isOpen, onOpen, onOpenChange } = disclosure;
 
@@ -84,13 +90,23 @@ export const DetailResource = ({ resourceId, disclosure }: { resourceId: number,
                         <span className="block font-light text-sm">{resource.quantity || "-"}</span>
                       </label>
                       <label className="flex flex-col">
+                        <span className="block font-semibold">Đơn vị:</span>
+                        <span className="block font-light text-sm">
+                          {UnitEnumNames[resource.unit]}
+                        </span>
+                      </label>
+                      <label className="flex flex-col">
+                        <span className="block font-semibold">Đã bàn giao</span>
+                        <span className="block font-light text-sm">{resource.handover}</span>
+                      </label>
+                      <label className="flex flex-col">
                         <span className="block font-semibold">Chú thích:</span>
                         <span className="block font-light text-sm">{resource.remark || "-"}</span>
                       </label>
                       <label className="flex flex-col">
-                        <span className="block font-semibold">Đơn vị:</span>
+                        <span className="block font-semibold">Có sẵng</span>
                         <span className="block font-light text-sm">
-                          {UnitEnumNames[resource.unit]}
+                          {resource.quantity - resource.handover}
                         </span>
                       </label>
                       <label className="flex flex-col">
@@ -110,12 +126,6 @@ export const DetailResource = ({ resourceId, disclosure }: { resourceId: number,
                               {ResourceStatusName[resource.status]}
                             </span>
                           </Chip>
-                        </span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Trạng thái bàn giao:</span>
-                        <span className="block font-light text-sm">
-                          {HandoverStatusName[resource.handoverStatus]}
                         </span>
                       </label>
                       <label className="flex flex-col">

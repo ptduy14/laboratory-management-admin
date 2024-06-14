@@ -54,6 +54,8 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
           <span className="capitalize text-xs">{ResourceStatusName[cellValue]}</span>
         </Chip>
       );
+      case 'available': 
+      return resouce.quantity - resouce.handover
     case "actions":
       return (
         <Actions resource={resouce}/>

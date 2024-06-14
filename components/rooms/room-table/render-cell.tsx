@@ -3,6 +3,7 @@ import { Room } from "./data";
 import { Chip, Tooltip } from "@nextui-org/react";
 import { RoomStatusNames } from "@/enums/room-status";
 import { DeleteIcon } from "@/components/icons/table/delete-icon";
+import { UpdateRoom } from "../update-room";
 
 interface RenderCellProps {
   room: Room;
@@ -28,7 +29,7 @@ export const RenderCell = ({ room, columnKey }: RenderCellProps) => {
     case "actions":
       return (
         <div className="flex items-center gap-4 ">
-          {/* <UpdateCategory categoryId={category.id}/> */}
+         <UpdateRoom room={room}/>
           <div>
             <Tooltip
               content="Xóa danh mục"
