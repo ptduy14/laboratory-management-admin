@@ -81,7 +81,7 @@ export const TransferResource = ({ resource, disclosure }: { resource: Resource,
               </ModalHeader>
               <ModalBody>
                 <div className="p-4 bg-[#3F3F46] rounded mb-4">
-                  <span className="font-bold">Số lượng hiện có sẵng:</span> {resource.quantity}
+                  <span className="font-bold">Số lượng hiện có sẵng:</span> {resource.quantity - resource.handover}
                 </div>
                 <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                   <div className="w-full max-h-80">
