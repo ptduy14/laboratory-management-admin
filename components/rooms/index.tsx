@@ -9,9 +9,10 @@ import { LoaderTable } from "../loader/loader-table";
 import { RoomService } from "@/services/roomService";
 import { RoomTableWrapper } from "./room-table/room-table";
 import { RoomColumns } from "./room-table/data";
+import { AddRoom } from "./add-room";
 
 export const Rooms = () => {
-  const { data: rooms, isLoading: isFetchingRooms } = useSWR('/rooms', async (url) => {
+  const { data: rooms, isLoading: isFetchingRooms, mutate: updateRoomList } = useSWR('/rooms', async (url) => {
     const { data } = await RoomService.getAll(url);
     return data;
   })
@@ -39,7 +40,7 @@ export const Rooms = () => {
       <h3 className="text-xl font-semibold">Tất cả phòng</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex flex-row gap-3.5 flex-wrap">
-          {/* <AddCategory mutate={updateCategoriesList}/> */}
+          <AddRoom mutate={updateRoomList}/>
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>
