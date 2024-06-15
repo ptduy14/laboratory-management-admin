@@ -17,10 +17,11 @@ import {
 import { ResourcesTransfered } from "./data";
   import { useDisclosure } from "@nextui-org/react";
   import { ReTransferResource } from "../retransfer-resource";
+  import { DetailRoomResource } from "../detail-room-resource";
   
   export const Actions = ({ resourceTranfered }: { resourceTranfered: ResourcesTransfered }) => {
     const reTransferModalDisclosure = useDisclosure();
-    const detailModalDisclosure = useDisclosure();
+    const detailRoomResourceModalDisclosure = useDisclosure();
     const updateModalDisclosure = useDisclosure();
     const deleteModalDisclosure = useDisclosure();
     
@@ -40,7 +41,7 @@ import { ResourcesTransfered } from "./data";
               }
   
               if (key === "detail") {
-                  detailModalDisclosure.onOpen();
+                detailRoomResourceModalDisclosure.onOpen();
               }
   
               if (key === "update") {
@@ -54,11 +55,11 @@ import { ResourcesTransfered } from "./data";
             {/* <DropdownItem key="transfer" startContent={<ViewIcon />}>
               Bàn giao tài nguyên
             </DropdownItem> */}
-            {/* <DropdownItem key="detail" startContent={<EyeIcon size={20} fill="#979797" />}>
-              Chi tiết tài nguyên
-            </DropdownItem> */}
             <DropdownItem key="retransfer" startContent={<EditIcon size={20} fill="#979797" />}>
              Chuyển tiếp tài nguyên
+            </DropdownItem>
+            <DropdownItem key="detail" startContent={<EyeIcon size={20} fill="#979797" />}>
+              Chi tiết tài nguyên
             </DropdownItem>
             {/* <DropdownItem key="delete" className="text-danger" startContent={<DeleteIcon size={20} fill="#FF0080" />}>
               Xóa tài nguyên
@@ -66,6 +67,7 @@ import { ResourcesTransfered } from "./data";
           </DropdownMenu>
         </Dropdown>
         <ReTransferResource resourceTransfered={resourceTranfered} disclosure={reTransferModalDisclosure} />
+        <DetailRoomResource resourceTransferedId={resourceTranfered.id} disclosure={detailRoomResourceModalDisclosure}/>
         {/* <DetailResource resourceId={resource.id} disclosure={detailModalDisclosure} />
         <UpdateResouce resourceId={resource.id} disclosure={updateModalDisclosure}/>
         <DeleteResource resourceId={resource.id} disclosure={deleteModalDisclosure}/> */}
