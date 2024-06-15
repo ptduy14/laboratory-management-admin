@@ -21,33 +21,6 @@ export const CardTool = () => {
             1 dụng cụ
           </span>
         </div>
-        <div className="flex items-center gap-6">
-          <div>
-            <div>
-              <span className="font-semibold text-success-600 text-xs">
-                {"↓"}
-              </span>
-              <span className="text-xs">11,930</span>
-            </div>
-            <span className="text-default-900 text-xs">USD</span>
-          </div>
-
-          <div>
-            <div>
-              <span className="font-semibold text-danger text-xs">{"↑"}</span>
-              <span className="text-xs">54,120</span>
-            </div>
-            <span className="text-default-900 text-xs">USD</span>
-          </div>
-
-          <div>
-            <div>
-              <span className="font-semibold text-danger text-xs">{"⭐"}</span>
-              <span className="text-xs">150</span>
-            </div>
-            <span className="text-default-900 text-xs">VIP</span>
-          </div>
-        </div>
       </CardBody>
     </Card>
   );

@@ -9,5 +9,8 @@ export const RoomResourceService = {
     },
     getResourceTransferedById: async (url: string) => {
         return await AxiosInstance.get(url)
-    }
+    },
+    delete: async (resourceTransferedId: string) => {
+        return await AxiosInstance.delete(`/room-items/${resourceTransferedId}`)
+     },
 }

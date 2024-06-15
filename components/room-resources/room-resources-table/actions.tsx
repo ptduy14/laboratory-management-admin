@@ -18,12 +18,12 @@ import { ResourcesTransfered } from "./data";
   import { useDisclosure } from "@nextui-org/react";
   import { ReTransferResource } from "../retransfer-resource";
   import { DetailRoomResource } from "../detail-room-resource";
+  import { DeleteRoomResource } from "../delete-room-resource";
   
   export const Actions = ({ resourceTranfered }: { resourceTranfered: ResourcesTransfered }) => {
     const reTransferModalDisclosure = useDisclosure();
     const detailRoomResourceModalDisclosure = useDisclosure();
-    const updateModalDisclosure = useDisclosure();
-    const deleteModalDisclosure = useDisclosure();
+    const deleteRoomResourceModalDisclosure = useDisclosure();
     
     return (
       <div className="relative flex justify-end items-center gap-2">
@@ -44,30 +44,24 @@ import { ResourcesTransfered } from "./data";
                 detailRoomResourceModalDisclosure.onOpen();
               }
   
-              if (key === "update") {
-                  updateModalDisclosure.onOpen();
-              }
-  
               if (key === "delete") {
-                deleteModalDisclosure.onOpen();
+                deleteRoomResourceModalDisclosure.onOpen();
             }
             }}>
-            {/* <DropdownItem key="transfer" startContent={<ViewIcon />}>
-              Bàn giao tài nguyên
-            </DropdownItem> */}
             <DropdownItem key="retransfer" startContent={<EditIcon size={20} fill="#979797" />}>
              Chuyển tiếp tài nguyên
             </DropdownItem>
             <DropdownItem key="detail" startContent={<EyeIcon size={20} fill="#979797" />}>
               Chi tiết tài nguyên
             </DropdownItem>
-            {/* <DropdownItem key="delete" className="text-danger" startContent={<DeleteIcon size={20} fill="#FF0080" />}>
-              Xóa tài nguyên
-            </DropdownItem> */}
+            <DropdownItem key="delete" className="text-danger" startContent={<DeleteIcon size={20} fill="#FF0080" />}>
+             Thu hồi tài nguyên
+            </DropdownItem>
           </DropdownMenu>
         </Dropdown>
         <ReTransferResource resourceTransfered={resourceTranfered} disclosure={reTransferModalDisclosure} />
         <DetailRoomResource resourceTransferedId={resourceTranfered.id} disclosure={detailRoomResourceModalDisclosure}/>
+        <DeleteRoomResource resourceTransferedId={resourceTranfered.id} disclosure={deleteRoomResourceModalDisclosure}/>
         {/* <DetailResource resourceId={resource.id} disclosure={detailModalDisclosure} />
         <UpdateResouce resourceId={resource.id} disclosure={updateModalDisclosure}/>
         <DeleteResource resourceId={resource.id} disclosure={deleteModalDisclosure}/> */}

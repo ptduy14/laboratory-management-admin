@@ -17,6 +17,7 @@ import useSWR from "swr";
 import { RoomType } from "@/types/room";
 import { CategoryStatus } from "@/enums/category-status";
 import { RoomStatus } from "@/enums/room-status";
+import { ReportsIcon } from "../icons/sidebar/reports-icon";
 
 
 export const SidebarWrapper = () => {
@@ -90,6 +91,12 @@ export const SidebarWrapper = () => {
                 title="Tài nguyên"
                 icon={<ResoucesIcon />}
                 href="/resources"
+              />
+              <SidebarItem
+                isActive={pathname === "/registration"}
+                title="Phiếu mượn"
+                icon={<ReportsIcon />}
+                href="/registration"
               />
             </SidebarMenu>
             <SidebarMenu title="Danh Mục">
