@@ -3,8 +3,6 @@ import { ExportIcon } from "../icons/accounts/export-icon";
 import useSWR from "swr";
 import { ResourceService } from "@/services/resourceService";
 import { Resource } from "./resource-table/data";
-import { RoleNames } from "@/enums/role";
-import { AccountStatusNames } from "@/enums/account-status";
 import { getCurrentDate } from "@/utils/getCurrentDate";
 import { UnitEnumNames } from "@/enums/unit";
 import { ResourceStatusName } from "@/enums/resource-status";
