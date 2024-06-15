@@ -120,7 +120,7 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
               <>
               <span className="text-default-400 text-small">Tổng số  tài nguyên đã bàn giao: {resourceTransfered.meta.numberRecords} </span>
             <div style={{ marginBottom: '16px' }}></div>
-            <RoomResourcesTableWrapper columns={ResourcesTransferedColumns} resourcesTransfered={resourceTransfered.data}/></>
+            <RoomResourcesTableWrapper columns={ResourcesTransferedColumns} resourcesTransfered={resourceTransfered.data} setPage={setPage} meta={resourceTransfered.meta}/></>
             )
              : <LoaderTable />}
           </div>
