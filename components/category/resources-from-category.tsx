@@ -1,12 +1,20 @@
 "use client";
 import Link from "next/link";
 import { HouseIcon } from "../icons/breadcrumb/house-icon";
-import { Input, Button, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import {
+  Input,
+  Button,
+  Selection,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 import { LoaderTable } from "../loader/loader-table";
 import { useEffect, useState } from "react";
 import { ResourceService } from "@/services/resourceService";
 import axios from "axios";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ResourceTableWrapper } from "../resoures/resource-table/resource-table";
 import { Resource } from "../resoures/resource-table/data";
@@ -19,30 +27,37 @@ import { CategoryService } from "@/services/categoryService";
 import { AddResourceFromCatetory } from "./add-resource-from-catetory";
 
 export const ResourcesFromCategory = ({ id }: { id: string }) => {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
   const [searchFilterValue, setSearchFilterValue] = useState("");
-  const [statusFilter, setStatusFilter] = useState<Selection>('all');
-  const [originFilter, setOriginFilter] = useState<Selection>('all');
-  const router = useRouter()
+  const [statusFilter, setStatusFilter] = useState<Selection>("all");
+  const [originFilter, setOriginFilter] = useState<Selection>("all");
+  const router = useRouter();
 
   // will improve later
-  const { data: resourcesFromCategory, isLoading: isFetchingResourcesFromCategory, mutate: updateResourcesFormCategoryList } = useSWR(`/items/category/${id}?page=${page}`, async (url) => {
-    const { data } = await ResourceService.getByCategory(url)
-    return data
-  })
-
-  const {data: category, isLoading: isFetchingCategory} = useSWR(`/categories/${id}`, async (url) => {
-    const { data } = await CategoryService.getById(url)
+  const {
+    data: resourcesFromCategory,
+    isLoading: isFetchingResourcesFromCategory,
+    mutate: updateResourcesFormCategoryList,
+  } = useSWR(`/items/category/${id}?page=${page}`, async (url) => {
+    const { data } = await ResourceService.getByCategory(url);
     return data;
-  })
+  });
+
+  const { data: category, isLoading: isFetchingCategory } = useSWR(
+    `/categories/${id}`,
+    async (url) => {
+      const { data } = await CategoryService.getById(url);
+      return data;
+    }
+  );
 
   const onSearchChange = (value?: string) => {
     if (value) {
-      setSearchFilterValue(value)
+      setSearchFilterValue(value);
     } else {
-      setSearchFilterValue("")
+      setSearchFilterValue("");
     }
-  }
+  };
 
   // const handleFilteredItems = () => {
   //   let filteredResources = isFetchingResourcesFromCategory ? [] : [...resourcesFromCategory.data];
@@ -85,7 +100,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
       <h3 className="text-xl font-semibold">Danh sách {category?.name.toLowerCase()}</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
-        <Input
+          <Input
             classNames={{
               input: "w-full",
               mainWrapper: "w-full",
@@ -108,8 +123,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
                 closeOnSelect={false}
                 selectedKeys={statusFilter}
                 selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
+                onSelectionChange={setStatusFilter}>
                 {statusOptions.map((status) => (
                   <DropdownItem key={status.uid} className="capitalize">
                     {status.name}
@@ -131,8 +145,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
                 closeOnSelect={false}
                 selectedKeys={originFilter}
                 selectionMode="multiple"
-                onSelectionChange={setOriginFilter}
-              >
+                onSelectionChange={setOriginFilter}>
                 {originOptions.map((origin) => (
                   <DropdownItem key={origin.uid} className="capitalize">
                     {origin.name}
@@ -144,19 +157,27 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
         </div>
         {isFetchingCategory || (
           <div className="flex flex-row gap-3.5 flex-wrap">
-            <AddResourceFromCatetory mutate={updateResourcesFormCategoryList} category={category}/>
+            <AddResourceFromCatetory mutate={updateResourcesFormCategoryList} category={category} />
           </div>
         )}
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-      {!isFetchingResourcesFromCategory ? 
-        (
+        {!isFetchingResourcesFromCategory ? (
           <>
-          <span className="text-default-400 text-small">Tổng số {category?.name.toLowerCase()}: {resourcesFromCategory.meta.numberRecords} </span>
-        <div style={{ marginBottom: '16px' }}></div>
-        <ResourceTableWrapper resources={resourcesFromCategory.data} columns={resourcesFromCategoryColumns} meta={resourcesFromCategory.meta} setPage={setPage}/></>
-        )
-         : <LoaderTable />}
+            <span className="text-default-400 text-small">
+              Tổng số {category?.name.toLowerCase()}: {resourcesFromCategory.meta.numberRecords}{" "}
+            </span>
+            <div style={{ marginBottom: "16px" }}></div>
+            <ResourceTableWrapper
+              resources={resourcesFromCategory.data}
+              columns={resourcesFromCategoryColumns}
+              meta={resourcesFromCategory.meta}
+              setPage={setPage}
+            />
+          </>
+        ) : (
+          <LoaderTable />
+        )}
       </div>
     </div>
   );

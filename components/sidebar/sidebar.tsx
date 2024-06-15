@@ -121,8 +121,9 @@ export const SidebarWrapper = () => {
                   return (
                     <SidebarItem
                       key={room.id}
-                      isActive={pathname === `/rooms/${room.id}`}
+                      isActive={pathname === `/rooms/${room.id}/resources`}
                       title={room.name}
+                      href={`/rooms/${room.id}/resources`}
                     />
                   );
                 }
