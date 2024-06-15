@@ -25,6 +25,7 @@ import { originOptions } from "../resoures/resource-table/data";
 import useSWR, { mutate } from "swr";
 import { CategoryService } from "@/services/categoryService";
 import { AddResourceFromCatetory } from "./add-resource-from-catetory";
+import { ExportCSVCategoryResource } from "../category-resources/export-csv-category-resource";
 
 export const ResourcesFromCategory = ({ id }: { id: string }) => {
   const [page, setPage] = useState(1);
@@ -158,6 +159,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
         {isFetchingCategory || (
           <div className="flex flex-row gap-3.5 flex-wrap">
             <AddResourceFromCatetory mutate={updateResourcesFormCategoryList} category={category} />
+            <ExportCSVCategoryResource categoryId={category.id} />
           </div>
         )}
       </div>

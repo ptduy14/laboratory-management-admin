@@ -34,7 +34,7 @@ const options: Props["options"] = {
   },
 
   xaxis: {
-    categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+    categories: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     labels: {
       // show: false,
       style: {

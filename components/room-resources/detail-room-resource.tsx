@@ -13,7 +13,7 @@ import {
 import { EyeIcon } from "@/components/icons/table/eye-icon";
 import React, { useState, useEffect } from "react";
 import { ResourceService } from "@/services/resourceService";
-import { Resource } from "./resource-table/data";
+import { ResourcesTransfered } from "./room-resources-table/data";
 import { RoleNames } from "@/enums/role";
 import { ResourceStatusName } from "@/enums/resource-status";
 import { HandoverStatusName } from "@/enums/handover-status";
@@ -22,27 +22,20 @@ import useSWR from "swr";
 import { UnitEnumNames } from "@/enums/unit";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { RoomResourceService } from "@/services/roomResourceService";
+import { formatDateTime } from "@/utils/formatDateTime";
 
-export const DetailResource = ({
-  resourceId,
+export const DetailRoomResource = ({
+  resourceTransferedId,
   disclosure,
 }: {
-  resourceId: number;
+  resourceTransferedId: number;
   disclosure: UseDisclosureReturn;
 }) => {
   // const [account, setAccount] = useState<Account>();
   const { isOpen, onOpen, onOpenChange } = disclosure;
 
-  const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
-    isOpen ? `/items/${resourceId.toString()}` : null,
-    async (url: string) => {
-      const { data } = await ResourceService.getById(url);
-      return data;
-    }
-  );
-
-  const { data: resourceTransferedInfo, isLoading: isFetchingResourceTransferedInfo } = useSWR(
-    isOpen ? `room-items/item/${resourceId.toString()}` : null,
+  const { data: resourceTransfered, isLoading: isFetchingResourceTransfered } = useSWR(
+    isOpen ? `/room-items/${resourceTransferedId.toString()}` : null,
     async (url) => {
       const { data } = await RoomResourceService.getResourceTransferedById(url);
       return data;
@@ -64,60 +57,70 @@ export const DetailResource = ({
                 </div>
               </ModalHeader>
               <ModalBody>
-                {!isFetchingResource && resource ? (
+                {!isFetchingResourceTransfered && resourceTransfered ? (
                   <div className="space-y-4 scrollbar scrollbar-thin overflow-y-auto h-96">
                     <div className="border-b pb-2 mb-4 border-gray-500">
                       <label className="flex items-center mb-1.5">
                         <span className="w-1/2 block font-semibold">Resource id:</span>
-                        <span className="w-1/2 block font-light text-sm">{resourceId}</span>
+                        <span className="w-1/2 block font-light text-sm">
+                          {resourceTransfered.item.id}
+                        </span>
                       </label>
                       <label className="flex items-center mb-1.5">
                         <span className="w-1/2 block font-semibold">Tên tài nguyên:</span>
-                        <span className="w-1/2 block font-light text-sm">{resource.name}</span>
+                        <span className="w-1/2 block font-light text-sm">
+                          {resourceTransfered.item.name}
+                        </span>
                       </label>
                     </div>
-                    <div className="border-b pb-2 mb-4 border-gray-500">
+                    <div className=" pb-2 mb-4 border-gray-500">
                       <div className="grid grid-cols-2 gap-y-4">
                         <label className="flex flex-col">
                           <span className="block font-semibold">Xuất xứ:</span>
-                          <span className="block font-light text-sm">{resource.origin || "-"}</span>
+                          <span className="block font-light text-sm">
+                            {resourceTransfered.item.origin || "-"}
+                          </span>
                         </label>
                         <label className="flex flex-col">
                           <span className="block font-semibold">Số seri:</span>
                           <span className="block font-light text-sm">
-                            {resource.serial_number || "-"}
+                            {resourceTransfered.item.serial_number || "-"}
                           </span>
                         </label>
                         <label className="flex flex-col">
                           <span className="block font-semibold">Dung tích:</span>
                           <span className="block font-light text-sm">
-                            {resource.specification || "-"}
+                            {resourceTransfered.item.specification || "-"}
                           </span>
                         </label>
                         <label className="flex flex-col">
                           <span className="block font-semibold">Số lượng:</span>
                           <span className="block font-light text-sm">
-                            {resource.quantity || "-"}
+                            {resourceTransfered.quantity || "-"}
                           </span>
                         </label>
                         <label className="flex flex-col">
                           <span className="block font-semibold">Đơn vị:</span>
                           <span className="block font-light text-sm">
-                            {UnitEnumNames[resource.unit]}
+                            {UnitEnumNames[resourceTransfered.item.unit]}
                           </span>
                         </label>
                         <label className="flex flex-col">
-                          <span className="block font-semibold">Đã bàn giao</span>
-                          <span className="block font-light text-sm">{resource.handover}</span>
-                        </label>
-                        <label className="flex flex-col">
-                          <span className="block font-semibold">Chú thích:</span>
-                          <span className="block font-light text-sm">{resource.remark || "-"}</span>
-                        </label>
-                        <label className="flex flex-col">
-                          <span className="block font-semibold">Có sẵng</span>
+                          <span className="block font-semibold">Đã mượn</span>
                           <span className="block font-light text-sm">
-                            {resource.quantity - resource.handover}
+                            {resourceTransfered.itemQuantityBorrowed}
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Đã trả</span>
+                          <span className="block font-light text-sm">
+                            {resourceTransfered.item.itemQuantityReturned || 0}
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Ngày bàn giao</span>
+                          <span className="block font-light text-sm">
+                            {formatDateTime(resourceTransfered.createdAt).formattedDate}
                           </span>
                         </label>
                         <label className="flex flex-col">
@@ -127,47 +130,21 @@ export const DetailResource = ({
                               size="sm"
                               variant="flat"
                               color={
-                                Number(resource.status) === 0 || Number(resource.status) === 1
+                                Number(resourceTransfered.item.status) === 0 ||
+                                Number(resourceTransfered.item.status) === 1
                                   ? "success"
-                                  : Number(resource.status) === 2
+                                  : Number(resourceTransfered.item.status) === 2
                                   ? "warning"
                                   : "danger"
                               }>
                               <span className="capitalize text-xs">
-                                {ResourceStatusName[resource.status]}
+                                {ResourceStatusName[resourceTransfered.item.status]}
                               </span>
                             </Chip>
                           </span>
                         </label>
-                        <label className="flex flex-col">
-                          <span className="block font-semibold">Danh mục:</span>
-                          <span className="block font-light text-sm">{resource.category.name}</span>
-                        </label>
                       </div>
                     </div>
-                    {!isFetchingResourceTransferedInfo && resourceTransferedInfo.meta.numberRecords > 0 && (
-                      <>
-                        <span className="text-sm text-gray-500">
-                          Thông tin về trạng thái bàn giao
-                        </span>
-                        <div className="grid grid-cols-2 gap-y-4">
-                          {resourceTransferedInfo.data.map((item: any) => {
-                            return (
-                              <>
-                                <label className="flex flex-col">
-                                  <span className="block font-semibold">Tên phòng:</span>
-                                  <span className="block font-light text-sm">{item.room.name}</span>
-                                </label>
-                                <label className="flex flex-col">
-                                  <span className="block font-semibold">Số lượng bàn giao:</span>
-                                  <span className="block font-light text-sm">{item.quantity}</span>
-                                </label>
-                              </>
-                            );
-                          })}
-                        </div>
-                      </>
-                    )}
                   </div>
                 ) : (
                   <LoaderSkeletonForm />

@@ -14,6 +14,11 @@ import { AccountTableWrapper } from "../accounts/account-table/account-table";
 import { Account } from "../accounts/account-table/data";
 import { LoaderTable } from "../loader/loader-table";
 import useSWR from "swr";
+import { CategoryService } from "@/services/categoryService";
+import { Category } from "../category/category-table/data";
+import { CardCategory } from "./card-category";
+
+const colors = ['bg-default-50', 'bg-success', 'bg-primary']
 
 const Chart = dynamic(
   () => import("../charts/steam").then((mod) => mod.Steam),
@@ -29,6 +34,14 @@ export const Content = () => {
     return data;
   });
 
+  const { data: categories, isLoading: isFetchingCategories, mutate: updateCategoriesList } = useSWR(
+    `/categories`,
+    async (url) => {
+      const { data } = await CategoryService.getAll(url);
+      return data;
+    }
+  );
+
   return (
     <div className="h-full lg:px-6">
       <div className="flex justify-center gap-4 xl:gap-6 pt-3 px-4 lg:px-0  flex-wrap xl:flex-nowrap sm:pt-10 max-w-[90rem] mx-auto w-full">
@@ -39,9 +52,10 @@ export const Content = () => {
               Tài nguyên phòng thí nghiệm
             </h3>
             <div className="grid md:grid-cols-2 grid-cols-1 2xl:grid-cols-3 gap-5  justify-center w-full">
-              <CardEquipment />
-              <CardTool />
-              <CardChemical />
+              {!isFetchingCategories && categories?.data.map((category: Category, index: number) => {
+                const colorClass = colors[index % colors.length];
+                return <CardCategory key={index} category={category} colorClass={colorClass}/>
+              })}
             </div>
           </div>
 
@@ -58,7 +72,17 @@ export const Content = () => {
 
         {/* Left Section */}
         <div className="mt-4 gap-2 flex flex-col xl:max-w-md w-full">
-          <h3 className="text-xl font-semibold">Section</h3>
+          <div className="flex flex-wrap justify-between items-center">
+          <h3 className="text-xl font-semibold">Tài nguyên</h3>
+          <Link
+            href="/resources"
+            as={NextLink}
+            color="primary"
+            className="cursor-pointer"
+          >
+            Xem thêm
+          </Link>
+          </div>
           <div className="flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col">
             <CardAgents />
             <CardTransactions />
@@ -68,7 +92,7 @@ export const Content = () => {
 
       {/* Table Latest Users */}
       <div className="flex flex-col justify-center w-full py-5 px-4 lg:px-0  max-w-[90rem] mx-auto gap-3">
-        <div className="flex  flex-wrap justify-between">
+        <div className="flex flex-wrap justify-between">
           <h3 className="text-center text-xl font-semibold">Accounts</h3>
           <Link
             href="/accounts"

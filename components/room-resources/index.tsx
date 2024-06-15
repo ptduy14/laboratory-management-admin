@@ -19,6 +19,7 @@ import { originOptions } from "../resoures/resource-table/data";
 import { statusOptions } from "../resoures/resource-table/data";
 import { RoomResourcesTableWrapper } from "./room-resources-table/room-resources-table";
 import { ResourcesTransferedColumns } from "./room-resources-table/data";
+import { ExportCSVRoomResource } from "./export-csv-room-resource";
 
 export const RoomResources = ({ roomId }: {roomId: string}) => {
     const [page, setPage] = useState(1);
@@ -28,7 +29,7 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
         return data
     })
 
-    const { data: resourceTransfered,isLoading: isFetchingResourceTransfered } = useSWR(`/room-items/room/${roomId}?page=${page}`, async (url) => {
+    const { data: resourceTransfered ,isLoading: isFetchingResourceTransfered } = useSWR(`/room-items/room/${roomId}?page=${page}`, async (url) => {
         const { data } = await RoomService.getResourcesFromRoom(url);
         return data
     })
@@ -45,7 +46,7 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
             </li>
     
             <li className="flex gap-2">
-              <span>{room?.name.toLowerCase()}</span>
+              <span>{room?.name}</span>
               <span> / </span>{" "}
             </li>
             <li className="flex gap-2">
@@ -113,12 +114,15 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
                 </Dropdown>
               </div>
             </div>
+            <div className="flex flex-row gap-3.5 flex-wrap">
+            <ExportCSVRoomResource roomId={roomId}/>
+          </div>
           </div>
           <div className="max-w-[95rem] mx-auto w-full">
           {!isFetchingResourceTransfered ? 
             (
               <>
-              <span className="text-default-400 text-small">Tổng số  tài nguyên đã bàn giao: {resourceTransfered.meta.numberRecords} </span>
+              <span className="text-default-400 text-small">Tài nguyên đã bàn giao: {resourceTransfered.meta.numberRecords} </span>
             <div style={{ marginBottom: '16px' }}></div>
             <RoomResourcesTableWrapper columns={ResourcesTransferedColumns} resourcesTransfered={resourceTransfered.data} setPage={setPage} meta={resourceTransfered.meta}/></>
             )

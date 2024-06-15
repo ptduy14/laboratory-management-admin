@@ -21,6 +21,7 @@ import { statusOptions } from "./resource-table/data";
 import { AddResource } from "./add-resource";
 import { originOptions } from "./resource-table/data";
 import useSWR from "swr";
+import { ExportCSVResource } from "./export-csv-resource";
 
 export const Resources = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -137,9 +138,7 @@ export const Resources = () => {
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           <AddResource mutate={updateResourceList} />
-          <Button color="primary" startContent={<ExportIcon />}>
-            Export to CSV
-          </Button>
+          <ExportCSVResource />
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
