@@ -19,6 +19,7 @@ import { originOptions } from "../resoures/resource-table/data";
 import { statusOptions } from "../resoures/resource-table/data";
 import { RoomResourcesTableWrapper } from "./room-resources-table/room-resources-table";
 import { ResourcesTransferedColumns } from "./room-resources-table/data";
+import { ExportCSVRoomResource } from "./export-csv-room-resource";
 
 export const RoomResources = ({ roomId }: {roomId: string}) => {
     const [page, setPage] = useState(1);
@@ -28,7 +29,7 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
         return data
     })
 
-    const { data: resourceTransfered,isLoading: isFetchingResourceTransfered } = useSWR(`/room-items/room/${roomId}?page=${page}`, async (url) => {
+    const { data: resourceTransfered ,isLoading: isFetchingResourceTransfered } = useSWR(`/room-items/room/${roomId}?page=${page}`, async (url) => {
         const { data } = await RoomService.getResourcesFromRoom(url);
         return data
     })
@@ -113,6 +114,9 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
                 </Dropdown>
               </div>
             </div>
+            <div className="flex flex-row gap-3.5 flex-wrap">
+            <ExportCSVRoomResource roomId={roomId}/>
+          </div>
           </div>
           <div className="max-w-[95rem] mx-auto w-full">
           {!isFetchingResourceTransfered ? 

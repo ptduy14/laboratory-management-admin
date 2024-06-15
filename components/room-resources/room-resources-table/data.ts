@@ -8,6 +8,7 @@ export interface ResourcesTransfered {
   itemQuantityReturned: number;
   year: string;
   remark: string | null;
+  createdAt: string,
   item: Resource;
 }
 
