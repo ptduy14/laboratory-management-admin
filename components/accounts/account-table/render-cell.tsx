@@ -20,7 +20,7 @@ export const RenderCell = ({ account, columnKey }: Props) => {
     case "firstName":
       return (
         <User
-          name={account.lastName + cellValue}
+          name={account.lastName + " " + cellValue}
           description={account.email}
           avatarProps={{
             src: account.photo !== null ? account.photo : "",
