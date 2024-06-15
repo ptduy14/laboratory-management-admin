@@ -1,4 +1,5 @@
 import { Resource } from "@/components/resoures/resource-table/data";
+import { Room } from "@/components/rooms/room-table/data";
 
 export interface ResourcesTransfered {
   id: number;
@@ -10,6 +11,7 @@ export interface ResourcesTransfered {
   remark: string | null;
   createdAt: string,
   item: Resource;
+  room: Room
 }
 
 export const ResourcesTransferedColumns = [
@@ -36,5 +38,9 @@ export const ResourcesTransferedColumns = [
     {
         key: "unit",
         label: "ĐƠN VỊ TÍNH"
+    },
+    {
+        key: "actions",
+        label: "ACTIONS"
     }
 ]

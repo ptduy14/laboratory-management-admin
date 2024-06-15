@@ -20,6 +20,7 @@ import {
   import { useDisclosure } from "@nextui-org/react";
   import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
   import { ResourcesTransfered } from "./data";
+  import { Actions } from "./actions";
   
   interface Props {
     resouceTransfered: ResourcesTransfered;
@@ -37,7 +38,9 @@ import {
   
       case "unit":
         return UnitEnumNames[resouceTransfered.item.unit];
-      
+
+      case "actions":
+        return <Actions resourceTranfered={resouceTransfered} />
         // case "status":
         // return (
         //   <Chip
