@@ -15,6 +15,7 @@ import { LoaderTable } from "../loader/loader-table";
 import { statusOptions } from "./account-table/data";
 import { roleOptions } from "./account-table/data";
 import useSWR from "swr";
+import { ExportCSVAccount } from "./export-csv-account";
 
 export const Accounts = () => {
   const [searchFilterValue, setSearchFilterValue] = useState("");
@@ -132,9 +133,7 @@ export const Accounts = () => {
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
           <AddAccount accounts={accounts?.data} mutate={updateAccountList}/>
-          <Button color="primary" startContent={<ExportIcon />}>
-            Export to CSV
-          </Button>
+          <ExportCSVAccount />
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
