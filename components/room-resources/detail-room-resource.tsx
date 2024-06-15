@@ -114,7 +114,7 @@ export const DetailRoomResource = ({
                         <label className="flex flex-col">
                           <span className="block font-semibold">Đã trả</span>
                           <span className="block font-light text-sm">
-                            {resourceTransfered.item.itemQuantityReturned}
+                            {resourceTransfered.item.itemQuantityReturned || 0}
                           </span>
                         </label>
                         <label className="flex flex-col">
