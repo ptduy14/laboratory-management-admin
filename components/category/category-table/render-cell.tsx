@@ -4,6 +4,7 @@ import { Chip, Tooltip } from "@nextui-org/react";
 import { CategoryStatusNames } from "@/enums/category-status";
 import { UpdateCategory } from "../update-category";
 import { DeleteIcon } from "@/components/icons/table/delete-icon";
+import { DeleteCategory } from "../delete-category";
 
 interface RenderCellProps {
   category: Category;
@@ -28,17 +29,7 @@ export const RenderCell = ({ category, columnKey }: RenderCellProps) => {
       return (
         <div className="flex items-center gap-4 ">
           <UpdateCategory categoryId={category.id}/>
-          <div>
-            <Tooltip
-              content="Xóa danh mục"
-              color="danger"
-              onClick={() => console.log("Delete user", category.id)}
-            >
-              <button>
-                <DeleteIcon size={20} fill="#FF0080" />
-              </button>
-            </Tooltip>
-          </div>
+          <DeleteCategory categoryId={category.id}/>
         </div>
       );
     default:

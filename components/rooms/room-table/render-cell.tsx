@@ -4,6 +4,7 @@ import { Chip, Tooltip } from "@nextui-org/react";
 import { RoomStatusNames } from "@/enums/room-status";
 import { DeleteIcon } from "@/components/icons/table/delete-icon";
 import { UpdateRoom } from "../update-room";
+import { DeleteRoom } from "../delete-room";
 
 interface RenderCellProps {
   room: Room;
@@ -30,17 +31,7 @@ export const RenderCell = ({ room, columnKey }: RenderCellProps) => {
       return (
         <div className="flex items-center gap-4 ">
          <UpdateRoom room={room}/>
-          <div>
-            <Tooltip
-              content="Xóa danh mục"
-              color="danger"
-              onClick={() => console.log("Delete user", room.id)}
-            >
-              <button>
-                <DeleteIcon size={20} fill="#FF0080" />
-              </button>
-            </Tooltip>
-          </div>
+         <DeleteRoom roomId={room.id}/>
         </div>
       );
     default:
