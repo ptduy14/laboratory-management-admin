@@ -25,6 +25,14 @@ export const ResourcesTransferedColumns = [
         label: "SỐ LƯỢNG BÀN GIAO"
     },
     {
+        key: "itemQuantityBorrowed",
+        label: "ĐÃ MƯỢN"
+    },
+    {
+        key: "itemQuantityReturned",
+        label: "ĐÃ TRẢ"
+    },
+    {
         key: "unit",
         label: "ĐƠN VỊ TÍNH"
     }

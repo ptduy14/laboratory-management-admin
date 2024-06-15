@@ -26,7 +26,7 @@ AxiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error.response && error.response.status === 401 || error.response.message === "Token is requried") {
+    if (error.response && error.response.status === 401) {
       await signOut({
         redirect: false,
       });

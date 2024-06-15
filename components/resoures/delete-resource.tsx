@@ -14,16 +14,25 @@ import { ResourceService } from "@/services/resourceService";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
 import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import axios from "axios";
+import { translateErrorMessage } from "@/utils/translateErrorMessage";
 
 export const DeleteResource = ({ resourceId, disclosure}: { resourceId: number, disclosure: UseDisclosureReturn }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
 
     const handleDeleteResource = async () => {
-        const { data } = await ResourceService.delete(resourceId.toString())
-        mutate((key) => typeof key === "string" && key.startsWith(`/items?page=`));
-        mutate((key) => typeof key === "string" && key.startsWith(`/items/category/`));
-        toast.success("Xóa tài nguyên thành công")
-        onClose();
+        try {
+          const { data } = await ResourceService.delete(resourceId.toString())
+          mutate((key) => typeof key === "string" && key.startsWith(`/items?page=`));
+          mutate((key) => typeof key === "string" && key.startsWith(`/items/category/`));
+          toast.success("Xóa tài nguyên thành công")
+          onClose();
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            const translatedErrorMessage = translateErrorMessage(error.response?.data.message)
+            toast.error(translatedErrorMessage)
+          }
+        }
     }
 
   return (

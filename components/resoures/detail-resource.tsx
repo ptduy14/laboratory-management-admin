@@ -21,6 +21,7 @@ import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
 import useSWR from "swr";
 import { UnitEnumNames } from "@/enums/unit";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
+import { RoomResourceService } from "@/services/roomResourceService";
 
 export const DetailResource = ({
   resourceId,
@@ -36,6 +37,14 @@ export const DetailResource = ({
     isOpen ? `/items/${resourceId.toString()}` : null,
     async (url: string) => {
       const { data } = await ResourceService.getById(url);
+      return data;
+    }
+  );
+
+  const { data: resourceTransferedInfo, isLoading: isFetchingResourceTransferedInfo } = useSWR(
+    isOpen ? `room-items/item/${resourceId.toString()}` : null,
+    async (url) => {
+      const { data } = await RoomResourceService.getResourceTransferedById(url);
       return data;
     }
   );
@@ -56,8 +65,8 @@ export const DetailResource = ({
               </ModalHeader>
               <ModalBody>
                 {!isFetchingResource && resource ? (
-                  <div className="space-y-4">
-                    <div className="border-b pb-2 mb-4">
+                  <div className="space-y-4 scrollbar scrollbar-thin overflow-y-auto h-96">
+                    <div className="border-b pb-2 mb-4 border-gray-500">
                       <label className="flex items-center mb-1.5">
                         <span className="w-1/2 block font-semibold">Resource id:</span>
                         <span className="w-1/2 block font-light text-sm">{resourceId}</span>
@@ -67,72 +76,98 @@ export const DetailResource = ({
                         <span className="w-1/2 block font-light text-sm">{resource.name}</span>
                       </label>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Xuất xứ:</span>
-                        <span className="block font-light text-sm">{resource.origin || "-"}</span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Số seri:</span>
-                        <span className="block font-light text-sm">
-                          {resource.serial_number || "-"}
-                        </span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Dung tích:</span>
-                        <span className="block font-light text-sm">
-                          {resource.specification || "-"}
-                        </span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Số lượng:</span>
-                        <span className="block font-light text-sm">{resource.quantity || "-"}</span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Đơn vị:</span>
-                        <span className="block font-light text-sm">
-                          {UnitEnumNames[resource.unit]}
-                        </span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Đã bàn giao</span>
-                        <span className="block font-light text-sm">{resource.handover}</span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Chú thích:</span>
-                        <span className="block font-light text-sm">{resource.remark || "-"}</span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Có sẵng</span>
-                        <span className="block font-light text-sm">
-                          {resource.quantity - resource.handover}
-                        </span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Trạng thái:</span>
-                        <span className="block font-light text-sm">
-                          <Chip
-                            size="sm"
-                            variant="flat"
-                            color={
-                              Number(resource.status) === 0 || Number(resource.status) === 1
-                                ? "success"
-                                : Number(resource.status) === 2
-                                ? "warning"
-                                : "danger"
-                            }>
-                            <span className="capitalize text-xs">
-                              {ResourceStatusName[resource.status]}
-                            </span>
-                          </Chip>
-                        </span>
-                      </label>
-                      <label className="flex flex-col">
-                        <span className="block font-semibold">Danh mục:</span>
-                        <span className="block font-light text-sm">{resource.category.name}</span>
-                      </label>
+                    <div className="border-b pb-2 mb-4 border-gray-500">
+                      <div className="grid grid-cols-2 gap-y-4">
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Xuất xứ:</span>
+                          <span className="block font-light text-sm">{resource.origin || "-"}</span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Số seri:</span>
+                          <span className="block font-light text-sm">
+                            {resource.serial_number || "-"}
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Dung tích:</span>
+                          <span className="block font-light text-sm">
+                            {resource.specification || "-"}
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Số lượng:</span>
+                          <span className="block font-light text-sm">
+                            {resource.quantity || "-"}
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Đơn vị:</span>
+                          <span className="block font-light text-sm">
+                            {UnitEnumNames[resource.unit]}
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Đã bàn giao</span>
+                          <span className="block font-light text-sm">{resource.handover}</span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Chú thích:</span>
+                          <span className="block font-light text-sm">{resource.remark || "-"}</span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Có sẵng</span>
+                          <span className="block font-light text-sm">
+                            {resource.quantity - resource.handover}
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Trạng thái:</span>
+                          <span className="block font-light text-sm">
+                            <Chip
+                              size="sm"
+                              variant="flat"
+                              color={
+                                Number(resource.status) === 0 || Number(resource.status) === 1
+                                  ? "success"
+                                  : Number(resource.status) === 2
+                                  ? "warning"
+                                  : "danger"
+                              }>
+                              <span className="capitalize text-xs">
+                                {ResourceStatusName[resource.status]}
+                              </span>
+                            </Chip>
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Danh mục:</span>
+                          <span className="block font-light text-sm">{resource.category.name}</span>
+                        </label>
+                      </div>
                     </div>
+                    {!isFetchingResourceTransferedInfo && resourceTransferedInfo.meta.numberRecords > 0 && (
+                      <>
+                        <span className="text-sm text-gray-500">
+                          Thông tin về trạng thái bàn giao
+                        </span>
+                        <div className="grid grid-cols-2 gap-y-4">
+                          {resourceTransferedInfo.data.map((item: any) => {
+                            return (
+                              <>
+                                <label className="flex flex-col">
+                                  <span className="block font-semibold">Tên phòng:</span>
+                                  <span className="block font-light text-sm">{item.room.name}</span>
+                                </label>
+                                <label className="flex flex-col">
+                                  <span className="block font-semibold">Số lượng bàn giao:</span>
+                                  <span className="block font-light text-sm">{item.quantity}</span>
+                                </label>
+                              </>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
                   </div>
                 ) : (
                   <LoaderSkeletonForm />

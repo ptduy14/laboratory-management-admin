@@ -106,7 +106,7 @@ export const AddResource = ({ mutate } : { mutate: any}) => {
                 </ModalHeader>
                 <ModalBody>
                   <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
-                    <div className="w-full max-h-80">
+                    <div className="w-full max-h-96">
                       <FormProvider {...methods}>
                         <AddResourceCommonForm categories={categories?.data} />
                       </FormProvider>

@@ -45,7 +45,7 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
             </li>
     
             <li className="flex gap-2">
-              <span>{room?.name.toLowerCase()}</span>
+              <span>{room?.name}</span>
               <span> / </span>{" "}
             </li>
             <li className="flex gap-2">
@@ -118,7 +118,7 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
           {!isFetchingResourceTransfered ? 
             (
               <>
-              <span className="text-default-400 text-small">Tổng số  tài nguyên đã bàn giao: {resourceTransfered.meta.numberRecords} </span>
+              <span className="text-default-400 text-small">Tài nguyên đã bàn giao: {resourceTransfered.meta.numberRecords} </span>
             <div style={{ marginBottom: '16px' }}></div>
             <RoomResourcesTableWrapper columns={ResourcesTransferedColumns} resourcesTransfered={resourceTransfered.data} setPage={setPage} meta={resourceTransfered.meta}/></>
             )

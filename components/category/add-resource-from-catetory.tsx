@@ -44,7 +44,7 @@ import {
         const { data: newResource } = await ResourceService.create(data);
         methods.reset()
         mutate();
-        toast.success(`Thêm ${category.name} mới thành công`)
+        toast.success(`Thêm ${category.name.toLowerCase()} mới thành công`)
         onClose()
       } catch (error) {
         if (axios.isAxiosError(error)) {
