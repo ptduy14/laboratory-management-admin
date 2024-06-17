@@ -15,6 +15,7 @@ import { RoomResourceService } from "@/services/roomResourceService";
 import useSWR from "swr";
 import { ResourcesTransfered } from "../room-resources/room-resources-table/data";
 import { formatDateTime } from "@/utils/formatDateTime";
+import { CardLoaderSpinner } from "../loader/card-loader-spiner";
 
 const columns = [
   {
@@ -36,6 +37,9 @@ const renderCell = ({ item, columnKey }: { item: ResourcesTransfered; columnKey:
   const cellValue = item[columnKey];
 
   switch (columnKey) {
+    case "name":
+      return item.item.name;
+
     case "createdAt":
       return formatDateTime(cellValue).formattedDate;
 
@@ -55,10 +59,8 @@ export const CardTransactions = () => {
     }
   );
 
-  if (isFetchingresourceTransfered) return <span>loading</span>;
-
   return (
-    <Card className=" bg-default-50 rounded-xl shadow-md">
+    <Card className="bg-default-50 rounded-xl shadow-md">
       <CardBody className="gap-4">
         <div className="flex gap-2.5 justify-center">
           <div className="flex flex-col border-dashed border-2 border-divider py-2 px-6 rounded-xl">
@@ -68,7 +70,11 @@ export const CardTransactions = () => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 ">
+        {isFetchingresourceTransfered ? (
+          <div className="min-h-40">
+              <CardLoaderSpinner />
+          </div>
+        ) : (
           <Table aria-label="Example table with dynamic content">
             <TableHeader columns={columns}>
               {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
@@ -76,12 +82,12 @@ export const CardTransactions = () => {
             <TableBody items={resourceTransfered.data}>
               {(item: ResourcesTransfered) => (
                 <TableRow key={item.id}>
-                  {(columnKey) => <TableCell>{renderCell({item, columnKey})}</TableCell>}
+                  {(columnKey) => <TableCell>{renderCell({ item, columnKey })}</TableCell>}
                 </TableRow>
               )}
             </TableBody>
           </Table>
-        </div>
+        )}
       </CardBody>
     </Card>
   );

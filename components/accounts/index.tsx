@@ -1,7 +1,16 @@
 "use client";
-import { Button, Input, Selection, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Pagination } from "@nextui-org/react";
+import {
+  Button,
+  Input,
+  Selection,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Pagination,
+} from "@nextui-org/react";
 import Link from "next/link";
-import React, {useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ExportIcon } from "@/components/icons/accounts/export-icon";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
@@ -16,38 +25,41 @@ import { statusOptions } from "./account-table/data";
 import { roleOptions } from "./account-table/data";
 import useSWR from "swr";
 import { ExportCSVAccount } from "./export-csv-account";
+import { accountsFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountsFetcher";
 
 export const Accounts = () => {
   const [searchFilterValue, setSearchFilterValue] = useState("");
-  const [statusFilter, setStatusFilter] = React.useState<Selection>('all');
-  const [roleFilter, setRoleFilter] = React.useState<Selection>('all');
+  const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
+  const [roleFilter, setRoleFilter] = React.useState<Selection>("all");
+  const [queryParams, setQueryParams] = useState({});
 
   const [pages, setPage] = useState(1);
 
-  const { data: accounts, mutate: updateAccountList, isLoading: isFetchingAccounts } = useSWR(`/users/get?page=${pages}`, async (url) => {
-    const { data } = await UserService.getAll(url);
-    return data;
-  });
+  const {
+    data: accounts,
+    mutate: updateAccountList,
+    isLoading: isFetchingAccounts,
+  } = useSWR(["/users/get", queryParams], ([url, queryParams]) => accountsFetcher(url, queryParams));
 
   const handleFilteredAccounts = useMemo(() => {
     let filteredAccounts = isFetchingAccounts ? [] : [...accounts.data];
 
-    if (statusFilter !== 'all' && Array.from(statusFilter).length !== statusOptions.length) {
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
       filteredAccounts = filteredAccounts.filter((account) => {
         return Array.from(statusFilter).includes(account.status.toString());
-      })
+      });
     }
 
-    if (roleFilter !== 'all' && Array.from(roleFilter).length !== roleOptions.length) {
+    if (roleFilter !== "all" && Array.from(roleFilter).length !== roleOptions.length) {
       filteredAccounts = filteredAccounts.filter((account) => {
         return Array.from(roleFilter).includes(account.role.toString());
-      })
+      });
     }
 
     return filteredAccounts;
-  }, [accounts?.data, statusFilter, roleFilter])
+  }, [accounts?.data, statusFilter, roleFilter]);
 
-  let filteredAccounts = handleFilteredAccounts;  
+  let filteredAccounts = handleFilteredAccounts;
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -97,8 +109,7 @@ export const Accounts = () => {
                 closeOnSelect={false}
                 selectedKeys={statusFilter}
                 selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
+                onSelectionChange={setStatusFilter}>
                 {statusOptions.map((status) => (
                   <DropdownItem key={status.uid} className="capitalize">
                     {status.name}
@@ -120,8 +131,7 @@ export const Accounts = () => {
                 closeOnSelect={false}
                 selectedKeys={roleFilter}
                 selectionMode="multiple"
-                onSelectionChange={setRoleFilter}
-              >
+                onSelectionChange={setRoleFilter}>
                 {roleOptions.map((role) => (
                   <DropdownItem key={role.uid} className="capitalize">
                     {role.name}
@@ -132,20 +142,27 @@ export const Accounts = () => {
           </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddAccount accounts={accounts?.data} mutate={updateAccountList}/>
+          <AddAccount accounts={accounts?.data} mutate={updateAccountList} />
           <ExportCSVAccount />
         </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        {!isFetchingAccounts ?
+        {!isFetchingAccounts ? (
           <>
-            <span className="text-default-400 text-small">Total {accounts.data.length} accounts</span>
-            <div style={{ marginBottom: '16px' }}></div>
-            <AccountTableWrapper accounts={filteredAccounts} meta={accounts.meta} paginate={true} setPage={setPage}/>
+            <span className="text-default-400 text-small">
+              Total {accounts.data.length} accounts
+            </span>
+            <div style={{ marginBottom: "16px" }}></div>
+            <AccountTableWrapper
+              accounts={filteredAccounts}
+              meta={accounts.meta}
+              paginate={true}
+              setQueryParams={setQueryParams}
+            />
           </>
-          : (
-            <LoaderTable />
-          )}
+        ) : (
+          <LoaderTable />
+        )}
       </div>
     </div>
   );

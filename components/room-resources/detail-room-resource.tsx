@@ -23,6 +23,8 @@ import { UnitEnumNames } from "@/enums/unit";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { RoomResourceService } from "@/services/roomResourceService";
 import { formatDateTime } from "@/utils/formatDateTime";
+import { UserService } from "@/services/userService";
+import { Account } from "../accounts/account-table/data";
 
 export const DetailRoomResource = ({
   resourceTransferedId,
@@ -42,6 +44,11 @@ export const DetailRoomResource = ({
     }
   );
 
+  const { data: account } = useSWR<Account>(!isFetchingResourceTransfered && resourceTransfered ? `/users/get/${resourceTransfered.createBy}` : null, async (url: any) => {
+    const { data } = await UserService.getById(url);
+    return data;
+  })
+
   return (
     <div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl" placement="top-center">
@@ -57,7 +64,7 @@ export const DetailRoomResource = ({
                 </div>
               </ModalHeader>
               <ModalBody>
-                {!isFetchingResourceTransfered && resourceTransfered ? (
+                {!isFetchingResourceTransfered && resourceTransfered && account ? (
                   <div className="space-y-4 scrollbar scrollbar-thin overflow-y-auto h-96">
                     <div className="border-b pb-2 mb-4 border-gray-500">
                       <label className="flex items-center mb-1.5">
@@ -106,19 +113,19 @@ export const DetailRoomResource = ({
                           </span>
                         </label>
                         <label className="flex flex-col">
-                          <span className="block font-semibold">Đã mượn</span>
+                          <span className="block font-semibold">Đã mượn:</span>
                           <span className="block font-light text-sm">
                             {resourceTransfered.itemQuantityBorrowed}
                           </span>
                         </label>
                         <label className="flex flex-col">
-                          <span className="block font-semibold">Đã trả</span>
+                          <span className="block font-semibold">Đã trả:</span>
                           <span className="block font-light text-sm">
-                            {resourceTransfered.item.itemQuantityReturned || 0}
+                            {resourceTransfered.itemQuantityReturned}
                           </span>
                         </label>
                         <label className="flex flex-col">
-                          <span className="block font-semibold">Ngày bàn giao</span>
+                          <span className="block font-semibold">Ngày bàn giao:</span>
                           <span className="block font-light text-sm">
                             {formatDateTime(resourceTransfered.createdAt).formattedDate}
                           </span>
@@ -141,6 +148,12 @@ export const DetailRoomResource = ({
                                 {ResourceStatusName[resourceTransfered.item.status]}
                               </span>
                             </Chip>
+                          </span>
+                        </label>
+                        <label className="flex flex-col">
+                          <span className="block font-semibold">Người bàn giao:</span>
+                          <span className="block font-light text-sm">
+                            {account.lastName + " " + account.firstName}
                           </span>
                         </label>
                       </div>

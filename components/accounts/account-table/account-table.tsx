@@ -17,14 +17,14 @@ interface AccountTableProps {
   accounts: Account[];
   paginate: boolean;
   meta?: metaType;
-  setPage?: React.Dispatch<React.SetStateAction<number>>;
+  setQueryParams?: React.Dispatch<React.SetStateAction<Object>>;
 }
 
 export const AccountTableWrapper = ({
   accounts,
   paginate,
   meta,
-  setPage,
+  setQueryParams,
 }: AccountTableProps) => {
   const { data: session } = useSession();
   return (
@@ -42,8 +42,11 @@ export const AccountTableWrapper = ({
               page={meta?.page}
               total={meta?.pages ? meta?.pages : 0}
               onChange={(page) => {
-                if (setPage) {
-                  setPage(page);
+                if (setQueryParams) {
+                  setQueryParams((prev) => ({
+                    ...prev,
+                    page: page
+                  }))
                 }
               }}
             />
