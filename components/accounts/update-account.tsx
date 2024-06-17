@@ -26,6 +26,7 @@ import { AccountStatus, AccountStatusNames } from "@/enums/account-status";
 import { Account } from "./account-table/data";
 import { getPublicIdFromUrl } from "@/utils/getPublicIdFromUrl";
 import useSWR, { mutate } from "swr";
+import { accountFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountFetcher";
 
 export default function UpdateAccount({ accountId }: { accountId: number }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
@@ -44,15 +45,22 @@ export default function UpdateAccount({ accountId }: { accountId: number }) {
     resolver: zodResolver(UpdateAccountSchema),
   });
 
-  const { data } = useSWR<Account>(
-    isOpen ? `/users/get/${accountId.toString()}` : null,
-    async (url: string) => {
-      const { data } = await UserService.getById(url);
+  const { data, isLoading: isFetchingAccount } = useSWR<Account>(
+    isOpen ? `/users/get/${accountId.toString()}` : null, async (url: any) => {
+      const data = await accountFetcher(url);
+      console.log(data)
       setCurrentAccountPhoto(data.photo);
       reset({ ...data });
       setIsLoading(false);
       return data;
     }
+    // async (url: string) => {
+    //   const { data } = await UserService.getById(url);
+    //   setCurrentAccountPhoto(data.photo);
+    //   reset({ ...data });
+    //   setIsLoading(false);
+    //   return data;
+    // }
   );
 
   // const getAccountById = async () => {
@@ -106,7 +114,7 @@ export default function UpdateAccount({ accountId }: { accountId: number }) {
       toast.success("Cập nhật thành công !!");
 
       // cần cập nhật lại data ở đây
-      mutate((key) => typeof key === "string" && key.startsWith("/users/get?page="));
+      mutate((key) => Array.isArray(key) && key[0] === '/users/get');
       // cập nhật lại cache của detail account id
       mutate(`/users/get/${accountId.toString()}`);
 
@@ -150,7 +158,7 @@ export default function UpdateAccount({ accountId }: { accountId: number }) {
             <>
               <ModalHeader className="flex flex-col gap-1">Account Update</ModalHeader>
               <ModalBody>
-                {isLoading ? (
+                {isFetchingAccount ? (
                   <LoaderImageText />
                 ) : (
                   <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">

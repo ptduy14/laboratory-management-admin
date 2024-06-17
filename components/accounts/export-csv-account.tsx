@@ -8,12 +8,12 @@ import { Account } from "./account-table/data";
 import { RoleNames } from "@/enums/role";
 import { AccountStatusNames } from "@/enums/account-status";
 import { getCurrentDate } from "@/utils/getCurrentDate";
+import { accountsFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountsFetcher";
 
 export const ExportCSVAccount = () => {
-  const { data: accounts, isLoading } = useSWR(`/users/get?take=50`, async (url: string) => {
-    const { data } = await UserService.getAll(url);
-    return data;
-  });
+  const { data: accounts, isLoading } = useSWR(`/users/get`, (url) =>
+    accountsFetcher(url, { take: 50 })
+  );
 
   const handleDownloadCSV = () => {
     const csvContent =
@@ -38,7 +38,7 @@ export const ExportCSVAccount = () => {
     link.click();
   };
 
-  if (isLoading) return <></> 
+  if (isLoading) return <></>;
 
   return (
     <Button color="primary" startContent={<ExportIcon />} onClick={handleDownloadCSV}>

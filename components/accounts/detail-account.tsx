@@ -18,16 +18,16 @@ import { LoaderImageText } from "../loader/loader-image-text";
 import { RoleNames } from "@/enums/role";
 import { AccountStatusNames } from "@/enums/account-status";
 import useSWR from "swr";
+import { accountFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountFetcher";
 
 export const DetailAccount = ({ accountId }: { accountId: number }) => {
   // const [account, setAccount] = useState<Account>();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { data: account, isLoading: isFetchingAccount } = useSWR<Account>(isOpen ? `/users/get/${accountId.toString()}` : null, async (url: string) => {
-    const { data } =  await UserService.getById(url);
-    return data
-  })
-
+  const { data: account, isLoading: isFetchingAccount } = useSWR<Account>(
+    isOpen ? `/users/get/${accountId.toString()}` : null,
+    accountFetcher
+  );
 
   // useEffect(() => {
   //   if (isOpen) {
@@ -49,18 +49,11 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
           </button>
         </Tooltip>
       </div>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        size="3xl"
-        placement="top-center"
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl" placement="top-center">
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Account Detail
-              </ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Account Detail</ModalHeader>
               <ModalBody>
                 {!isFetchingAccount && account ? (
                   <div className="flex justify-between">
@@ -68,60 +61,38 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                       <Avatar
                         radius="none"
                         className="w-full h-full"
-                        src={
-                          account.photo
-                            ? account.photo
-                            : ""
-                        }
+                        src={account.photo ? account.photo : ""}
                       />
                     </div>
                     <div className="w-2/3">
                       <label className="flex mb-1.5">
-                        <span className="w-1/3 block font-semibold">
-                          Account id:
-                        </span>
+                        <span className="w-1/3 block font-semibold">Account id:</span>
+                        <span className="w-2/3 block font-light">{accountId}</span>
+                      </label>
+                      <label className="flex mb-1.5">
+                        <span className="w-1/3 block font-semibold">Họ tên:</span>
                         <span className="w-2/3 block font-light">
-                          {accountId}
+                          {account?.firstName ? account?.firstName + account?.lastName : ""}
                         </span>
                       </label>
                       <label className="flex mb-1.5">
-                        <span className="w-1/3 block font-semibold">
-                          Họ tên:
-                        </span>
+                        <span className="w-1/3 block font-semibold">Email:</span>
+                        <span className="w-2/3 block font-light">{account?.email}</span>
+                      </label>
+                      <label className="flex mb-1.5">
+                        <span className="w-1/3 block font-semibold">Số điện thoại:</span>
                         <span className="w-2/3 block font-light">
-                          {account?.firstName
-                            ? account?.firstName + account?.lastName
-                            : ""}
+                          {account?.phone ? account.phone : "null"}
                         </span>
                       </label>
                       <label className="flex mb-1.5">
-                        <span className="w-1/3 block font-semibold">
-                          Email:
-                        </span>
+                        <span className="w-1/3 block font-semibold">Địa chỉ:</span>
                         <span className="w-2/3 block font-light">
-                          {account?.email}
+                          {account?.address ? account.address : "null"}
                         </span>
                       </label>
                       <label className="flex mb-1.5">
-                        <span className="w-1/3 block font-semibold">
-                          Số điện thoại:
-                        </span>
-                        <span className="w-2/3 block font-light">
-                        {account?.phone ? account.phone : "null"}
-                        </span>
-                      </label>
-                      <label className="flex mb-1.5">
-                        <span className="w-1/3 block font-semibold">
-                          Địa chỉ:
-                        </span>
-                        <span className="w-2/3 block font-light">
-                        {account?.address ? account.address : "null"}
-                        </span>
-                      </label>
-                      <label className="flex mb-1.5">
-                        <span className="w-1/3 block font-semibold">
-                          Trạng thái:
-                        </span>
+                        <span className="w-1/3 block font-semibold">Trạng thái:</span>
                         <span className="w-2/3 block font-light">
                           <Chip
                             size="sm"
@@ -132,8 +103,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                                 : account.status === 1
                                 ? "danger"
                                 : "warning"
-                            }
-                          >
+                            }>
                             <span className="capitalize text-xs">
                               {AccountStatusNames[account.status]}
                             </span>
@@ -141,20 +111,12 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                         </span>
                       </label>
                       <label className="flex mb-1.5">
-                        <span className="w-1/3 block font-semibold">
-                          Vai trò:
-                        </span>
-                        <span className="w-2/3 block font-light">
-                          {RoleNames[account.role]}
-                        </span>
+                        <span className="w-1/3 block font-semibold">Vai trò:</span>
+                        <span className="w-2/3 block font-light">{RoleNames[account.role]}</span>
                       </label>
                       <label className="flex mb-1.5">
-                        <span className="w-1/3 block font-semibold">
-                          Ngày tạo:
-                        </span>
-                        <span className="w-2/3 block font-light">
-                          {account?.createdAt}
-                        </span>
+                        <span className="w-1/3 block font-semibold">Ngày tạo:</span>
+                        <span className="w-2/3 block font-light">{account?.createdAt}</span>
                       </label>
                     </div>
                   </div>

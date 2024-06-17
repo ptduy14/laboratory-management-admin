@@ -18,8 +18,8 @@ export const DeleteAccount = ({ accountId }: { accountId: number }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
     const handleDeleteAccount = async () => {
-        const { data } = await AccountService.delete(accountId.toString())
-        mutate((key) => typeof key === "string" && key.startsWith("/users/get?page="));
+        const { data } = await AccountService.delete(accountId.toString());
+        mutate((key) => Array.isArray(key) && key[0] === '/users/get');
         toast.success("Xóa account thành công")
         onClose();
     }
