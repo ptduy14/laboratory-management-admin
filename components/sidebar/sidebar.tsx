@@ -96,7 +96,7 @@ export const SidebarWrapper = () => {
                 isActive={pathname === "/registration"}
                 title="Phiếu mượn"
                 icon={<ReportsIcon />}
-                href="/registration"
+                href="/registrations"
               />
             </SidebarMenu>
             <SidebarMenu title="Danh Mục">
