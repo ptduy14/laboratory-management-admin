@@ -50,7 +50,7 @@ export const ReTransferResource = ({
   );
 
   const onSubmit: SubmitHandler<transferResourceSchemaType> = async (data) => {
-    if (data.quantity > resourceTransfered.quantity) {
+    if ((data.quantity > resourceTransfered.quantity - resourceTransfered.itemQuantityBorrowed)) {
       methods.setError("quantity", {
         type: "invalid",
         message: "Số lượng chuyển tiếp không hợp lệ",

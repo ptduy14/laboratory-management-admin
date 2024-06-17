@@ -36,6 +36,9 @@ const renderCell = ({ item, columnKey }: { item: ResourcesTransfered; columnKey:
   const cellValue = item[columnKey];
 
   switch (columnKey) {
+    case "name":
+      return item.item.name;
+
     case "createdAt":
       return formatDateTime(cellValue).formattedDate;
 
@@ -57,6 +60,8 @@ export const CardTransactions = () => {
 
   if (isFetchingresourceTransfered) return <span>loading</span>;
 
+  console.log(resourceTransfered);
+
   return (
     <Card className=" bg-default-50 rounded-xl shadow-md">
       <CardBody className="gap-4">
@@ -76,7 +81,7 @@ export const CardTransactions = () => {
             <TableBody items={resourceTransfered.data}>
               {(item: ResourcesTransfered) => (
                 <TableRow key={item.id}>
-                  {(columnKey) => <TableCell>{renderCell({item, columnKey})}</TableCell>}
+                  {(columnKey) => <TableCell>{renderCell({ item, columnKey })}</TableCell>}
                 </TableRow>
               )}
             </TableBody>
