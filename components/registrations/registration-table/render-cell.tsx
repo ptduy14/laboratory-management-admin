@@ -1,6 +1,7 @@
 import { ConfirmReturnRegistration } from "../confirm-return-registration";
 import { DetailRegistration } from "../detail-registration";
 import { Registration } from "./data";
+import { format } from 'date-fns';
 
 interface Props {
   registration: Registration;
@@ -19,8 +20,11 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
           <ConfirmReturnRegistration registrationId={registration.id} />
         </div>
       );
-
       break;
+
+    case "createdAt":
+        const formattedDate = format(new Date(registration.createdAt), 'dd/MM/yyyy');
+      return formattedDate
 
     default:
       return cellValue;

@@ -18,7 +18,7 @@ import { RegistrationTableWrapper } from "./registration-table/registration-tabl
 import { registraionColumns } from "./registration-table/data";
 
 export const Registrations = () => {
-  const [queryParams, setQueryParams] = useState({ take: 10, page: 1 });
+  const [queryParams, setQueryParams] = useState({});
 
   const { data: registrations, isLoading: isFetchingRegistrations } = useSWR(
     [`/registration`, queryParams],
@@ -66,6 +66,8 @@ export const Registrations = () => {
           <RegistrationTableWrapper
             registrations={registrations.data}
             registrationColumns={registraionColumns}
+            meta={registrations.meta}
+            setQueryParams={setQueryParams}
           />
         ) : (
           <LoaderTable />

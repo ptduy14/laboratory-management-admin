@@ -8,6 +8,10 @@ export const registraionColumns = [
     label: "MÃ PHIẾU",
   },
   {
+    key: "createdAt",
+    label: "NGÀY TẠO PHIẾU",
+  },
+  {
     key: "actions",
     label: "ACTIONS"
   }
