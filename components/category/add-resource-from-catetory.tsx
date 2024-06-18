@@ -28,6 +28,7 @@ import {
   import { Category } from "./category-table/data";
   import { z } from "zod";
   import { ResourceService } from "@/services/resourceService";
+  import { translateErrorMessage } from "@/utils/translateErrorMessage";
   
   export const AddResourceFromCatetory = ({ mutate, category } : { mutate: any, category: Category}) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -48,7 +49,8 @@ import {
         onClose()
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          console.log(error.response)
+          const translatedErrorMessage = translateErrorMessage(error.response?.data.message[0])
+          toast.error(translatedErrorMessage)
         }
       }
     }

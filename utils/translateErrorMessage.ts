@@ -1,5 +1,6 @@
 const errorMessages = {
-    "Items that have been used in other features cannot be deleted": "Không thể xóa mục này do đang được sử dụng"
+    "Items that have been used in other features cannot be deleted": "Không thể xóa mục này do đang được sử dụng",
+    "Please ensure the text does not contain leading, trailing, or multiple consecutive spaces.": "Hãy đảm bảo văn bản không chứa khoảng trắng ở đầu, cuối hoặc nhiều khoảng trắng liên tiếp."
 }
 
 export const translateErrorMessage = (message: string) => {

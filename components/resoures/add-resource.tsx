@@ -28,6 +28,7 @@ import { AddResourceCommonForm } from "../forms/resource-forms/add-resource-comm
 import { Category } from "../category/category-table/data";
 import { z } from "zod";
 import { ResourceService } from "@/services/resourceService";
+import { translateErrorMessage } from "@/utils/translateErrorMessage";
 
 export const AddResource = ({ mutate } : { mutate: any}) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -74,8 +75,8 @@ export const AddResource = ({ mutate } : { mutate: any}) => {
       onClose()
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data.message)
-        toast.error('Đã có lỗi vui lòng liên hệ admin')
+        const translatedErrorMessage = translateErrorMessage(error.response?.data.message)
+        toast.error(translatedErrorMessage)
       }
     }
     console.log(data);
