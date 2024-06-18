@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-   title: "Sign up",
+   title: "Sign In",
    description: "Laboratory management for CTUT Lab",
 }
 
