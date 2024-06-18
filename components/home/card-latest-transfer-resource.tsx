@@ -52,7 +52,7 @@ const renderCell = ({ item, columnKey }: { item: ResourcesTransfered; columnKey:
 
 export const CardTransactions = () => {
   const { data: resourceTransfered, isLoading: isFetchingresourceTransfered } = useSWR(
-    `/room-items?take=5`,
+    `/room-items?take=5&order=DESC`,
     async (url) => {
       const { data } = await RoomResourceService.getAll(url);
       return data;
