@@ -25,7 +25,7 @@ import { statusOptions } from "./account-table/data";
 import { roleOptions } from "./account-table/data";
 import useSWR from "swr";
 import { ExportCSVAccount } from "./export-csv-account";
-import { accountsFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountsFetcher";
+import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
 
 export const Accounts = () => {
   const [searchFilterValue, setSearchFilterValue] = useState("");

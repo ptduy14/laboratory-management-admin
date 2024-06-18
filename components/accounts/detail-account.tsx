@@ -18,7 +18,7 @@ import { LoaderImageText } from "../loader/loader-image-text";
 import { RoleNames } from "@/enums/role";
 import { AccountStatusNames } from "@/enums/account-status";
 import useSWR from "swr";
-import { accountFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountFetcher";
+import { accountFetcher } from "@/utils/fetchers/account-fetchers.ts/accountFetcher";
 
 export const DetailAccount = ({ accountId }: { accountId: number }) => {
   // const [account, setAccount] = useState<Account>();

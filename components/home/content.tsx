@@ -17,7 +17,7 @@ import useSWR from "swr";
 import { CategoryService } from "@/services/categoryService";
 import { Category } from "../category/category-table/data";
 import { CardCategory } from "./card-category";
-import { accountsFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountsFetcher";
+import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
 
 const colors = ["bg-default-50", "bg-success", "bg-primary"];
 
