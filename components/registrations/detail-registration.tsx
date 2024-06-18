@@ -83,9 +83,9 @@ export const DetailRegistration = ({
                       </label>
                     </div>
 
-                    {registration.items.map((resourceRegistration) => {
+                    {registration.items.map((resourceRegistration, index) => {
                       return (
-                        <div className="border-b pb-2 mb-4 border-gray-500">
+                        <div key={index} className="border-b pb-2 mb-4 border-gray-500">
                           <div className="space-y-4">
                             <label className="flex items-center">
                               <span className="w-1/2 block font-semibold">Tên tài nguyên: </span>
