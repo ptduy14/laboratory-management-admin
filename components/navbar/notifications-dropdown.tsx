@@ -12,7 +12,6 @@ import { useSession } from "next-auth/react";
 
 export const NotificationsDropdown = () => {
   const { data: session } = useSession();
-  console.log(session);
   return (
     <Dropdown placement="bottom-end">
       <DropdownTrigger>
