@@ -45,7 +45,7 @@ export const TransferResourceForm = ({ rooms }: { rooms: RoomType[] }) => {
         variant="bordered"
         errorMessage={errors.year?.message?.toString()}
         isInvalid={errors.year?.message ? true : false}
-        {...register("year")}
+        {...register("year", {setValueAs: (value: string) => value.trim()})}
       />
     </>
   );

@@ -49,14 +49,14 @@ export const UpdateResourceCommonForm = ({
         errorMessage={errors.name?.message?.toString()}
         isInvalid={errors.name?.message ? true : false}
         defaultValue={getValues("name")}
-        {...register("name")}
+        {...register("name", {setValueAs: (value: string) => value.trim()})}
       />
       <Input
         className="mb-7"
         label="Xuất xứ"
         variant="bordered"
         defaultValue={getValues("origin")}
-        {...register("origin")}
+        {...register("origin", {setValueAs: (value: string) => value.trim()})}
       />
       <Input
         className="mb-7"
@@ -74,21 +74,21 @@ export const UpdateResourceCommonForm = ({
         errorMessage={errors.specification?.message?.toString()}
         isInvalid={errors.specification?.message ? true : false}
         defaultValue={getValues("specification")}
-        {...register("specification")}
+        {...register("specification", {setValueAs: (value: string) => value.trim()})}
       />
       <Input
         className="mb-7"
         label="Số seri"
         variant="bordered"
         defaultValue={getValues("serial_number")}
-        {...register("serial_number")}
+        {...register("serial_number", {setValueAs: (value: string) => value.trim()})}
       />
       <Input
         className="mb-7"
         label="Chú thích"
         variant="bordered"
         defaultValue={getValues("remark")}
-        {...register("remark")}
+        {...register("remark", {setValueAs: (value: string) => value.trim()})}
       />
       <div className="mb-7">
         <label

@@ -16,6 +16,7 @@ declare module "next-auth" {
         photo: string | null;
         role: number;
         status: boolean;
+        password: string | null
       };
     };
   }
