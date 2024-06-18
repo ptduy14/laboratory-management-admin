@@ -60,7 +60,7 @@ export const Content = () => {
           {/* Chart */}
           <div className="h-full flex flex-col gap-2">
             <h3 className="text-xl font-semibold">
-              Số liệu thống kê tài nguyên sử dụng trong tuần
+              Số liệu thống kê tài nguyên ở các phòng
             </h3>
             <div className="w-full bg-default-50 shadow-lg rounded-2xl p-6 ">
               <Chart />
