@@ -8,6 +8,14 @@ export const registraionColumns = [
     label: "MÃ PHIẾU",
   },
   {
+    key: "name",
+    label: "SINH VIÊN MƯỢN",
+  },
+  {
+    key: "email",
+    label: "EMAIL",
+  },
+  {
     key: "createdAt",
     label: "NGÀY TẠO PHIẾU",
   },
