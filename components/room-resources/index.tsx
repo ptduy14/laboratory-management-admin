@@ -63,7 +63,7 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
                   mainWrapper: "w-full",
                 }}
                 isClearable
-                placeholder="Search accounts by name"
+                placeholder="Search resources by name"
                 // value={searchFilterValue}
                 // onValueChange={onSearchChange}
               />

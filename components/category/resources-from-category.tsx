@@ -107,7 +107,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
               mainWrapper: "w-full",
             }}
             isClearable
-            placeholder="Search accounts by name"
+            placeholder="Search resource by name"
             value={searchFilterValue}
             onValueChange={onSearchChange}
           />
