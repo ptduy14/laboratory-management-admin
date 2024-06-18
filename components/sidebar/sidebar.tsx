@@ -93,7 +93,7 @@ export const SidebarWrapper = () => {
                 href="/resources"
               />
               <SidebarItem
-                isActive={pathname === "/registration"}
+                isActive={pathname === "/registrations"}
                 title="Phiếu mượn"
                 icon={<ReportsIcon />}
                 href="/registrations"

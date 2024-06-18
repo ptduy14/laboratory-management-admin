@@ -8,7 +8,7 @@ import { Account } from "./account-table/data";
 import { RoleNames } from "@/enums/role";
 import { AccountStatusNames } from "@/enums/account-status";
 import { getCurrentDate } from "@/utils/getCurrentDate";
-import { accountsFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountsFetcher";
+import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
 
 export const ExportCSVAccount = () => {
   const { data: accounts, isLoading } = useSWR(`/users/get`, (url) =>

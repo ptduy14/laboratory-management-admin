@@ -26,7 +26,7 @@ import { AccountStatus, AccountStatusNames } from "@/enums/account-status";
 import { Account } from "./account-table/data";
 import { getPublicIdFromUrl } from "@/utils/getPublicIdFromUrl";
 import useSWR, { mutate } from "swr";
-import { accountFetcher } from "@/utils/fetchers/accounts-fetchers.ts/accountFetcher";
+import { accountFetcher } from "@/utils/fetchers/account-fetchers.ts/accountFetcher";
 
 export default function UpdateAccount({ accountId }: { accountId: number }) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();

@@ -6,7 +6,6 @@ export const UserService = {
     return await AxiosInstance.get(url, {params: queryParams});
   },
   getById: async (url: string) => {
-    console.log('1');
     return await AxiosInstance.get(url);
   },
   updateById: async (id: string, payload: UpdateAccountSchemaType) => {
