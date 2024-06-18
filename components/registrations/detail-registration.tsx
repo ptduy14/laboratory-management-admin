@@ -27,11 +27,7 @@ import { Account } from "../accounts/account-table/data";
 import { accountFetcher } from "@/utils/fetchers/account-fetchers.ts/accountFetcher";
 import { convertMillisecondsToDate } from "@/utils/convertMillisecondsToDate";
 
-export const DetailRegistration = ({
-  registrationId,
-}: {
-  registrationId: number;
-}) => {
+export const DetailRegistration = ({ registrationId }: { registrationId: number }) => {
   // const [account, setAccount] = useState<Account>();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -46,15 +42,14 @@ export const DetailRegistration = ({
       : null,
     accountFetcher
   );
-  console.log(`/users/get/${registration?.registration.user.id}`);
 
   return (
     <div>
-        <Tooltip content="Chi tiết phiếu mượn">
-          <button onClick={onOpen}>
-            <EyeIcon size={20} fill="#979797" />
-          </button>
-        </Tooltip>
+      <Tooltip content="Chi tiết phiếu mượn">
+        <button onClick={onOpen}>
+          <EyeIcon size={20} fill="#979797" />
+        </button>
+      </Tooltip>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl" placement="top-center">
         <ModalContent>
           {(onClose) => (

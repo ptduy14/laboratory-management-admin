@@ -1,3 +1,4 @@
+import { ConfirmReturnRegistration } from "../confirm-return-registration";
 import { DetailRegistration } from "../detail-registration";
 import { Registration } from "./data";
 
@@ -15,6 +16,7 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
       return (
         <div className="flex items-center gap-4 ">
           <DetailRegistration registrationId={registration.id} />
+          <ConfirmReturnRegistration registrationId={registration.id} />
         </div>
       );
 
