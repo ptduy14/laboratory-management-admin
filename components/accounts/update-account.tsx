@@ -48,7 +48,6 @@ export default function UpdateAccount({ accountId }: { accountId: number }) {
   const { data, isLoading: isFetchingAccount } = useSWR<Account>(
     isOpen ? `/users/get/${accountId.toString()}` : null, async (url: any) => {
       const data = await accountFetcher(url);
-      console.log(data)
       setCurrentAccountPhoto(data.photo);
       reset({ ...data });
       setIsLoading(false);

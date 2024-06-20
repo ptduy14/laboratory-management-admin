@@ -35,9 +35,16 @@ import { CategoryService } from "@/services/categoryService";
 import { Category } from "../category/category-table/data";
 import { useSWRConfig } from "swr";
 import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
-import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
+import { resourceFetcher } from "@/utils/fetchers/resource-fetchers.ts/resource-fetcher";
 
-export default function UpdateResouce({ resourceId, disclosure }: { resourceId: number, disclosure: UseDisclosureReturn }) {
+export default function UpdateResouce({
+  resourceId,
+  disclosure,
+}: {
+  resourceId: number;
+  disclosure: UseDisclosureReturn;
+}) {
   const { isOpen, onOpen, onClose, onOpenChange } = disclosure;
   const [schema, setSchema] = useState<z.ZodType<UpdateResourceSchemaUnionType>>(
     UpdateResourceCommonSchema
@@ -51,7 +58,7 @@ export default function UpdateResouce({ resourceId, disclosure }: { resourceId: 
   const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
     isOpen ? `/items/${resourceId.toString()}` : null,
     async (url: string) => {
-      const { data } = await ResourceService.getById(url);
+      const data = await resourceFetcher(url);
       methods.reset({ ...data, categoryId: data.category.id });
       return data;
     }
@@ -87,7 +94,8 @@ export default function UpdateResouce({ resourceId, disclosure }: { resourceId: 
   const onSubmit: SubmitHandler<UpdateResourceSchemaUnionType> = async (data) => {
     try {
       const { data: resourceUpdated } = await ResourceService.update(resourceId, data);
-      mutate((key) => typeof key === "string" && key.startsWith(`/items?page=`));
+      methods.reset();
+      mutate((key) => Array.isArray(key) && key[0] === "/items");
       mutate(`/items/${resourceId.toString()}`);
       mutate((key) => typeof key === "string" && key.startsWith(`/items/category/`));
       methods.reset();
@@ -95,7 +103,7 @@ export default function UpdateResouce({ resourceId, disclosure }: { resourceId: 
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error);
+        toast.error(error.response?.data.message)
       }
     }
   };

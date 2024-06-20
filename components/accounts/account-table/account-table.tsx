@@ -12,19 +12,20 @@ import { columns, Account } from "./data";
 import { RenderCell } from "./render-cell";
 import { metaType } from "@/types/meta";
 import { useSession } from "next-auth/react";
+import { QueryParams } from "@/types/query-params";
 
 interface AccountTableProps {
   accounts: Account[];
   paginate: boolean;
   meta?: metaType;
-  setQueryParams?: React.Dispatch<React.SetStateAction<Object>>;
+  setPage?: React.Dispatch<React.SetStateAction<QueryParams>>;
 }
 
 export const AccountTableWrapper = ({
   accounts,
   paginate,
   meta,
-  setQueryParams,
+  setPage,
 }: AccountTableProps) => {
   const { data: session } = useSession();
   return (
@@ -42,8 +43,8 @@ export const AccountTableWrapper = ({
               page={meta?.page}
               total={meta?.pages ? meta?.pages : 0}
               onChange={(page) => {
-                if (setQueryParams) {
-                  setQueryParams((prev) => ({
+                if (setPage) {
+                  setPage((prev) => ({
                     ...prev,
                     page: page
                   }))

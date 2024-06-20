@@ -3,8 +3,8 @@ import { AddResourceSchemaUnionType } from "@/components/resoures/schema/addReso
 import { UpdateResourceSchemaUnionType } from "@/components/resoures/schema/updateResourceSchema";
 
 export const ResourceService = {
-    getAll: async (url: string) => {
-        return await AxiosInstance.get(url);
+    getAll: async (url: string, queryParams: Object) => {
+        return await AxiosInstance.get(url, {params: queryParams});
     },
     getById: async (url: string) => {
         return await AxiosInstance.get(url)

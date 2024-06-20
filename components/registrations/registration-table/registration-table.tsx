@@ -11,19 +11,20 @@ import {
 import { RenderCell } from "./render-cell";
 import { Registration } from "./data";
 import { metaType } from "@/types/meta";
+import { QueryParams } from "@/types/query-params";
 
 interface RegistrationTableWrapperProps {
   registrations: Registration[];
   registrationColumns: { key: string; label: string }[];
   meta: metaType;
-  setQueryParams?: React.Dispatch<React.SetStateAction<Object>>;
+  setPage?: React.Dispatch<React.SetStateAction<QueryParams>>;
 }
 
 export const RegistrationTableWrapper = ({
   registrations,
   registrationColumns,
   meta,
-  setQueryParams,
+  setPage,
 }: RegistrationTableWrapperProps) => {
   return (
     <Table
@@ -39,8 +40,8 @@ export const RegistrationTableWrapper = ({
             page={meta?.page}
             total={meta?.pages ? meta?.pages : 0}
             onChange={(page) => {
-              if (setQueryParams) {
-                setQueryParams((prev) => ({
+              if (setPage) {
+                setPage((prev) => ({
                   ...prev,
                   page: page,
                 }));

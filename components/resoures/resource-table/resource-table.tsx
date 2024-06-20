@@ -11,12 +11,12 @@ import { Resource, resourceColumns } from "./data";
 import { RenderCell } from "./render-cell";
 import { useState, useMemo } from "react";
 import { metaType } from "@/types/meta";
+import { QueryParams } from "@/types/query-params";
 
 interface RecoureTableProps {
   resources: Resource[];
   meta: metaType;
-  setPage?: React.Dispatch<React.SetStateAction<number>>;
-  page?: number;
+  setPage?: React.Dispatch<React.SetStateAction<QueryParams>>;
   columns?: { key: string; label: string }[];
 }
 
@@ -24,7 +24,6 @@ export const ResourceTableWrapper = ({
   resources,
   meta,
   setPage,
-  page,
   columns,
 }: RecoureTableProps) => {
   return (
@@ -40,7 +39,14 @@ export const ResourceTableWrapper = ({
             color="primary"
             page={meta.page}
             total={meta.pages}
-            onChange={(newPage) => setPage && setPage(newPage)}
+            onChange={(page) => {
+              if (setPage) {
+                setPage((prev) => ({
+                  ...prev,
+                  page: page
+                }))
+              }
+            }}
           />
         </div>
       }>

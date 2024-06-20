@@ -53,7 +53,7 @@ export const TransferResource = ({ resource, disclosure }: { resource: Resource,
     try {
       const { data: res } = await RoomResourceService.transferResource(data);
       //udpate cache and trigger revalidation
-      mutate((key) => typeof key === "string" && key.startsWith("/items?page="));
+      mutate((key) => Array.isArray(key) && key[0] === "/items");
       mutate((key) => typeof key === "string" && key.startsWith("/items/category/"));
       methods.reset();
       toast.success("Bàn giao thành công");

@@ -22,6 +22,7 @@ import useSWR from "swr";
 import { UnitEnumNames } from "@/enums/unit";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { RoomResourceService } from "@/services/roomResourceService";
+import { resourceFetcher } from "@/utils/fetchers/resource-fetchers.ts/resource-fetcher";
 
 export const DetailResource = ({
   resourceId,
@@ -35,10 +36,7 @@ export const DetailResource = ({
 
   const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
     isOpen ? `/items/${resourceId.toString()}` : null,
-    async (url: string) => {
-      const { data } = await ResourceService.getById(url);
-      return data;
-    }
+    resourceFetcher
   );
 
   const { data: resourceTransferedInfo, isLoading: isFetchingResourceTransferedInfo } = useSWR(
@@ -145,29 +143,34 @@ export const DetailResource = ({
                         </label>
                       </div>
                     </div>
-                    {!isFetchingResourceTransferedInfo && resourceTransferedInfo.meta.numberRecords > 0 && (
-                      <>
-                        <span className="text-sm text-gray-500">
-                          Thông tin về trạng thái bàn giao
-                        </span>
-                        <div className="grid grid-cols-2 gap-y-4">
-                          {resourceTransferedInfo.data.map((item: any) => {
-                            return (
-                              <>
-                                <label className="flex flex-col">
-                                  <span className="block font-semibold">Tên phòng:</span>
-                                  <span className="block font-light text-sm">{item.room.name}</span>
-                                </label>
-                                <label className="flex flex-col">
-                                  <span className="block font-semibold">Số lượng bàn giao:</span>
-                                  <span className="block font-light text-sm">{item.quantity}</span>
-                                </label>
-                              </>
-                            );
-                          })}
-                        </div>
-                      </>
-                    )}
+                    {!isFetchingResourceTransferedInfo &&
+                      resourceTransferedInfo.meta.numberRecords > 0 && (
+                        <>
+                          <span className="text-sm text-gray-500">
+                            Thông tin về trạng thái bàn giao
+                          </span>
+                          <div className="grid grid-cols-2 gap-y-4">
+                            {resourceTransferedInfo.data.map((item: any) => {
+                              return (
+                                <>
+                                  <label className="flex flex-col">
+                                    <span className="block font-semibold">Tên phòng:</span>
+                                    <span className="block font-light text-sm">
+                                      {item.room.name}
+                                    </span>
+                                  </label>
+                                  <label className="flex flex-col">
+                                    <span className="block font-semibold">Số lượng bàn giao:</span>
+                                    <span className="block font-light text-sm">
+                                      {item.quantity}
+                                    </span>
+                                  </label>
+                                </>
+                              );
+                            })}
+                          </div>
+                        </>
+                      )}
                   </div>
                 ) : (
                   <LoaderSkeletonForm />

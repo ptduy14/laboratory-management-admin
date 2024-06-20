@@ -23,7 +23,7 @@ export const DeleteResource = ({ resourceId, disclosure}: { resourceId: number, 
     const handleDeleteResource = async () => {
         try {
           const { data } = await ResourceService.delete(resourceId.toString())
-          mutate((key) => typeof key === "string" && key.startsWith(`/items?page=`));
+          mutate((key) => Array.isArray(key) && key[0] === "/items");
           mutate((key) => typeof key === "string" && key.startsWith(`/items/category/`));
           toast.success("Xóa tài nguyên thành công")
           onClose();
