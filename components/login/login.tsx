@@ -7,11 +7,14 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { LoginFormSchemaType, LoginFormSchema } from "./schema/loginFormSchema";
 import jwtManager from "@/config/jwtManager";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
+import { EyeFilledIcon } from "../icons/EyeFilledIcon";
 
 export const Login = () => {
   const { data: session, status, update } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const {
     register,
     handleSubmit,
@@ -22,15 +25,15 @@ export const Login = () => {
 
   useEffect(() => {
     if (status === "authenticated" && session && !session.user.hasAccessTokenLocal) {
-      jwtManager.setToken(session.user.access_token)
-      update({ hasAccessTokenLocal: true});
+      jwtManager.setToken(session.user.access_token);
+      update({ hasAccessTokenLocal: true });
       router.push("/");
       toast.success("Đăng nhập thành công !!");
     }
   }, [status, session]);
 
   const onSubmit: SubmitHandler<LoginFormSchemaType> = async (data) => {
-    setLoading(true)
+    setLoading(true);
     const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -41,7 +44,7 @@ export const Login = () => {
 
     if (!result?.ok) {
       toast.error("Sai thông tin đăng nhập !!");
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -52,19 +55,7 @@ export const Login = () => {
     });
   };
 
-  useEffect(() => {
-    const handleKeyDown = (e: any) => {
-      if (e.key === "Enter") {
-        handleSubmit(onSubmit);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [errors]);
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
@@ -82,8 +73,7 @@ export const Login = () => {
               <div className="flex flex-col items-center">
                 <button
                   onClick={handleGoogleLogin}
-                  className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
-                >
+                  className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline">
                   <div className="bg-white p-2 rounded-full">
                     <svg className="w-4" viewBox="0 0 533.5 544.3">
                       <path
@@ -113,84 +103,86 @@ export const Login = () => {
                   Or sign In with e-mail
                 </div>
               </div>
-
-              <div className="mx-auto max-w-xs">
-                <input
-                  className={`w-full px-8 py-4 rounded-lg font-medium  ${
-                    errors.email
-                      ? "border-red-500 bg-red-100 focus:border-red-400"
-                      : "bg-gray-100 border-gray-200 focus:border-gray-400"
-                  } border placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5`}
-                  type="email"
-                  placeholder="Email"
-                  disabled={loading}
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <span className="text-red-500 text-sm">
-                    {errors.email.message}
-                  </span>
-                )}
-                <input
-                  className={`w-full px-8 py-4 rounded-lg font-medium  ${
-                    errors.password
-                      ? "border-red-500 bg-red-100 focus:border-red-400"
-                      : "bg-gray-100 border-gray-200 focus:border-gray-400"
-                  } border placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5`}
-                  type="password"
-                  placeholder="Password"
-                  disabled={loading}
-                  {...register("password")}
-                />
-                {errors.password && (
-                  <span className="text-red-500 text-sm">
-                    {errors.password.message}
-                  </span>
-                )}
-                <button
-                  onClick={handleSubmit(onSubmit)}
-                  className={`mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none relative ${
-                    loading ? "pointer-events-none" : ""
-                  }`}
-                  disabled={loading}
-                >
-                  {loading && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <svg
-                        aria-hidden="true"
-                        className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                        viewBox="0 0 100 101"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                          fill="currentFill"
-                        />
-                      </svg>
-                    </div>
+             
+                <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="mx-auto max-w-xs space-y-5">
+                  <input
+                    className={`w-full px-8 py-4 rounded-lg font-medium  ${
+                      errors.email
+                        ? "border-red-500 bg-red-100 focus:border-red-400"
+                        : "bg-gray-100 border-gray-200 focus:border-gray-400"
+                    } border placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white `}
+                    type="email"
+                    placeholder="Email"
+                    disabled={loading}
+                    {...register("email")}
+                  />
+                  {errors.email && (
+                    <span className="text-red-500 text-sm">{errors.email.message}</span>
                   )}
-                  <svg
-                    className={`w-6 h-6 -ml-2 ${loading ? "hidden" : ""}`}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                    <circle cx="8.5" cy="7" r="4" />
-                    <path d="M20 8v6M23 11h-6" />
-                  </svg>
-                  <span className={`ml-3 ${loading ? "invisible" : ""}`}>
-                    Sign In
-                  </span>
-                </button>
-              </div>
+                  <div className="relative">
+                    <input
+                      className={`w-full px-8 py-4 rounded-lg font-medium  ${
+                        errors.password
+                          ? "border-red-500 bg-red-100 focus:border-red-400"
+                          : "bg-gray-100 border-gray-200 focus:border-gray-400"
+                      } border placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white `}
+                      type={isVisible ? "text" : "password"}
+                      placeholder="Password"
+                      disabled={loading}
+                      {...register("password")}
+                    />
+                    <button onClick={toggleVisibility} className="absolute top-1/4 right-[5%]">
+                      {isVisible ? (
+                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <span className="text-red-500 text-sm">{errors.password.message}</span>
+                  )}
+                  <button
+                    type="submit"
+                    className={` tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none relative ${
+                      loading ? "pointer-events-none" : ""
+                    }`}
+                    disabled={loading}>
+                    {loading && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <svg
+                          aria-hidden="true"
+                          className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                    <svg
+                      className={`w-6 h-6 -ml-2 ${loading ? "hidden" : ""}`}
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round">
+                      <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                      <circle cx="8.5" cy="7" r="4" />
+                      <path d="M20 8v6M23 11h-6" />
+                    </svg>
+                    <span className={`ml-3 ${loading ? "invisible" : ""}`}>Sign In</span>
+                  </button>
+                  </div>
+                </form>
             </div>
           </div>
         </div>
@@ -200,8 +192,7 @@ export const Login = () => {
             style={{
               backgroundImage:
                 "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')",
-            }}
-          ></div>
+            }}></div>
         </div>
       </div>
     </div>
