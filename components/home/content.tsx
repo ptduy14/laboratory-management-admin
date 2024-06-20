@@ -18,6 +18,7 @@ import { CategoryService } from "@/services/categoryService";
 import { Category } from "../category/category-table/data";
 import { CardCategory } from "./card-category";
 import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
+import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
 
 const colors = ["bg-default-50", "bg-success", "bg-primary"];
 
@@ -36,10 +37,7 @@ export const Content = () => {
     data: categories,
     isLoading: isFetchingCategories,
     mutate: updateCategoriesList,
-  } = useSWR(`/categories`, async (url) => {
-    const { data } = await CategoryService.getAll(url);
-    return data;
-  });
+  } = useSWR(['/categories', {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
 
   return (
     <div className="h-full lg:px-6">

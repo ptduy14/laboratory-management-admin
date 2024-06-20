@@ -19,7 +19,7 @@ export const DeleteCategory = ({ categoryId }: { categoryId: number }) => {
 
     const handleDeleteCategory = async () => {
         const { data } = await CategoryService.delete(categoryId.toString())
-        mutate(`/categories`);
+        mutate((key) => Array.isArray(key) && key[0] === "/categories");
         toast.success("Xóa category thành công")
         onClose();
     }

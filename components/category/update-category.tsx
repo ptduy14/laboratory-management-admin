@@ -38,7 +38,7 @@ export const UpdateCategory = ({ categoryId }: { categoryId: number }) => {
   const onSubmit: SubmitHandler<UpdateCategorySchemaType> = async (data) => {
     try {
       const { data: updatedCategory } = await CategoryService.update(categoryId, data);
-      mutate(`/categories`);
+      mutate((key) => Array.isArray(key) && key[0] === '/categories');
       methods.reset();
       toast.success("Cập nhật danh mục thành công");
       onClose();

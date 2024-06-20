@@ -37,6 +37,7 @@ import { useSWRConfig } from "swr";
 import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { resourceFetcher } from "@/utils/fetchers/resource-fetchers.ts/resource-fetcher";
+import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
 
 export default function UpdateResouce({
   resourceId,
@@ -64,10 +65,7 @@ export default function UpdateResouce({
     }
   );
 
-  const { data: categories } = useSWR("/categories", async (url) => {
-    const { data } = await CategoryService.getAll(url);
-    return data;
-  });
+  const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
 
   let categoryIdSelected: number = methods.watch("categoryId");
 

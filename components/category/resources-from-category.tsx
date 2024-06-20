@@ -26,6 +26,7 @@ import useSWR, { mutate } from "swr";
 import { CategoryService } from "@/services/categoryService";
 import { AddResourceFromCatetory } from "./add-resource-from-catetory";
 import { ExportCSVCategoryResource } from "../category-resources/export-csv-category-resource";
+import { categoryFetcher } from "@/utils/fetchers/category-fetchers.ts/category-fetcher";
 
 export const ResourcesFromCategory = ({ id }: { id: string }) => {
   const [page, setPage] = useState(1);
@@ -44,13 +45,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
     return data;
   });
 
-  const { data: category, isLoading: isFetchingCategory } = useSWR(
-    `/categories/${id}`,
-    async (url) => {
-      const { data } = await CategoryService.getById(url);
-      return data;
-    }
-  );
+  const { data: category, isLoading: isFetchingCategory } = useSWR(`/categories/${id}`, categoryFetcher);
 
   const onSearchChange = (value?: string) => {
     if (value) {
