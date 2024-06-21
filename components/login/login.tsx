@@ -132,7 +132,7 @@ export const Login = () => {
                       disabled={loading}
                       {...register("password")}
                     />
-                    <button onClick={toggleVisibility} className="absolute top-1/4 right-[5%]">
+                    <button type="button" onClick={toggleVisibility} className="absolute top-1/4 right-[5%]">
                       {isVisible ? (
                         <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
                       ) : (

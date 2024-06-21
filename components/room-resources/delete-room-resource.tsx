@@ -16,14 +16,16 @@ import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
 import axios from "axios";
 import { translateErrorMessage } from "@/utils/translateErrorMessage";
 import { RoomResourceService } from "@/services/roomResourceService";
+import { ResourcesTransfered } from "./room-resources-table/data";
 
-export const DeleteRoomResource = ({ resourceTransferedId, disclosure}: { resourceTransferedId: number, disclosure: UseDisclosureReturn }) => {
+export const DeleteRoomResource = ({ resourceTransfered, disclosure}: { resourceTransfered: ResourcesTransfered, disclosure: UseDisclosureReturn }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
 
     const handleDeleteResource = async () => {
         try {
-          const { data } = await RoomResourceService.delete(resourceTransferedId.toString())
-          mutate((key) => typeof key === "string" && key.startsWith("/room-items/room/"));
+          const currentRoomId = resourceTransfered.room.id;
+          const { data } = await RoomResourceService.delete(resourceTransfered.id.toString())
+          mutate((key) => Array.isArray(key) && key[0] === `/room-items/room/${currentRoomId}`)
           toast.success("Thu hồi tài nguyên thành công")
           onClose();
         } catch (error) {

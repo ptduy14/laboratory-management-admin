@@ -4,6 +4,8 @@ import { RoomService } from "@/services/roomService";
 import useSWR from "swr";
 import { Room } from "../rooms/room-table/data";
 import { ResourcesTransfered } from "../room-resources/room-resources-table/data";
+import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
+import { roomResourcesFetcher } from "@/utils/fetchers/room-resource-fetchers/room-resources-fetcher";
 
 interface ResourcesFormRooms {
   roomId: number;
@@ -16,10 +18,7 @@ interface ResourcesFormRooms {
 export const Steam = () => {
   const [resourcesFormRooms, setResourcesForms] = useState<ResourcesFormRooms[]>([]);
 
-  const { data: rooms, isLoading: isFetchingRooms } = useSWR("/rooms", async (url) => {
-    const { data } = await RoomService.getAll(url);
-    return data;
-  });
+  const { data: rooms, isLoading: isFetchingRooms } = useSWR(["/rooms", {take: 50}], ([url, queryParams]) => roomsFetcher(url, queryParams));
 
   const calculateTotalQuantityBorrowed = (data: any) => {
     return data.reduce((total: string, current: ResourcesTransfered) => {
@@ -38,7 +37,7 @@ export const Steam = () => {
       const fetchResources = async () => {
         const resources = await Promise.all(
           rooms.data.map(async (room: Room) => {
-            const { data: response } = await RoomService.getResourcesFromRoom(`/room-items/room/${room.id}`);
+            const response = await roomResourcesFetcher(`/room-items/room/${room.id}`)
             const totalQuantityBorrowed = calculateTotalQuantityBorrowed(response.data);
             const totalQuantityReturned = calculateTotalQuantityReturned(response.data);
             return {

@@ -23,6 +23,7 @@ import { UnitEnumNames } from "@/enums/unit";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { RoomResourceService } from "@/services/roomResourceService";
 import { resourceFetcher } from "@/utils/fetchers/resource-fetchers.ts/resource-fetcher";
+import { roomResourceFetcher } from "@/utils/fetchers/room-resource-fetchers/room-resource-fetch";
 
 export const DetailResource = ({
   resourceId,
@@ -41,10 +42,7 @@ export const DetailResource = ({
 
   const { data: resourceTransferedInfo, isLoading: isFetchingResourceTransferedInfo } = useSWR(
     isOpen ? `room-items/item/${resourceId.toString()}` : null,
-    async (url) => {
-      const { data } = await RoomResourceService.getResourceTransferedById(url);
-      return data;
-    }
+    roomResourceFetcher
   );
 
   return (

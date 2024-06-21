@@ -10,8 +10,8 @@ export const ResourceService = {
     getById: async (url: string) => {
         return await AxiosInstance.get(url)
     },
-    getByCategory: async (url: string) => {
-        return await AxiosInstance.get(url);
+    getByCategory: async (url: string, queryParams: QueryParams) => {
+        return await AxiosInstance.get(url, {params: queryParams});
     },
     create: async (payload: AddResourceSchemaUnionType) => {
         return await AxiosInstance.post('/items', payload)

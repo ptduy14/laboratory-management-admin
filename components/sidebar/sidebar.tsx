@@ -19,16 +19,14 @@ import { CategoryStatus } from "@/enums/category-status";
 import { RoomStatus } from "@/enums/room-status";
 import { ReportsIcon } from "../icons/sidebar/reports-icon";
 import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
+import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
   // const [categories, setCategories] = useState<Category[]>([]);
 
-  const { data: rooms } = useSWR("/rooms", async (url) => {
-    const { data } = await RoomService.getAll(url);
-    return data;
-  });
+  const { data: rooms, isLoading: isFetchingRooms } = useSWR(["/rooms", {take: 50}], ([url, queryParams]) => roomsFetcher(url, queryParams));
 
   const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) =>
     categoriesFetcher(url, queryParams)

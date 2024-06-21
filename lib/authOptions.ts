@@ -38,6 +38,7 @@ const authOptions: NextAuthOptions = {
 
   pages: {
     signIn: "/login",
+    error: '/error',
   },
 
   session: {
@@ -49,7 +50,6 @@ const authOptions: NextAuthOptions = {
       if (account?.provider === "google" && user) {
         const payload = handleTransformData(user, account);
         try {
-          // axiosConfig();
           const res = await AuthService.ggAccessTokenVerify(payload);
           if (!isAccess(res.data)) {
             return false;

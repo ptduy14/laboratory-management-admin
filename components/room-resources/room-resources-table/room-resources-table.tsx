@@ -2,12 +2,13 @@ import { ResourcesTransfered } from "./data";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination } from "@nextui-org/react";
 import { RenderCell } from "./render-cell";
 import { metaType } from "@/types/meta";
+import { QueryParams } from "@/types/query-params";
 
 interface RoomResourcesTableWrapperProps {
   columns: { key: string; label: string }[],
   resourcesTransfered: ResourcesTransfered[],
   meta: metaType;
-  setPage?: React.Dispatch<React.SetStateAction<number>>;
+  setPage?: React.Dispatch<React.SetStateAction<QueryParams>>;
 }
 
 export const RoomResourcesTableWrapper = ({
@@ -27,7 +28,14 @@ export const RoomResourcesTableWrapper = ({
           color="primary"
           page={meta.page}
           total={meta.pages}
-          onChange={(newPage) => setPage && setPage(newPage)}
+          onChange={(page) => {
+            if (setPage) {
+              setPage((prev) => ({
+                ...prev,
+                page: page
+              }))
+            }
+          }}
         />
       </div>
     }>

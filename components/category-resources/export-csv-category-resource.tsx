@@ -6,12 +6,10 @@ import { Resource } from "../resoures/resource-table/data";
 import { getCurrentDate } from "@/utils/getCurrentDate";
 import { UnitEnumNames } from "@/enums/unit";
 import { ResourceStatusName } from "@/enums/resource-status";
+import { categoryResourcesFetcher } from "@/utils/fetchers/category-resource-fetchers/category-resources-fetcher";
 
 export const ExportCSVCategoryResource = ({ categoryId }: {categoryId: string}) => {
-    const { data: resources, isLoading } = useSWR(`/items/category/${categoryId}?take=50`, async (url: string) => {
-        const { data } = await ResourceService.getByCategory(url);
-        return data;
-      });
+    const { data: resources, isLoading } = useSWR([`/items/category/${categoryId}`, {take: 50}], ([url, queryParams]) => categoryResourcesFetcher(url, queryParams));
 
       const handleDownloadCSV = () => {
         const csvContent =

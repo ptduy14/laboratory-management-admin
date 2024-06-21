@@ -82,7 +82,6 @@ export default function UpdateResouce({
     });
     switch (category?.name) {
       case "Hóa chất":
-        console.log("ok");
         return UpdateResourceChemicalSchema;
       default:
         return UpdateResourceCommonSchema;
@@ -92,10 +91,11 @@ export default function UpdateResouce({
   const onSubmit: SubmitHandler<UpdateResourceSchemaUnionType> = async (data) => {
     try {
       const { data: resourceUpdated } = await ResourceService.update(resourceId, data);
+      console.log(resourceUpdated);
       methods.reset();
       mutate((key) => Array.isArray(key) && key[0] === "/items");
       mutate(`/items/${resourceId.toString()}`);
-      mutate((key) => typeof key === "string" && key.startsWith(`/items/category/`));
+      mutate((key) => Array.isArray(key) && key[0] === `/items/category/${resourceUpdated.category.id}`)
       methods.reset();
       toast.success("Cập nhật thành công");
       onClose();

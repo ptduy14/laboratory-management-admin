@@ -20,19 +20,17 @@ import { statusOptions } from "../resoures/resource-table/data";
 import { RoomResourcesTableWrapper } from "./room-resources-table/room-resources-table";
 import { ResourcesTransferedColumns } from "./room-resources-table/data";
 import { ExportCSVRoomResource } from "./export-csv-room-resource";
+import { roomFetcher } from "@/utils/fetchers/room-fetchers.ts/room-fetcher";
+import { QueryParams } from "@/types/query-params";
+import { roomResourcesFetcher } from "@/utils/fetchers/room-resource-fetchers/room-resources-fetcher";
 
 export const RoomResources = ({ roomId }: {roomId: string}) => {
     const [page, setPage] = useState(1);
+    const [queryParams, setQueryParams] = useState<QueryParams>({})
 
-    const { data: room, isLoading: isFetchingRoom } = useSWR(`/rooms/${roomId}`, async (url) => {
-        const { data } = await RoomService.getById(url);
-        return data
-    })
+    const { data: room, isLoading: isFetchingRoom } = useSWR(`/rooms/${roomId}`, roomFetcher)
 
-    const { data: resourceTransfered ,isLoading: isFetchingResourceTransfered } = useSWR(`/room-items/room/${roomId}?page=${page}`, async (url) => {
-        const { data } = await RoomService.getResourcesFromRoom(url);
-        return data
-    })
+    const { data: resourceTransfered ,isLoading: isFetchingResourceTransfered } = useSWR([`/room-items/room/${roomId}`, queryParams], ([url, queryParams]) => roomResourcesFetcher(url, queryParams))
 
     return (
         <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -124,7 +122,7 @@ export const RoomResources = ({ roomId }: {roomId: string}) => {
               <>
               <span className="text-default-400 text-small">Tài nguyên đã bàn giao: {resourceTransfered.meta.numberRecords} </span>
             <div style={{ marginBottom: '16px' }}></div>
-            <RoomResourcesTableWrapper columns={ResourcesTransferedColumns} resourcesTransfered={resourceTransfered.data} setPage={setPage} meta={resourceTransfered.meta}/></>
+            <RoomResourcesTableWrapper columns={ResourcesTransferedColumns} resourcesTransfered={resourceTransfered.data} setPage={setQueryParams} meta={resourceTransfered.meta}/></>
             )
              : <LoaderTable />}
           </div>

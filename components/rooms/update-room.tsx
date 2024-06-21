@@ -33,8 +33,8 @@ export const UpdateRoom = ({ room }: { room: Room }) => {
 
   const onSubmit: SubmitHandler<UpdateRoomSchemaType> = async (data) => {
     const { data: updatedRoom } = await RoomService.update(room.id, data);
-    mutate(`/rooms`);
-    methods.reset({...updatedRoom, roomId: updatedRoom.id});
+    mutate((key) => Array.isArray(key) && key[0] === "/rooms");
+    methods.reset({ ...updatedRoom, roomId: updatedRoom.id });
     toast.success("Cập nhật phòng thành công");
     onClose();
   };

@@ -10,12 +10,10 @@ import { RoomService } from "@/services/roomService";
 import { RoomTableWrapper } from "./room-table/room-table";
 import { RoomColumns } from "./room-table/data";
 import { AddRoom } from "./add-room";
+import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
 
 export const Rooms = () => {
-  const { data: rooms, isLoading: isFetchingRooms, mutate: updateRoomList } = useSWR('/rooms', async (url) => {
-    const { data } = await RoomService.getAll(url);
-    return data;
-  })
+  const { data: rooms, isLoading: isFetchingRooms, mutate: updateRoomList } = useSWR(["/rooms", {take: 50}], ([url, queryParams]) => roomsFetcher(url, queryParams));
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
