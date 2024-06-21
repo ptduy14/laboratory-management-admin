@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { CardEquipment } from "./card-equipment";
 import { CardTool } from "./card-tool";
 import { CardChemical } from "./card-chemical";
-import { CardAgents } from "./card-agents";
+import { CardAgents } from "./card-";
 import { CardTransactions } from "./card-latest-transfer-resource";
 import { Link } from "@nextui-org/react";
 import NextLink from "next/link";
