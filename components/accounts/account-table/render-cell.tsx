@@ -53,7 +53,7 @@ export const RenderCell = ({ account, columnKey }: Props) => {
         <div className="flex items-center gap-4 ">
           <DetailAccount accountId={account.id} />
           <UpdateAccount accountId={account.id} />
-          <DeleteAccount accountId={account.id} />
+          <DeleteAccount account={account} />
         </div>
       );
     default:
