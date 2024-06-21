@@ -19,7 +19,7 @@ export const DeleteRoom = ({ roomId }: { roomId: number }) => {
 
     const handleDeleteRoom = async () => {
         const { data } = await RoomService.delete(roomId.toString())
-        mutate(`/rooms`);
+        mutate((key) => Array.isArray(key) && key[0] === "/rooms");
         toast.success("Xóa phòng thí nghiệm thành công")
         onClose();
     }

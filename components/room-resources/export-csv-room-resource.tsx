@@ -7,12 +7,10 @@ import { UnitEnumNames } from "@/enums/unit";
 import { ResourceStatusName } from "@/enums/resource-status";
 import { RoomService } from "@/services/roomService";
 import { formatDateTime } from "@/utils/formatDateTime";
+import { roomResourcesFetcher } from "@/utils/fetchers/room-resource-fetchers/room-resources-fetcher";
 
 export const ExportCSVRoomResource = ({ roomId }: {roomId: string}) => {
-  const { data: resources, isLoading } = useSWR(`/room-items/room/${roomId}?take=50`, async (url: string) => {
-    const { data } = await RoomService.getResourcesFromRoom(url);
-    return data;
-  });
+  const { data: resources, isLoading } = useSWR([`/room-items/room/${roomId}`, {take: 50}], ([url, queryParams]) => roomResourcesFetcher(url, queryParams));
 
   const handleDownloadCSV = () => {
     const csvContent =

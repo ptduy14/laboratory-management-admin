@@ -18,22 +18,19 @@ import { RoomType } from "@/types/room";
 import { CategoryStatus } from "@/enums/category-status";
 import { RoomStatus } from "@/enums/room-status";
 import { ReportsIcon } from "../icons/sidebar/reports-icon";
-
+import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
+import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
   // const [categories, setCategories] = useState<Category[]>([]);
 
-  const { data: rooms } = useSWR("/rooms", async (url) => {
-    const { data } = await RoomService.getAll(url);
-    return data;
-  });
+  const { data: rooms, isLoading: isFetchingRooms } = useSWR(["/rooms", {take: 50}], ([url, queryParams]) => roomsFetcher(url, queryParams));
 
-  const { data: categories } = useSWR("/categories", async (url) => {
-    const { data } = await CategoryService.getAll(url);
-    return data;
-  });
+  const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) =>
+    categoriesFetcher(url, queryParams)
+  );
 
   // useEffect(() => {
   //   getAllRoom();
@@ -57,14 +54,11 @@ export const SidebarWrapper = () => {
   // };
   return (
     <aside className="h-screen z-[202] sticky top-0">
-      {collapsed ? (
-        <div className={Sidebar.Overlay()} onClick={setCollapsed} />
-      ) : null}
+      {collapsed ? <div className={Sidebar.Overlay()} onClick={setCollapsed} /> : null}
       <div
         className={Sidebar({
           collapsed: collapsed,
-        })}
-      >
+        })}>
         <div className={Sidebar.Header()}>
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Logo_ctuet.png"
@@ -73,12 +67,7 @@ export const SidebarWrapper = () => {
         </div>
         <div className="flex flex-col justify-between h-full">
           <div className={Sidebar.Body()}>
-            <SidebarItem
-              title="Home"
-              icon={<HomeIcon />}
-              isActive={pathname === "/"}
-              href="/"
-            />
+            <SidebarItem title="Home" icon={<HomeIcon />} isActive={pathname === "/"} href="/" />
             <SidebarMenu title="Main Menu">
               <SidebarItem
                 isActive={pathname === "/accounts"}
@@ -105,9 +94,7 @@ export const SidebarWrapper = () => {
                   return (
                     <SidebarItem
                       key={category.id}
-                      isActive={
-                        pathname === `/categories/${category.id}/resources`
-                      }
+                      isActive={pathname === `/categories/${category.id}/resources`}
                       title={category.name}
                       icon={getCategoryIcon(category.id)}
                       href={`/categories/${category.id}/resources`}

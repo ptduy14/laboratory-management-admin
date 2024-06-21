@@ -16,6 +16,7 @@ import useSWR from "swr";
 import { ResourcesTransfered } from "../room-resources/room-resources-table/data";
 import { formatDateTime } from "@/utils/formatDateTime";
 import { CardLoaderSpinner } from "../loader/card-loader-spiner";
+import { roomResourcesFetcher } from "@/utils/fetchers/room-resource-fetchers/room-resources-fetcher";
 
 const columns = [
   {
@@ -51,13 +52,15 @@ const renderCell = ({ item, columnKey }: { item: ResourcesTransfered; columnKey:
 };
 
 export const CardTransactions = () => {
-  const { data: resourceTransfered, isLoading: isFetchingresourceTransfered } = useSWR(
-    `/room-items?take=5&order=DESC`,
-    async (url) => {
-      const { data } = await RoomResourceService.getAll(url);
-      return data;
-    }
-  );
+  // const { data: resourceTransfered, isLoading: isFetchingresourceTransfered } = useSWR(
+  //   `/room-items?take=5&order=DESC`,
+  //   async (url) => {
+  //     const { data } = await RoomResourceService.getAll(url);
+  //     return data;
+  //   }
+  // );
+
+  const { data: resourceTransfered, isLoading: isFetchingresourceTransfered } = useSWR(['/room-items', {take: 5, order: "DESC"}], ([url, queryParams]) => roomResourcesFetcher(url, queryParams));
 
   return (
     <Card className="bg-default-50 rounded-xl shadow-md">

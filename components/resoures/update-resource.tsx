@@ -35,9 +35,17 @@ import { CategoryService } from "@/services/categoryService";
 import { Category } from "../category/category-table/data";
 import { useSWRConfig } from "swr";
 import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
-import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
+import { resourceFetcher } from "@/utils/fetchers/resource-fetchers.ts/resource-fetcher";
+import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
 
-export default function UpdateResouce({ resourceId, disclosure }: { resourceId: number, disclosure: UseDisclosureReturn }) {
+export default function UpdateResouce({
+  resourceId,
+  disclosure,
+}: {
+  resourceId: number;
+  disclosure: UseDisclosureReturn;
+}) {
   const { isOpen, onOpen, onClose, onOpenChange } = disclosure;
   const [schema, setSchema] = useState<z.ZodType<UpdateResourceSchemaUnionType>>(
     UpdateResourceCommonSchema
@@ -51,16 +59,13 @@ export default function UpdateResouce({ resourceId, disclosure }: { resourceId: 
   const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
     isOpen ? `/items/${resourceId.toString()}` : null,
     async (url: string) => {
-      const { data } = await ResourceService.getById(url);
+      const data = await resourceFetcher(url);
       methods.reset({ ...data, categoryId: data.category.id });
       return data;
     }
   );
 
-  const { data: categories } = useSWR("/categories", async (url) => {
-    const { data } = await CategoryService.getAll(url);
-    return data;
-  });
+  const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
 
   let categoryIdSelected: number = methods.watch("categoryId");
 
@@ -77,7 +82,6 @@ export default function UpdateResouce({ resourceId, disclosure }: { resourceId: 
     });
     switch (category?.name) {
       case "Hóa chất":
-        console.log("ok");
         return UpdateResourceChemicalSchema;
       default:
         return UpdateResourceCommonSchema;
@@ -87,15 +91,17 @@ export default function UpdateResouce({ resourceId, disclosure }: { resourceId: 
   const onSubmit: SubmitHandler<UpdateResourceSchemaUnionType> = async (data) => {
     try {
       const { data: resourceUpdated } = await ResourceService.update(resourceId, data);
-      mutate((key) => typeof key === "string" && key.startsWith(`/items?page=`));
+      console.log(resourceUpdated);
+      methods.reset();
+      mutate((key) => Array.isArray(key) && key[0] === "/items");
       mutate(`/items/${resourceId.toString()}`);
-      mutate((key) => typeof key === "string" && key.startsWith(`/items/category/`));
+      mutate((key) => Array.isArray(key) && key[0] === `/items/category/${resourceUpdated.category.id}`)
       methods.reset();
       toast.success("Cập nhật thành công");
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error);
+        toast.error(error.response?.data.message)
       }
     }
   };

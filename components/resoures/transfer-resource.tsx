@@ -24,9 +24,16 @@ import axios from "axios";
 import { RoomResourceService } from "@/services/roomResourceService";
 import { mutate } from "swr";
 import { toast } from "react-toastify";
-import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
+import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
 
-export const TransferResource = ({ resource, disclosure }: { resource: Resource, disclosure: UseDisclosureReturn }) => {
+export const TransferResource = ({
+  resource,
+  disclosure,
+}: {
+  resource: Resource;
+  disclosure: UseDisclosureReturn;
+}) => {
   const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
 
   const methods = useForm<transferResourceSchemaType>({
@@ -37,24 +44,18 @@ export const TransferResource = ({ resource, disclosure }: { resource: Resource,
     },
   });
 
-  const { data: rooms, isLoading: isFetchingRooms } = useSWR(
-    isOpen ? "/rooms" : null,
-    async (url) => {
-      const { data } = await RoomService.getAll(url);
-      return data;
-    }
-  );
+  const { data: rooms, isLoading: isFetchingRooms } = useSWR(isOpen ? ["/rooms", {take: 50}] : null, ([url, queryParams]) => roomsFetcher(url, queryParams));
 
   const onSubmit: SubmitHandler<transferResourceSchemaType> = async (data) => {
-    if (data.quantity > (resource.quantity - resource.handover)) {
+    if (data.quantity > resource.quantity - resource.handover) {
       methods.setError("quantity", { type: "invalid", message: "Số lượng bàn giao không hợp lệ" });
     }
 
     try {
       const { data: res } = await RoomResourceService.transferResource(data);
       //udpate cache and trigger revalidation
-      mutate((key) => typeof key === "string" && key.startsWith("/items?page="));
-      mutate((key) => typeof key === "string" && key.startsWith("/items/category/"));
+      mutate((key) => Array.isArray(key) && key[0] === "/items");
+      mutate((key) => Array.isArray(key) && key[0].startsWith(`/items/category/`));
       methods.reset();
       toast.success("Bàn giao thành công");
       onClose();
@@ -81,7 +82,8 @@ export const TransferResource = ({ resource, disclosure }: { resource: Resource,
               </ModalHeader>
               <ModalBody>
                 <div className="p-4 bg-[#3F3F46] rounded mb-4">
-                  <span className="font-bold">Số lượng hiện có sẵng:</span> {resource.quantity - resource.handover}
+                  <span className="font-bold">Số lượng hiện có sẵng:</span>{" "}
+                  {resource.quantity - resource.handover}
                 </div>
                 <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                   <div className="w-full max-h-80">

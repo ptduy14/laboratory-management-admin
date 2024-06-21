@@ -2,22 +2,23 @@
 import Link from "next/link";
 import { HouseIcon } from "../icons/breadcrumb/house-icon";
 import useSWR from "swr";
-import { CategoryService } from "@/services/categoryService";
 import { AddCategory } from "./add-category";
 import { Button } from "@nextui-org/react";
 import { ExportIcon } from "../icons/accounts/export-icon";
 import { CategoryTableWrapper } from "./category-table/category-table";
 import { CategoryColumns } from "./category-table/data";
 import { LoaderTable } from "../loader/loader-table";
+import { useState } from "react";
+import { QueryParams } from "@/types/query-params";
+import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
 
 export const Categories = () => {
-  const { data: categories, isLoading: isFetchingCategories, mutate: updateCategoriesList } = useSWR(
-    `/categories`,
-    async (url) => {
-      const { data } = await CategoryService.getAll(url);
-      return data;
-    }
-  );
+  const [queryParams, setQueryParams] = useState<QueryParams>({});
+  const {
+    data: categories,
+    isLoading: isFetchingCategories,
+    mutate: updateCategoriesList,
+  } = useSWR(['/categories', queryParams], ([url, queryParams]) => categoriesFetcher(url, queryParams));
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -42,7 +43,7 @@ export const Categories = () => {
       <h3 className="text-xl font-semibold">Tất cả danh mục</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddCategory mutate={updateCategoriesList}/>
+          <AddCategory mutate={updateCategoriesList} />
           <Button color="primary" startContent={<ExportIcon />}>
             Export to CSV
           </Button>

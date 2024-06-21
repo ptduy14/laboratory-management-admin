@@ -22,21 +22,19 @@ import { AddResource } from "./add-resource";
 import { originOptions } from "./resource-table/data";
 import useSWR from "swr";
 import { ExportCSVResource } from "./export-csv-resource";
+import { QueryParams } from "@/types/query-params";
+import { resourcesFetcher } from "@/utils/fetchers/resource-fetchers.ts/resources-fetcher";
 
 export const Resources = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
   const [originFilter, setOriginFilter] = React.useState<Selection>("all");
-
+  const [queryParams, setQueryParams] = useState<QueryParams>({});
   const {
     data: resources,
     isLoading: isFetchingResouces,
     mutate: updateResourceList,
-  } = useSWR(`/items?page=${page}&keyword=${searchValue}`, async (url) => {
-    const { data } = await ResourceService.getAll(url);
-    return data;
-  });
+  } = useSWR(["/items", queryParams], ([url, queryParams]) => resourcesFetcher(url, queryParams));
 
   const handleFilteredItems = useMemo(() => {
     let filteredResources = isFetchingResouces ? [] : [...resources.data];
@@ -151,8 +149,7 @@ export const Resources = () => {
             <ResourceTableWrapper
               resources={filteredResources}
               meta={resources.meta}
-              setPage={setPage}
-              page={page}
+              setPage={setQueryParams}
             />
           </>
         ) : (

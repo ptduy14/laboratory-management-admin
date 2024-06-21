@@ -22,6 +22,7 @@ import { mutate } from "swr";
 import { toast } from "react-toastify";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { ReTransferResourceForm } from "../forms/resource-forms/retransfer-resource-form";
+import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
 
 export const ReTransferResource = ({
   resourceTransfered,
@@ -41,13 +42,7 @@ export const ReTransferResource = ({
     },
   });
 
-  const { data: rooms, isLoading: isFetchingRooms } = useSWR(
-    isOpen ? "/rooms" : null,
-    async (url) => {
-      const { data } = await RoomService.getAll(url);
-      return data;
-    }
-  );
+  const { data: rooms, isLoading: isFetchingRooms } = useSWR(isOpen ? ["/rooms", {take: 50}] : null, ([url, queryParams]) => roomsFetcher(url, queryParams));
 
   const onSubmit: SubmitHandler<transferResourceSchemaType> = async (data) => {
     if ((data.quantity > resourceTransfered.quantity - resourceTransfered.itemQuantityBorrowed)) {
@@ -56,13 +51,15 @@ export const ReTransferResource = ({
         message: "Số lượng chuyển tiếp không hợp lệ",
       });
       return;
-    }   
-    console.log(data)
+    }
 
     try {
+      const currentRoomId = resourceTransfered.room.id
       const { data: res } = await RoomResourceService.reTransferResource(resourceTransfered.id.toString(), data);
       //udpate cache and trigger revalidation
-      mutate((key) => typeof key === "string" && key.startsWith("/room-items/room/"));
+      mutate((key) => Array.isArray(key) && key[0] === `/room-items/room/${currentRoomId}`)
+      //update detail resource transfered
+      mutate(`/room-items/${resourceTransfered.id.toString()}`)
       methods.reset();
       toast.success("Chuyển tiếp thành công");
       onClose();

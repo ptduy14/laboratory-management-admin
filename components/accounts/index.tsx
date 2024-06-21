@@ -26,14 +26,13 @@ import { roleOptions } from "./account-table/data";
 import useSWR from "swr";
 import { ExportCSVAccount } from "./export-csv-account";
 import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
+import { QueryParams } from "@/types/query-params";
 
 export const Accounts = () => {
   const [searchFilterValue, setSearchFilterValue] = useState("");
   const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
   const [roleFilter, setRoleFilter] = React.useState<Selection>("all");
-  const [queryParams, setQueryParams] = useState({});
-
-  const [pages, setPage] = useState(1);
+  const [queryParams, setQueryParams] = useState<QueryParams>({});
 
   const {
     data: accounts,
@@ -157,7 +156,7 @@ export const Accounts = () => {
               accounts={filteredAccounts}
               meta={accounts.meta}
               paginate={true}
-              setQueryParams={setQueryParams}
+              setPage={setQueryParams}
             />
           </>
         ) : (

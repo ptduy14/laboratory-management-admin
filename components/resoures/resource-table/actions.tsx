@@ -71,7 +71,7 @@ export const Actions = ({ resource }: { resource: Resource }) => {
       <TransferResource resource={resource} disclosure={transferModalDisclosure} />
       <DetailResource resourceId={resource.id} disclosure={detailModalDisclosure} />
       <UpdateResouce resourceId={resource.id} disclosure={updateModalDisclosure}/>
-      <DeleteResource resourceId={resource.id} disclosure={deleteModalDisclosure}/>
+      <DeleteResource resource={resource} disclosure={deleteModalDisclosure}/>
     </div>
   );
 };

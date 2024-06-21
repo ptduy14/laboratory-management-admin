@@ -13,27 +13,33 @@ import { DeleteIcon } from "../icons/table/delete-icon";
 import { ResourceService } from "@/services/resourceService";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
-import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import axios from "axios";
 import { translateErrorMessage } from "@/utils/translateErrorMessage";
+import { Resource } from "./resource-table/data";
 
-export const DeleteResource = ({ resourceId, disclosure}: { resourceId: number, disclosure: UseDisclosureReturn }) => {
+export const DeleteResource = ({
+  resource,
+  disclosure,
+}: {
+  resource: Resource;
+  disclosure: UseDisclosureReturn;
+}) => {
   const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
-
-    const handleDeleteResource = async () => {
-        try {
-          const { data } = await ResourceService.delete(resourceId.toString())
-          mutate((key) => typeof key === "string" && key.startsWith(`/items?page=`));
-          mutate((key) => typeof key === "string" && key.startsWith(`/items/category/`));
-          toast.success("Xóa tài nguyên thành công")
-          onClose();
-        } catch (error) {
-          if (axios.isAxiosError(error)) {
-            const translatedErrorMessage = translateErrorMessage(error.response?.data.message)
-            toast.error(translatedErrorMessage)
-          }
-        }
+  const handleDeleteResource = async () => {
+    try {
+      const { data } = await ResourceService.delete(resource.id.toString());
+      mutate((key) => Array.isArray(key) && key[0] === "/items");
+      mutate((key) => Array.isArray(key) && key[0].startsWith(`/items/category/`));
+      toast.success("Xóa tài nguyên thành công");
+      onClose();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const translatedErrorMessage = translateErrorMessage(error.response?.data.message);
+        toast.error(translatedErrorMessage);
+      }
     }
+  };
 
   return (
     <>
@@ -44,8 +50,7 @@ export const DeleteResource = ({ resourceId, disclosure}: { resourceId: number, 
               <ModalHeader className="flex flex-col gap-1">Xóa tài nguyên</ModalHeader>
               <ModalBody>
                 <p>
-                  Bạn có thật sự muốn xóa tài nguyên này không ?
-                  Hành động này sẽ không thể hoàn tác
+                  Bạn có thật sự muốn xóa tài nguyên này không ? Hành động này sẽ không thể hoàn tác
                 </p>
               </ModalBody>
               <ModalFooter>

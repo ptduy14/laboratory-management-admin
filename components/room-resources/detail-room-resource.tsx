@@ -25,6 +25,7 @@ import { RoomResourceService } from "@/services/roomResourceService";
 import { formatDateTime } from "@/utils/formatDateTime";
 import { UserService } from "@/services/userService";
 import { Account } from "../accounts/account-table/data";
+import { accountFetcher } from "@/utils/fetchers/account-fetchers.ts/accountFetcher";
 
 export const DetailRoomResource = ({
   resourceTransferedId,
@@ -44,10 +45,12 @@ export const DetailRoomResource = ({
     }
   );
 
-  const { data: account } = useSWR<Account>(!isFetchingResourceTransfered && resourceTransfered ? `/users/get/${resourceTransfered.createBy}` : null, async (url: any) => {
-    const { data } = await UserService.getById(url);
-    return data;
-  })
+  const { data: account } = useSWR<Account>(
+    !isFetchingResourceTransfered && resourceTransfered
+      ? `/users/get/${resourceTransfered.createBy}`
+      : null,
+    accountFetcher
+  );
 
   return (
     <div>

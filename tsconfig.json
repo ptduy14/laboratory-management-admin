@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "utils/fetchers/room-resource-fetchers"  ],
   "exclude": [
     "node_modules"
   ]

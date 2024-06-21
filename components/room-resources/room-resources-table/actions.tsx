@@ -61,7 +61,7 @@ import { ResourcesTransfered } from "./data";
         </Dropdown>
         <ReTransferResource resourceTransfered={resourceTranfered} disclosure={reTransferModalDisclosure} />
         <DetailRoomResource resourceTransferedId={resourceTranfered.id} disclosure={detailRoomResourceModalDisclosure}/>
-        <DeleteRoomResource resourceTransferedId={resourceTranfered.id} disclosure={deleteRoomResourceModalDisclosure}/>
+        <DeleteRoomResource resourceTransfered={resourceTranfered} disclosure={deleteRoomResourceModalDisclosure}/>
         {/* <DetailResource resourceId={resource.id} disclosure={detailModalDisclosure} />
         <UpdateResouce resourceId={resource.id} disclosure={updateModalDisclosure}/>
         <DeleteResource resourceId={resource.id} disclosure={deleteModalDisclosure}/> */}

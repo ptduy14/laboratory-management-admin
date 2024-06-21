@@ -29,10 +29,12 @@ import { Category } from "../category/category-table/data";
 import { z } from "zod";
 import { ResourceService } from "@/services/resourceService";
 import { translateErrorMessage } from "@/utils/translateErrorMessage";
+import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
 
-export const AddResource = ({ mutate } : { mutate: any}) => {
+export const AddResource = ({ mutate }: { mutate: any }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [schema, setSchema] = useState<z.ZodType<AddResourceSchemaUnionType>>(AddResourceCommonSchema);
+  const [schema, setSchema] =
+    useState<z.ZodType<AddResourceSchemaUnionType>>(AddResourceCommonSchema);
 
   const methods = useForm<AddResourceSchemaUnionType>({
     resolver: zodResolver(schema),
@@ -40,10 +42,7 @@ export const AddResource = ({ mutate } : { mutate: any}) => {
 
   const categoryId: number = methods.watch("categoryId", 1);
 
-  const { data: categories } = useSWR("/categories", async (url) => {
-    const { data } = await CategoryService.getAll(url);
-    return data;
-  });
+  const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
 
   // need to improment later
   useEffect(() => {
@@ -55,7 +54,7 @@ export const AddResource = ({ mutate } : { mutate: any}) => {
   const getAddResourceSchema = (categoryId: number) => {
     let category = categories?.data.find((category: Category) => {
       return category.id === categoryId;
-    })
+    });
 
     switch (category?.name) {
       case "Hóa chất":
@@ -67,23 +66,23 @@ export const AddResource = ({ mutate } : { mutate: any}) => {
 
   const onSubmit: SubmitHandler<AddResourceSchemaUnionType> = async (data) => {
     try {
-      const {data: newResource} = await ResourceService.create(data);
-      console.log(newResource)
-      mutate()
-      methods.reset()
-      toast.success('Thêm tài nguyên thành công')
-      onClose()
+      const { data: newResource } = await ResourceService.create(data);
+      console.log(newResource);
+      mutate();
+      methods.reset();
+      toast.success("Thêm tài nguyên thành công");
+      onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const translatedErrorMessage = translateErrorMessage(error.response?.data.message)
-        toast.error(translatedErrorMessage)
+        const translatedErrorMessage = translateErrorMessage(error.response?.data.message);
+        toast.error(translatedErrorMessage);
       }
     }
     console.log(data);
   };
 
   const handleCloseModal = () => {
-    methods.clearErrors()
+    methods.clearErrors();
     onClose();
   };
 
@@ -93,18 +92,11 @@ export const AddResource = ({ mutate } : { mutate: any}) => {
         <Button onPress={onOpen} color="primary">
           Thêm tài nguyên
         </Button>
-        <Modal
-          isOpen={isOpen}
-          onOpenChange={onOpenChange}
-          placement="top-center"
-          size="3xl"
-        >
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="3xl">
           <ModalContent>
             {(onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">
-                  Thêm tài nguyên
-                </ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">Thêm tài nguyên</ModalHeader>
                 <ModalBody>
                   <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                     <div className="w-full max-h-96">
@@ -115,17 +107,10 @@ export const AddResource = ({ mutate } : { mutate: any}) => {
                   </form>
                 </ModalBody>
                 <ModalFooter>
-                  <Button
-                    color="danger"
-                    variant="flat"
-                    onClick={handleCloseModal}
-                  >
+                  <Button color="danger" variant="flat" onClick={handleCloseModal}>
                     Đóng
                   </Button>
-                  <Button
-                    color="primary"
-                    onClick={methods.handleSubmit(onSubmit)}
-                  >
+                  <Button color="primary" onClick={methods.handleSubmit(onSubmit)}>
                     Thêm tài nguyên
                   </Button>
                 </ModalFooter>

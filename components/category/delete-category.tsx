@@ -17,22 +17,22 @@ import { mutate } from "swr";
 export const DeleteCategory = ({ categoryId }: { categoryId: number }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-    const handleDeleteCategory = async () => {
-        const { data } = await CategoryService.delete(categoryId.toString())
-        mutate(`/categories`);
-        toast.success("Xóa category thành công")
-        onClose();
-    }
+  const handleDeleteCategory = async () => {
+    const { data } = await CategoryService.delete(categoryId.toString());
+    mutate((key) => Array.isArray(key) && key[0] === "/categories");
+    toast.success("Xóa category thành công");
+    onClose();
+  };
 
   return (
     <>
-     <div>
-     <Tooltip content="Xóa danh mục" color="danger">
-        <button onClick={onOpen}>
-          <DeleteIcon size={20} fill="#FF0080" />
-        </button>
-      </Tooltip>
-     </div>
+      <div>
+        <Tooltip content="Xóa danh mục" color="danger">
+          <button onClick={onOpen}>
+            <DeleteIcon size={20} fill="#FF0080" />
+          </button>
+        </Tooltip>
+      </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
@@ -40,8 +40,7 @@ export const DeleteCategory = ({ categoryId }: { categoryId: number }) => {
               <ModalHeader className="flex flex-col gap-1">Xóa danh mục</ModalHeader>
               <ModalBody>
                 <p>
-                  Bạn có thật sự muốn xóa danh mục này không ?
-                  Hành động này sẽ không thể hoàn tác
+                  Bạn có thật sự muốn xóa danh mục này không ? Hành động này sẽ không thể hoàn tác
                 </p>
               </ModalBody>
               <ModalFooter>

@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { CardEquipment } from "./card-equipment";
 import { CardTool } from "./card-tool";
 import { CardChemical } from "./card-chemical";
-import { CardAgents } from "./card-agents";
+import { CardAgents } from "./card-";
 import { CardTransactions } from "./card-latest-transfer-resource";
 import { Link } from "@nextui-org/react";
 import NextLink from "next/link";
@@ -18,6 +18,7 @@ import { CategoryService } from "@/services/categoryService";
 import { Category } from "../category/category-table/data";
 import { CardCategory } from "./card-category";
 import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
+import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
 
 const colors = ["bg-default-50", "bg-success", "bg-primary"];
 
@@ -36,10 +37,7 @@ export const Content = () => {
     data: categories,
     isLoading: isFetchingCategories,
     mutate: updateCategoriesList,
-  } = useSWR(`/categories`, async (url) => {
-    const { data } = await CategoryService.getAll(url);
-    return data;
-  });
+  } = useSWR(['/categories', {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
 
   return (
     <div className="h-full lg:px-6">

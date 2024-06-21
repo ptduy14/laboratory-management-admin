@@ -16,9 +16,10 @@ import { useState } from "react";
 import { registrationsFetcher } from "@/utils/fetchers/registration-fetchers/registrations-fetcher";
 import { RegistrationTableWrapper } from "./registration-table/registration-table";
 import { registraionColumns } from "./registration-table/data";
+import { QueryParams } from "@/types/query-params";
 
 export const Registrations = () => {
-  const [queryParams, setQueryParams] = useState({});
+  const [queryParams, setQueryParams] = useState<QueryParams>({});
 
   const { data: registrations, isLoading: isFetchingRegistrations } = useSWR(
     [`/registration`, queryParams],
@@ -67,7 +68,7 @@ export const Registrations = () => {
             registrations={registrations.data}
             registrationColumns={registraionColumns}
             meta={registrations.meta}
-            setQueryParams={setQueryParams}
+            setPage={setQueryParams}
           />
         ) : (
           <LoaderTable />

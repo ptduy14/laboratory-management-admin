@@ -23,34 +23,25 @@ import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "../resoures/resource-table/data";
 import { originOptions } from "../resoures/resource-table/data";
 import useSWR, { mutate } from "swr";
-import { CategoryService } from "@/services/categoryService";
 import { AddResourceFromCatetory } from "./add-resource-from-catetory";
 import { ExportCSVCategoryResource } from "../category-resources/export-csv-category-resource";
+import { categoryFetcher } from "@/utils/fetchers/category-fetchers.ts/category-fetcher";
+import { QueryParams } from "@/types/query-params";
+import { categoryResourcesFetcher } from "@/utils/fetchers/category-resource-fetchers/category-resources-fetcher";
 
 export const ResourcesFromCategory = ({ id }: { id: string }) => {
-  const [page, setPage] = useState(1);
+  const [queryParams, setQueryParams] = useState<QueryParams>({});
   const [searchFilterValue, setSearchFilterValue] = useState("");
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
   const [originFilter, setOriginFilter] = useState<Selection>("all");
-  const router = useRouter();
 
-  // will improve later
   const {
     data: resourcesFromCategory,
     isLoading: isFetchingResourcesFromCategory,
     mutate: updateResourcesFormCategoryList,
-  } = useSWR(`/items/category/${id}?page=${page}`, async (url) => {
-    const { data } = await ResourceService.getByCategory(url);
-    return data;
-  });
+  } = useSWR([`/items/category/${id}`, queryParams], ([url, queryParams]) => categoryResourcesFetcher(url, queryParams));
 
-  const { data: category, isLoading: isFetchingCategory } = useSWR(
-    `/categories/${id}`,
-    async (url) => {
-      const { data } = await CategoryService.getById(url);
-      return data;
-    }
-  );
+  const { data: category, isLoading: isFetchingCategory } = useSWR(`/categories/${id}`, categoryFetcher);
 
   const onSearchChange = (value?: string) => {
     if (value) {
@@ -59,24 +50,6 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
       setSearchFilterValue("");
     }
   };
-
-  // const handleFilteredItems = () => {
-  //   let filteredResources = isFetchingResourcesFromCategory ? [] : [...resourcesFromCategory.data];
-
-  //   if (searchFilterValue) {
-  //     filteredResources = filteredResources.filter((resource) => resource.name.toLowerCase().includes(searchFilterValue.toLowerCase()))
-  //   }
-
-  //   if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-  //     filteredResources = filteredResources.filter((resource) => {
-  //       return Array.from(statusFilter).includes(resource.status.toString())
-  //     })
-  //   }
-
-  //   return filteredResources;
-  // }
-
-  // const filteredItems = handleFilteredItems();
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -174,7 +147,7 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
               resources={resourcesFromCategory.data}
               columns={resourcesFromCategoryColumns}
               meta={resourcesFromCategory.meta}
-              setPage={setPage}
+              setPage={setQueryParams}
             />
           </>
         ) : (

@@ -5,6 +5,7 @@ import { Category } from "../category/category-table/data";
 import { ResourceService } from "@/services/resourceService";
 import useSWR from "swr";
 import { Resource } from "../resoures/resource-table/data";
+import { categoryResourcesFetcher } from "@/utils/fetchers/category-resource-fetchers/category-resources-fetcher";
 
 export const CardCategory = ({ category, colorClass }: {category: Category, colorClass: string}) => {
   const [totalItems, setTotalItems] = useState<number>(0)
@@ -14,10 +15,7 @@ export const CardCategory = ({ category, colorClass }: {category: Category, colo
     data: resourcesFromCategory,
     isLoading: isFetchingResourcesFromCategory,
     mutate: updateResourcesFormCategoryList,
-  } = useSWR(`/items/category/${category.id}?take=50`, async (url) => {
-    const { data } = await ResourceService.getByCategory(url);
-    return data;
-  });
+  } = useSWR([`/items/category/${category.id}`, {take: 50}], ([url, queryParams]) => categoryResourcesFetcher(url, queryParams));
 
   useEffect(() => {
     const totalItems: number = resourcesFromCategory?.data.reduce((accumulator: number, current: Resource) => {

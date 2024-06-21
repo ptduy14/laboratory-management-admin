@@ -14,6 +14,7 @@ import { ResourceService } from "@/services/resourceService";
 import useSWR from "swr";
 import { Resource } from "../resoures/resource-table/data";
 import { CardLoaderSpinner } from "../loader/card-loader-spiner";
+import { resourcesFetcher } from "@/utils/fetchers/resource-fetchers.ts/resources-fetcher";
 
 export const resourceCardColumns = [
   {
@@ -35,10 +36,7 @@ export const CardAgents = () => {
     data: resources,
     isLoading: isFetchingResouces,
     mutate: updateResourceList,
-  } = useSWR(`/items?take=8`, async (url) => {
-    const { data } = await ResourceService.getAll(url);
-    return data;
-  });
+  } = useSWR([`/items`, {take: 8}], ([url, queryParams]) => resourcesFetcher(url, queryParams));
 
   return (
     <Card className="bg-default-50 rounded-xl shadow-md w-full">
@@ -57,7 +55,7 @@ export const CardAgents = () => {
             <TableBody>
               {resources.data.map((resource: Resource) => (
                 <TableRow key={resource.id}>
-                  {(columnKey) => <TableCell>{getKeyValue(resource, columnKey)}</TableCell>}
+                  {(columnKey) => <TableCell>{getKeyValue(resource, columnKey) ? getKeyValue(resource, columnKey) : "-"}</TableCell>}
                 </TableRow>
               ))}
             </TableBody>

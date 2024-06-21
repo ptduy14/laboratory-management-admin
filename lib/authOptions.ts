@@ -22,7 +22,6 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // axiosConfig();
         const res = await AuthService.login({
           email: credentials?.email,
           password: credentials?.password,
@@ -39,6 +38,7 @@ const authOptions: NextAuthOptions = {
 
   pages: {
     signIn: "/login",
+    error: '/error',
   },
 
   session: {
@@ -50,7 +50,6 @@ const authOptions: NextAuthOptions = {
       if (account?.provider === "google" && user) {
         const payload = handleTransformData(user, account);
         try {
-          // axiosConfig();
           const res = await AuthService.ggAccessTokenVerify(payload);
           if (!isAccess(res.data)) {
             return false;
