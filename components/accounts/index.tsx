@@ -27,9 +27,11 @@ import useSWR from "swr";
 import { ExportCSVAccount } from "./export-csv-account";
 import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
 import { QueryParams } from "@/types/query-params";
+import { useDebounce } from "../hooks/useDebounce";
 
 export const Accounts = () => {
-  const [searchFilterValue, setSearchFilterValue] = useState("");
+  const [searchValue, setSearchValue] = useState<string>("");
+  const debounceSearchValue = useDebounce(searchValue);
   const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
   const [roleFilter, setRoleFilter] = React.useState<Selection>("all");
   const [queryParams, setQueryParams] = useState<QueryParams>({});
@@ -38,27 +40,51 @@ export const Accounts = () => {
     data: accounts,
     mutate: updateAccountList,
     isLoading: isFetchingAccounts,
-  } = useSWR(["/users/get", queryParams], ([url, queryParams]) => accountsFetcher(url, queryParams));
+  } = useSWR(["/users/get", queryParams], ([url, queryParams]) =>
+    accountsFetcher(url, queryParams)
+  );
 
-  const handleFilteredAccounts = useMemo(() => {
-    let filteredAccounts = isFetchingAccounts ? [] : [...accounts.data];
-
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredAccounts = filteredAccounts.filter((account) => {
-        return Array.from(statusFilter).includes(account.status.toString());
-      });
+  useEffect(() => {
+    if (statusFilter !== "all") {
+      const arrayStatusFilterString = Array.from(statusFilter);
+      const arrayStatusFilterNumber = arrayStatusFilterString.map((item) => Number(item))
+      
+      setQueryParams((prev) => ({
+        ...prev,
+        status: arrayStatusFilterNumber
+      })) 
     }
 
-    if (roleFilter !== "all" && Array.from(roleFilter).length !== roleOptions.length) {
-      filteredAccounts = filteredAccounts.filter((account) => {
-        return Array.from(roleFilter).includes(account.role.toString());
-      });
+    if (roleFilter !== "all") { 
+      const arrayRoleFilterString = Array.from(roleFilter);
+      const arrayRoleFilterNumber = arrayRoleFilterString.map((item) => Number(item))
+      
+      setQueryParams((prev) => ({
+        ...prev,
+        role: arrayRoleFilterNumber
+      }))
     }
+  }, [statusFilter, roleFilter])
 
-    return filteredAccounts;
-  }, [accounts?.data, statusFilter, roleFilter]);
 
-  let filteredAccounts = handleFilteredAccounts;
+  // this will occur errors cause when component is re-render then statement only true and set method will update
+  // => it make trigger re-render infinity loop
+  // if (statusFilter !== "all") {
+  //   const arrayStatusFilterString = Array.from(statusFilter);
+  //   const arrayStatusFilterNumber = arrayStatusFilterString.map((item) => Number(item))
+    
+  //   setQueryParams((prev) => ({
+  //     ...prev,
+  //     status: arrayStatusFilterNumber
+  //   })) 
+  // }
+
+  useEffect(() => {
+    setQueryParams((prev) => ({
+      ...prev,
+      keyword: debounceSearchValue
+    }))
+  }, [debounceSearchValue]);
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -90,16 +116,15 @@ export const Accounts = () => {
               mainWrapper: "w-full",
             }}
             startContent={<SearchIcon />}
-            isClearable
-            placeholder="Search accounts by Email"
-            value={searchFilterValue}
-            onValueChange={() => {}}
+            placeholder="Tìm kiếm bằng email"
+            value={searchValue}
+            onValueChange={(value) => {setSearchValue(value)}}
           />
           <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                  Status
+                  Trạng thái
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -121,7 +146,7 @@ export const Accounts = () => {
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                  Role
+                  Vai trò
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -153,7 +178,7 @@ export const Accounts = () => {
             </span>
             <div style={{ marginBottom: "16px" }}></div>
             <AccountTableWrapper
-              accounts={filteredAccounts}
+              accounts={accounts.data}
               meta={accounts.meta}
               paginate={true}
               setPage={setQueryParams}
