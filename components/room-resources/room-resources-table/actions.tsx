@@ -16,7 +16,7 @@ import {
   import { ViewIcon } from "@/components/icons/sidebar/view-icon";
 import { ResourcesTransfered } from "./data";
   import { useDisclosure } from "@nextui-org/react";
-  import { ReTransferResource } from "../retransfer-resource";
+  import { ReTransferResource } from "../re-transfer-resource";
   import { DetailRoomResource } from "../detail-room-resource";
   import { DeleteRoomResource } from "../delete-room-resource";
   
