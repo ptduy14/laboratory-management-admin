@@ -4,7 +4,7 @@ export interface Category {
   status: number;
 }
 
-export const resourcesFromCategoryColumns = [
+export const categoryResourcesColumns = [
   {
     key: "name",
     label: "TÊN",

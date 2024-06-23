@@ -22,7 +22,7 @@ import { TransferResource } from "../transfer-resource";
 import { VerticalDotsIcon } from "@/components/icons/vertical-dots-icons";
 import { ViewIcon } from "@/components/icons/sidebar/view-icon";
 import { useDisclosure } from "@nextui-org/react";
-import type { UseDisclosureReturn } from '@nextui-org/use-disclosure';
+import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { Actions } from "./actions";
 
 interface Props {
@@ -54,11 +54,11 @@ export const RenderCell = ({ resouce, columnKey }: Props) => {
           <span className="capitalize text-xs">{ResourceStatusName[cellValue]}</span>
         </Chip>
       );
-      case 'available': 
-      return resouce.quantity - resouce.handover
+    case "available":
+      return resouce.quantity - resouce.handover;
     case "actions":
       return (
-        <Actions resource={resouce}/>
+        <Actions resource={resouce} />
         // <div className="relative flex justify-end items-center gap-2">
         //   <Dropdown>
         //     <DropdownTrigger>

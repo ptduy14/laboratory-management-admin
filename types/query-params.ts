@@ -3,6 +3,7 @@ export interface QueryParams {
     order?: string,
     page?: number,
     take?: number,
-    status?: [],
-    role?: []
+    status?: Number[],
+    role?: Number[],
+    producer?: string[]
 }

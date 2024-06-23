@@ -18,38 +18,61 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ResourceTableWrapper } from "../resoures/resource-table/resource-table";
 import { Resource } from "../resoures/resource-table/data";
-import { resourcesFromCategoryColumns } from "./category-table/data";
+import { categoryResourcesColumns } from "../category/category-table/data";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { statusOptions } from "../resoures/resource-table/data";
 import { originOptions } from "../resoures/resource-table/data";
 import useSWR, { mutate } from "swr";
-import { AddResourceFromCatetory } from "./add-resource-from-catetory";
-import { ExportCSVCategoryResource } from "../category-resources/export-csv-category-resource";
+import { AddCategoryResource } from "./add-category-resource";
+import { ExportCSVCategoryResource } from "./export-csv-category-resource";
 import { categoryFetcher } from "@/utils/fetchers/category-fetchers.ts/category-fetcher";
 import { QueryParams } from "@/types/query-params";
 import { categoryResourcesFetcher } from "@/utils/fetchers/category-resource-fetchers/category-resources-fetcher";
+import { useDebounce } from "../hooks/useDebounce";
 
-export const ResourcesFromCategory = ({ id }: { id: string }) => {
+export const CategoryResources = ({ id }: { id: string }) => {
   const [queryParams, setQueryParams] = useState<QueryParams>({});
-  const [searchFilterValue, setSearchFilterValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const debounceSearchValue = useDebounce(searchValue);
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
   const [originFilter, setOriginFilter] = useState<Selection>("all");
 
   const {
-    data: resourcesFromCategory,
-    isLoading: isFetchingResourcesFromCategory,
-    mutate: updateResourcesFormCategoryList,
+    data: categoryResources,
+    isLoading: isFetchingCategoryResources,
+    mutate: updateCategoryResourcesList,
   } = useSWR([`/items/category/${id}`, queryParams], ([url, queryParams]) => categoryResourcesFetcher(url, queryParams));
 
   const { data: category, isLoading: isFetchingCategory } = useSWR(`/categories/${id}`, categoryFetcher);
 
-  const onSearchChange = (value?: string) => {
-    if (value) {
-      setSearchFilterValue(value);
-    } else {
-      setSearchFilterValue("");
+  useEffect(() => {
+    if (statusFilter !== "all") {
+      const arrayStatusFilterKey = Array.from(statusFilter);
+      const arrayStatusFilterNumber = arrayStatusFilterKey.map((item) => Number(item))
+      console.log(arrayStatusFilterNumber)
+      setQueryParams((prev) => ({
+        ...prev,
+        status: arrayStatusFilterNumber
+      })) 
     }
-  };
+
+    if (originFilter !== "all") {
+      const arrayOriginFilterKey = Array.from(originFilter);
+      const arrayOriginFilterString = arrayOriginFilterKey.map(() => String(arrayOriginFilterKey))
+      setQueryParams((prev) => ({
+        ...prev,
+        producer: arrayOriginFilterString
+      })) 
+    }
+
+  }, [statusFilter, originFilter])
+
+  useEffect(() => {
+    setQueryParams((prev) => ({
+      ...prev,
+      keyword: debounceSearchValue
+    }))
+  }, [debounceSearchValue])
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -73,22 +96,22 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
 
       <h3 className="text-xl font-semibold">Danh sách {category?.name.toLowerCase()}</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
-        <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
+      <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
           <Input
             classNames={{
               input: "w-full",
               mainWrapper: "w-full",
             }}
             isClearable
-            placeholder="Search resource by name"
-            value={searchFilterValue}
-            onValueChange={onSearchChange}
+            placeholder="Tìm kiếm tài nguyên"
+            value={searchValue}
+            onValueChange={(value) => setSearchValue(value)}
           />
           <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                  Status
+                  Trạng thái
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -131,22 +154,22 @@ export const ResourcesFromCategory = ({ id }: { id: string }) => {
         </div>
         {isFetchingCategory || (
           <div className="flex flex-row gap-3.5 flex-wrap">
-            <AddResourceFromCatetory mutate={updateResourcesFormCategoryList} category={category} />
+            <AddCategoryResource mutate={updateCategoryResourcesList} category={category} />
             <ExportCSVCategoryResource categoryId={category.id} />
           </div>
         )}
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
-        {!isFetchingResourcesFromCategory ? (
+        {!isFetchingCategoryResources ? (
           <>
             <span className="text-default-400 text-small">
-              Tổng số {category?.name.toLowerCase()}: {resourcesFromCategory.meta.numberRecords}{" "}
+              Tổng số {category?.name.toLowerCase()}: {categoryResources.data.length}{" "}
             </span>
             <div style={{ marginBottom: "16px" }}></div>
             <ResourceTableWrapper
-              resources={resourcesFromCategory.data}
-              columns={resourcesFromCategoryColumns}
-              meta={resourcesFromCategory.meta}
+              resources={categoryResources.data}
+              columns={categoryResourcesColumns}
+              meta={categoryResources.meta}
               setPage={setQueryParams}
             />
           </>

@@ -40,6 +40,10 @@ export const ResourcesTransferedColumns = [
         label: "ĐƠN VỊ TÍNH"
     },
     {
+        key: "status",
+        label: "TRẠNG THÁI"
+    },
+    {
         key: "actions",
         label: "ACTIONS"
     }

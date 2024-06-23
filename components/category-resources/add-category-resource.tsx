@@ -25,12 +25,12 @@ import {
     AddResourceSchemaUnionType,
   } from "../resoures/schema/addResourceSchema";
   import { AddResourceCommonForm } from "../forms/resource-forms/add-resource-common-form";
-  import { Category } from "./category-table/data";
+  import { Category } from "../category/category-table/data";
   import { z } from "zod";
   import { ResourceService } from "@/services/resourceService";
   import { translateErrorMessage } from "@/utils/translateErrorMessage";
   
-  export const AddResourceFromCatetory = ({ mutate, category } : { mutate: any, category: Category}) => {
+  export const AddCategoryResource = ({ mutate, category } : { mutate: any, category: Category}) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   
     const methods = useForm<AddResourceSchemaUnionType>({
