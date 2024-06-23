@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { ReTransferResourceForm } from "../forms/resource-forms/retransfer-resource-form";
 import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
+import { useState } from "react";
 
 export const ReTransferResource = ({
   resourceTransfered,
@@ -32,6 +33,7 @@ export const ReTransferResource = ({
   disclosure: UseDisclosureReturn;
 }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const methods = useForm<transferResourceSchemaType>({
     resolver: zodResolver(transferResourceSchema),
@@ -54,14 +56,16 @@ export const ReTransferResource = ({
     }
 
     try {
+      setIsLoading(true)
       const currentRoomId = resourceTransfered.room.id
-      const { data: res } = await RoomResourceService.reTransferResource(resourceTransfered.id.toString(), data);
+      const { data: res } = await RoomResourceService.reTransferResource(resourceTransfered.room.id.toString(), data);
       //udpate cache and trigger revalidation
       mutate((key) => Array.isArray(key) && key[0] === `/room-items/room/${currentRoomId}`)
       //update detail resource transfered
       mutate(`/room-items/${resourceTransfered.id.toString()}`)
       methods.reset();
       toast.success("Chuyển tiếp thành công");
+      setIsLoading(false)
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -91,7 +95,7 @@ export const ReTransferResource = ({
                 <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                   <div className="w-full max-h-80">
                     <FormProvider {...methods}>
-                      <ReTransferResourceForm currentRoom={resourceTransfered.room.id} rooms={rooms.data} />
+                      <ReTransferResourceForm currentRoom={resourceTransfered.room.id} rooms={rooms?.data} />
                     </FormProvider>
                   </div>
                 </form>
@@ -100,7 +104,7 @@ export const ReTransferResource = ({
                 <Button color="danger" variant="light" onClick={handleCloseModal}>
                   Đóng
                 </Button>
-                <Button color="primary" onClick={methods.handleSubmit(onSubmit)}>
+                <Button color="primary" onClick={methods.handleSubmit(onSubmit)} isLoading={isLoading}>
                   Chuyển tiếp
                 </Button>
               </ModalFooter>

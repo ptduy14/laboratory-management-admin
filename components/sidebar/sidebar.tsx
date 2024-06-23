@@ -20,38 +20,24 @@ import { RoomStatus } from "@/enums/room-status";
 import { ReportsIcon } from "../icons/sidebar/reports-icon";
 import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
 import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
+import { title } from "process";
+import { PendingRegistrationsIcon } from "../icons/sidebar/pending-registrations-icon";
+import { ReturnedRegistrationsIcon } from "../icons/sidebar/returned-registration-icon";
+import { BorrowedRegistrationsIcon } from "../icons/sidebar/borrowed-registrations-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
   const { collapsed, setCollapsed } = useSidebarContext();
-  // const [categories, setCategories] = useState<Category[]>([]);
 
-  const { data: rooms, isLoading: isFetchingRooms } = useSWR(["/rooms", {take: 50}], ([url, queryParams]) => roomsFetcher(url, queryParams));
+  const { data: rooms, isLoading: isFetchingRooms } = useSWR(
+    ["/rooms", { take: 50 }],
+    ([url, queryParams]) => roomsFetcher(url, queryParams)
+  );
 
   const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) =>
     categoriesFetcher(url, queryParams)
   );
 
-  // useEffect(() => {
-  //   getAllRoom();
-  //   getAllCategory();
-  // }, []);
-
-  // const getAllRoom = async () => {
-  //   const { data } = await RoomService.getAll();
-  //   setRooms(data);
-  // };
-
-  // const getAllCategory = async () => {
-  //   try {
-  //     const { data } = await CategoryService.getAll();
-  //     setCategories(data);
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       console.log(error.response?.data.message);
-  //     }
-  //   }
-  // };
   return (
     <aside className="h-screen z-[202] sticky top-0">
       {collapsed ? <div className={Sidebar.Overlay()} onClick={setCollapsed} /> : null}
@@ -81,12 +67,25 @@ export const SidebarWrapper = () => {
                 icon={<ResoucesIcon />}
                 href="/resources"
               />
+            </SidebarMenu>
+            <SidebarMenu title="Phiếu mượn">
               <SidebarItem
-                isActive={pathname === "/registrations"}
-                title="Phiếu mượn"
-                icon={<ReportsIcon />}
-                href="/registrations"
-              />
+                isActive={pathname === "/registrations/pending"}
+                title="Chờ xác nhận"
+                icon={<PendingRegistrationsIcon />}
+                href="/registrations/pending"></SidebarItem>
+
+              <SidebarItem
+                isActive={pathname === "/registrations/borrowed"}
+                title="Đang mượn"
+                icon={<BorrowedRegistrationsIcon />}
+                href="/registrations/borrowed"></SidebarItem>
+
+              <SidebarItem
+                isActive={pathname === "/registrations/returned"}
+                title="Đã trả"
+                icon={<ReturnedRegistrationsIcon />}
+                href="/registrations/returned"></SidebarItem>
             </SidebarMenu>
             <SidebarMenu title="Danh Mục">
               {categories?.data.map((category: Category) => {

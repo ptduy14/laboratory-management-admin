@@ -8,7 +8,7 @@ export const RoomResourceService = {
     return await AxiosInstance.post(`/room-items/`, payload);
   },
   reTransferResource: async (resourceTransferedId: string, payload: any) => {
-    return await AxiosInstance.patch(`/room-items/${resourceTransferedId}`, payload);
+    return await AxiosInstance.patch(`/room-items/transfer-room-item/${resourceTransferedId}`, payload);
   },
   getResourceTransferedById: async (url: string) => {
     return await AxiosInstance.get(url);
