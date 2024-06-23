@@ -24,11 +24,13 @@ import useSWR from "swr";
 import { ExportCSVResource } from "./export-csv-resource";
 import { QueryParams } from "@/types/query-params";
 import { resourcesFetcher } from "@/utils/fetchers/resource-fetchers.ts/resources-fetcher";
+import { useDebounce } from "../hooks/useDebounce";
 
 export const Resources = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
-  const [originFilter, setOriginFilter] = React.useState<Selection>("all");
+  const debounceSearchValue = useDebounce(searchValue);
+  const [statusFilter, setStatusFilter] = useState<Selection>("all");
+  const [originFilter, setOriginFilter] = useState<Selection>("all");
   const [queryParams, setQueryParams] = useState<QueryParams>({});
   const {
     data: resources,
@@ -36,25 +38,35 @@ export const Resources = () => {
     mutate: updateResourceList,
   } = useSWR(["/items", queryParams], ([url, queryParams]) => resourcesFetcher(url, queryParams));
 
-  const handleFilteredItems = useMemo(() => {
-    let filteredResources = isFetchingResouces ? [] : [...resources.data];
 
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredResources = filteredResources.filter((resource) => {
-        return Array.from(statusFilter).includes(resource.status.toString());
-      });
+  useEffect(() => {
+    if (statusFilter !== "all") {
+      const arrayStatusFilterKey = Array.from(statusFilter);
+      const arrayStatusFilterNumber = arrayStatusFilterKey.map((item) => Number(item))
+      console.log(arrayStatusFilterNumber)
+      setQueryParams((prev) => ({
+        ...prev,
+        status: arrayStatusFilterNumber
+      })) 
     }
 
-    if (originFilter !== "all" && Array.from(originFilter).length !== originOptions.length) {
-      filteredResources = filteredResources.filter((resource) => {
-        return Array.from(originFilter).includes(resource.origin);
-      });
+    if (originFilter !== "all") {
+      const arrayOriginFilterKey = Array.from(originFilter);
+      const arrayOriginFilterString = arrayOriginFilterKey.map(() => String(arrayOriginFilterKey))
+      setQueryParams((prev) => ({
+        ...prev,
+        producer: arrayOriginFilterString
+      })) 
     }
 
-    return filteredResources;
-  }, [resources?.data, statusFilter, originFilter, searchValue]);
+  }, [statusFilter, originFilter])
 
-  const filteredResources = handleFilteredItems;
+  useEffect(() => {
+    setQueryParams((prev) => ({
+      ...prev,
+      keyword: debounceSearchValue
+    }))
+  }, [debounceSearchValue])
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -85,7 +97,7 @@ export const Resources = () => {
               mainWrapper: "w-full",
             }}
             isClearable
-            placeholder="Search resources by name"
+            placeholder="Tìm kiếm tài nguyên"
             value={searchValue}
             onValueChange={(value) => setSearchValue(value)}
           />
@@ -143,11 +155,11 @@ export const Resources = () => {
         {!isFetchingResouces ? (
           <>
             <span className="text-default-400 text-small">
-              Tổng số sản phẩm - tài nguyên của hệ thống: {resources.meta.numberRecords}{" "}
+              Tổng số sản phẩm - tài nguyên của hệ thống: {resources.data.length}{" "}
             </span>
             <div style={{ marginBottom: "16px" }}></div>
             <ResourceTableWrapper
-              resources={filteredResources}
+              resources={resources.data}
               meta={resources.meta}
               setPage={setQueryParams}
             />
