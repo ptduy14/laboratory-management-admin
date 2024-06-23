@@ -19,6 +19,7 @@ import { Category } from "../category/category-table/data";
 import { CardCategory } from "./card-category";
 import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
 import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
+import { CategoryStatus } from "@/enums/category-status";
 
 const colors = ["bg-default-50", "bg-success", "bg-primary"];
 
@@ -37,7 +38,7 @@ export const Content = () => {
     data: categories,
     isLoading: isFetchingCategories,
     mutate: updateCategoriesList,
-  } = useSWR(['/categories', {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
+  } = useSWR(["/categories", {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
 
   return (
     <div className="h-full lg:px-6">
@@ -48,18 +49,18 @@ export const Content = () => {
             <h3 className="text-xl font-semibold">Tài nguyên phòng thí nghiệm</h3>
             <div className="grid md:grid-cols-2 grid-cols-1 2xl:grid-cols-3 gap-5  justify-center w-full">
               {!isFetchingCategories &&
-                categories?.data.map((category: Category, index: number) => {
-                  const colorClass = colors[index % colors.length];
-                  return <CardCategory key={index} category={category} colorClass={colorClass} />;
-                })}
+                categories.data
+                  .filter((category: Category) => category.status !== CategoryStatus.INACTIVE)
+                  .map((category: Category, index: number) => {
+                    const colorClass = colors[index % colors.length];
+                    return <CardCategory key={index} category={category} colorClass={colorClass} />;
+                  })}
             </div>
           </div>
 
           {/* Chart */}
           <div className="h-full flex flex-col gap-2">
-            <h3 className="text-xl font-semibold">
-              Số liệu thống kê tài nguyên ở các phòng
-            </h3>
+            <h3 className="text-xl font-semibold">Số liệu thống kê tài nguyên ở các phòng</h3>
             <div className="w-full bg-default-50 shadow-lg rounded-2xl p-6 ">
               <Chart />
             </div>
