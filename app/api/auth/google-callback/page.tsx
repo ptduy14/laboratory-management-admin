@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 
 const googleCallback = async () => {  
     const session = await getServerSession(authOptions);
-    if (session?.user.hasAccessTokenLocal) {
+    if (session?.user.hasTokenLocal) {
         redirect("/")
     }
 

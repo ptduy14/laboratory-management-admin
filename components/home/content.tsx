@@ -28,7 +28,6 @@ const Chart = dynamic(() => import("../charts/steam").then((mod) => mod.Steam), 
 });
 
 export const Content = () => {
-  // const [accounts, setAccounts] = useState<Account[]>([])
   const { data: accounts, isLoading: isLoadingFetchAccountData } = useSWR(
     ["/users/get", { take: 5 }],
     ([url, queryParams]) => accountsFetcher(url, queryParams)
