@@ -25,5 +25,8 @@ export const AuthService = {
   },
   refreshToken: async (payload: {email: string | null, refreshToken: string | null}) => {
     return await AxiosInstance.post("/auths/refresh-token", payload)
-  }
+  },
+  logout: async () => {
+    return await AxiosInstance.get("/auths/logout");
+  },
 };
