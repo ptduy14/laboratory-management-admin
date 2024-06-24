@@ -23,4 +23,7 @@ export const AuthService = {
   getMe: async () => {
     return await AxiosInstance.get("/users/info");
   },
+  refreshToken: async (payload: {email: string | null, refreshToken: string | null}) => {
+    return await AxiosInstance.post("/auths/refresh-token", payload)
+  }
 };

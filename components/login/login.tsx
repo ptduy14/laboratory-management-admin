@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { LoginFormSchemaType, LoginFormSchema } from "./schema/loginFormSchema";
-import jwtManager from "@/config/jwtManager";
+import tokenManager from "@/config/tokenManager";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
 import { EyeFilledIcon } from "../icons/EyeFilledIcon";
@@ -24,9 +24,10 @@ export const Login = () => {
   });
 
   useEffect(() => {
-    if (status === "authenticated" && session && !session.user.hasAccessTokenLocal) {
-      jwtManager.setToken(session.user.access_token);
-      update({ hasAccessTokenLocal: true });
+    if (status === "authenticated" && session && !session.user.hasTokenLocal) {
+      tokenManager.setTokens(session.user.access_token, session.user.refresh_token);
+      localStorage.setItem("email", session.user.userInfo.email)
+      update({ hasTokenLocal: true });
       router.push("/");
       toast.success("Đăng nhập thành công !!");
     }

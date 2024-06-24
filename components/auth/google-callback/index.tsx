@@ -1,7 +1,6 @@
 "use client";
-
 import { LoaderSpinner } from "@/components/loader/loader-spinner";
-import jwtManager from "@/config/jwtManager";
+import tokenManager from "@/config/tokenManager";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -12,10 +11,11 @@ const GoogleCallback = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const accessToken = jwtManager.getToken(); 
+    const accessToken = tokenManager.getAccessToken();
     if (session && !accessToken) {
-        jwtManager.setToken(session.user.access_token);
-        update({ hasAccessTokenLocal: true });
+        tokenManager.setTokens(session.user.access_token, session.user.refresh_token);
+        localStorage.setItem("email", session.user.userInfo.email)
+        update({ hasTokenLocal: true });
         router.push("/");
         toast.success("Đăng nhập thành công");
       }

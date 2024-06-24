@@ -13,7 +13,7 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
-import jwtManager from "@/config/jwtManager";
+import tokenManager from "@/config/tokenManager";
 
 export const UserDropdown = () => {
   const router = useRouter();
@@ -22,7 +22,7 @@ export const UserDropdown = () => {
     await signOut({
       redirect: false
     });
-    jwtManager.clearToken();
+    tokenManager.clearTokens();
     toast.success("Đăng xuất thành công");
     router.push("/login");
   }

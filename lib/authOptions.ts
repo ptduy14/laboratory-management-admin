@@ -22,13 +22,20 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const res = await AuthService.login({
-          email: credentials?.email,
-          password: credentials?.password,
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auths/login`, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: credentials?.email, password: credentials?.password }),
         });
 
-        if (res.status == 201 && res.data && isAccess(res.data)) {
-          return res.data;
+        const data = await response.json()
+
+        if (response.status === 201 && response.ok && isAccess(data)) {
+          console.log(data);
+          return data;
         }
 
         return null;
@@ -38,7 +45,7 @@ const authOptions: NextAuthOptions = {
 
   pages: {
     signIn: "/login",
-    error: '/error',
+    error: "/error",
   },
 
   session: {
@@ -50,13 +57,23 @@ const authOptions: NextAuthOptions = {
       if (account?.provider === "google" && user) {
         const payload = handleTransformData(user, account);
         try {
-          const res = await AuthService.ggAccessTokenVerify(payload);
-          if (!isAccess(res.data)) {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auths/google-login`, {
+            method: "POST",
+            headers: {
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload)
+          })
+
+          const data = await response.json()
+
+          if (!isAccess(data)) {
             return false;
           }
-          userVerifyData = res.data;
+          userVerifyData = data;
         } catch (error: any) {
-          console.log("error: ", error.response.data.message);
+          console.log("error: ", error);
           return false;
         }
       }
@@ -65,19 +82,19 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger, session }) {
       let data;
 
-      if (!token.hasAccessTokenLocal) token.hasAccessTokenLocal = false;
+      if (!token.hasTokenLocal) token.hasTokenLocal = false;
 
       if (userVerifyData) {
-        data = { ...userVerifyData};
+        data = { ...userVerifyData };
       } else {
-        data = { ...user};
+        data = { ...user };
       }
 
-      if (trigger === "update" && session?.hasAccessTokenLocal) {
-        token.hasAccessTokenLocal = session?.hasAccessTokenLocal
+      if (trigger === "update" && session?.hasTokenLocal) {
+        token.hasTokenLocal = session?.hasTokenLocal;
       }
 
-      return { ...token, ...data};
+      return { ...token, ...data };
     },
 
     async session({ session, token }) {
@@ -85,9 +102,8 @@ const authOptions: NextAuthOptions = {
       return {
         ...session,
         user: {
-          ...session.user,
           ...token,
-          hasAccessTokenLocal: token.hasAccessTokenLocal
+          hasTokenLocal: token.hasTokenLocal,
         },
       };
     },
@@ -108,7 +124,10 @@ const handleTransformData = (user: any, account: any): GoogleLoginData => {
 };
 
 const isAccess = (data: any): boolean => {
-  return ((data.userInfo.role === RoleEnum.ADMIN || data.userInfo.role === RoleEnum.MANAGER) && data.userInfo.status === AccountStatus.ACTIVE);
+  return (
+    (data.userInfo.role === RoleEnum.ADMIN || data.userInfo.role === RoleEnum.MANAGER) &&
+    data.userInfo.status === AccountStatus.ACTIVE
+  );
 };
 
 export default authOptions;

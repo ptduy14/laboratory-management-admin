@@ -8,7 +8,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeFilledIcon } from "../icons/EyeFilledIcon";
@@ -29,6 +29,8 @@ type AddAccountProps = {
 export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isVisible, setIsVisible] = React.useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -42,6 +44,7 @@ export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const onSubmit: SubmitHandler<AddAccountSchemaType> = async (dataField) => {
+    setIsLoading(!isLoading)
     dataField = {...dataField, status: AccountStatus.ACTIVE}
 
     try {
@@ -49,8 +52,10 @@ export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
       console.log(data);
       mutate();
       toast.success("Thêm tài khoản thành công !!")
+      setIsLoading(!isLoading)
       onClose();
     } catch (error) {
+      setIsLoading(!isLoading)
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data.message)
       } else {
@@ -183,7 +188,7 @@ export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
                   >
                     Close
                   </Button>
-                  <Button color="primary" onClick={handleSubmit(onSubmit)}>
+                  <Button color="primary" onClick={handleSubmit(onSubmit)} isLoading={isLoading}>
                     Add Account
                   </Button>
                 </ModalFooter>

@@ -5,7 +5,8 @@ declare module "next-auth" {
   interface Session {
     user: {
       access_token: string,
-      hasAccessTokenLocal: boolean,
+      refresh_token: string,
+      hasTokenLocal: boolean,
       userInfo: {
         address: string | null;
         email: string;
