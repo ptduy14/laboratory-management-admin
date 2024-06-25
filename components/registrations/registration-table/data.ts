@@ -9,7 +9,7 @@ export const registraionColumns = [
   },
   {
     key: "name",
-    label: "SINH VIÊN MƯỢN",
+    label: "NGƯỜI MƯỢN",
   },
   {
     key: "email",
@@ -18,6 +18,10 @@ export const registraionColumns = [
   {
     key: "createdAt",
     label: "NGÀY TẠO PHIẾU",
+  },
+  {
+    key: "status",
+    label: "TRẠNG THÁI"
   },
   {
     key: "actions",

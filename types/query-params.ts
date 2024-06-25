@@ -5,5 +5,6 @@ export interface QueryParams {
     take?: number,
     status?: Number[],
     role?: Number[],
-    producer?: string[]
+    producer?: string[],
+    user?: string[]
 }
