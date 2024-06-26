@@ -22,6 +22,7 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
+        console.log(process.env.NEXT_PUBLIC_API_URL)
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auths/login`, {
           method: "POST",
           headers: {
