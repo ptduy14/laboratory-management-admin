@@ -17,8 +17,8 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
   switch (columnKey) {
     case "actions":
       return (
-        <div className="flex items-center gap-4 ">
-          <DetailRegistration registrationId={registration.id} />
+        <div className="flex gap-4 ">
+          <DetailRegistration registration={registration} />
           <ConfirmReturnRegistration registrationId={registration.id} />
         </div>
       );
@@ -35,7 +35,14 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
       return registration.user.email;
       break;
     case "status":
-      return <Chip size="sm" variant="flat" color={cellValue === RegistrationStatus.PENDING ? "warning" : "success"}>{RegistrationStatusNames[cellValue]}</Chip>;
+      return (
+        <Chip
+          size="sm"
+          variant="flat"
+          color={cellValue === RegistrationStatus.PENDING ? "warning" : "success"}>
+          <span className="capitalize text-xs">{RegistrationStatusNames[cellValue]}</span>
+        </Chip>
+      );
     default:
       return cellValue;
       break;

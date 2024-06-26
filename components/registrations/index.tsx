@@ -29,6 +29,7 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
   };
   const [queryParams, setQueryParams] = useState<QueryParams>(initQueryParams);
   const [typeAccountsFilter, setTypeAccountsFilter] = useState<Selection>("all");
+  const [valueSearch, setValueSearch] = useState("");
 
   const { data: registrations, isLoading: isFetchingRegistrations } = useSWR(
     [`/registration`, queryParams],
@@ -76,8 +77,8 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
             }}
             isClearable
             placeholder="Search registrations by name"
-            // value={searchFilterValue}
-            // onValueChange={onSearchChange}
+            // value={valueSearch}
+            // onValueChange={(value) => setValueSearch(value)}
           />
           <Dropdown>
             <DropdownTrigger className="hidden sm:flex">
