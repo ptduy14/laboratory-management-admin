@@ -55,7 +55,7 @@ export const RegistrationTableWrapper = ({
           <TableColumn key={column.key}>{column.label}</TableColumn>
         ))}
       </TableHeader>
-      <TableBody items={registrations}>
+      <TableBody items={registrations} emptyContent="Không tìm thấy phiếu mượn">
         {(registration) => (
           <TableRow key={registration.id}>
             {(columnKey) => (

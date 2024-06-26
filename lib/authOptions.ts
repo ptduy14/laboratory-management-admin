@@ -34,7 +34,7 @@ const authOptions: NextAuthOptions = {
         const data = await response.json()
 
         if (response.status === 201 && response.ok && isAccess(data)) {
-          console.log(data);
+          console.log("Users Data: ", data);
           return data;
         }
 

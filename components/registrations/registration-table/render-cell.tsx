@@ -1,7 +1,9 @@
+import { Chip } from "@nextui-org/react";
 import { ConfirmReturnRegistration } from "../confirm-return-registration";
 import { DetailRegistration } from "../detail-registration";
 import { Registration } from "./data";
 import { format } from "date-fns";
+import { RegistrationStatus, RegistrationStatusNames } from "@/enums/registration-status";
 
 interface Props {
   registration: Registration;
@@ -15,8 +17,8 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
   switch (columnKey) {
     case "actions":
       return (
-        <div className="flex items-center gap-4 ">
-          <DetailRegistration registrationId={registration.id} />
+        <div className="flex gap-4 ">
+          <DetailRegistration registration={registration} />
           <ConfirmReturnRegistration registrationId={registration.id} />
         </div>
       );
@@ -32,6 +34,15 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
     case "email":
       return registration.user.email;
       break;
+    case "status":
+      return (
+        <Chip
+          size="sm"
+          variant="flat"
+          color={cellValue === RegistrationStatus.PENDING ? "warning" : "success"}>
+          <span className="capitalize text-xs">{RegistrationStatusNames[cellValue]}</span>
+        </Chip>
+      );
     default:
       return cellValue;
       break;

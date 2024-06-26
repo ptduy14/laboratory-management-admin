@@ -56,12 +56,11 @@ AxiosInstance.interceptors.response.use(
           localStorage.setItem("access_token", data.token);
 
           // Update the request headers with the new access token
-          error.config.headers['Authorization'] = `Bearer ${data.token}`;
+          error.config.headers["Authorization"] = `Bearer ${data.token}`;
 
           // Retry all requests in the queue with the new token
           refreshAndRetryQueue.forEach(({ config, resolve, reject }) => {
-            AxiosInstance
-              .request(config)
+            AxiosInstance.request(config)
               .then((response) => resolve(response))
               .catch((err) => reject(err));
           });
@@ -89,7 +88,7 @@ AxiosInstance.interceptors.response.use(
       });
     }
 
-    console.log(error.config);
+    console.log(error);
     // Return a Promise rejection if the status code is not 401
     return Promise.reject(error);
   }

@@ -22,26 +22,26 @@ import { UnitEnumNames } from "@/enums/unit";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { RoomResourceService } from "@/services/roomResourceService";
 import { registrationFetcher } from "@/utils/fetchers/registration-fetchers/registration-fetcher";
-import { RegistrationDetail } from "./registration-table/data";
+import { Registration, RegistrationDetail } from "./registration-table/data";
 import { Account } from "../accounts/account-table/data";
 import { accountFetcher } from "@/utils/fetchers/account-fetchers.ts/accountFetcher";
 import { convertMillisecondsToDate } from "@/utils/convertMillisecondsToDate";
+import { roomFetcher } from "@/utils/fetchers/room-fetchers.ts/room-fetcher";
+import { fetchAllRegistrationResources } from "@/utils/fetchers/registration-fetchers/registration-resources-fetcher";
+import axios from "axios";
 
-export const DetailRegistration = ({ registrationId }: { registrationId: number }) => {
-  // const [account, setAccount] = useState<Account>();
+export const DetailRegistration = ({ registration }: { registration: Registration }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const { data: registration, isLoading: isFetchingRegistration } = useSWR<RegistrationDetail>(
-    isOpen ? `/registration/${registrationId}` : null,
+  const { data: registrationDetail, isLoading: isFetchingRegistrationDetail } = useSWR<RegistrationDetail>(
+    isOpen ? `/registration/${registration.id}` : null,
     registrationFetcher
   );
 
-  const { data: account } = useSWR<Account>(
-    registration && !isFetchingRegistration
-      ? `/users/get/${registration?.registration.user.id}`
-      : null,
-    accountFetcher
-  );
+  const { data: registrationResources, isLoading: isFetchingRegistrationResources } = useSWR(!isFetchingRegistrationDetail ? ['registrationResource', registrationDetail] : null, ([key, registrationDetail]) => fetchAllRegistrationResources(key, registrationDetail))
+
+  console.log(!isFetchingRegistrationDetail && registrationDetail);
+  console.log(!isFetchingRegistrationResources && registrationResources);
 
   return (
     <div>
@@ -61,61 +61,61 @@ export const DetailRegistration = ({ registrationId }: { registrationId: number 
                 </div>
               </ModalHeader>
               <ModalBody>
-                {!isFetchingRegistration && registration && account ? (
+                {!isFetchingRegistrationDetail && registrationDetail && !isFetchingRegistrationResources && registrationResources ? (
                   <div className="space-y-4 scrollbar scrollbar-thin overflow-auto">
                     <div className="border-b pb-2 mb-4 border-gray-500">
                       <label className="flex items-center mb-1.5">
                         <span className="w-1/2 block font-semibold">Mã phiếu: </span>
                         <span className="w-1/2 block font-light text-sm">
-                          {registration.registration.id}
+                          {registrationDetail.registration.id}
                         </span>
                       </label>
                       <label className="flex items-center mb-1.5">
                         <span className="w-1/2 block font-semibold">Tên người mượn:</span>
                         <span className="w-1/2 block font-light text-sm">
-                          {account?.lastName + account?.firstName}
+                          {`${registration.user.lastName} ${registration.user.firstName}`}
                         </span>
                       </label>
                     </div>
 
-                    {registration.items.map((resourceRegistration, index) => {
+                    {registrationResources.map((registrationResource, index) => {
                       return (
                         <div key={index} className="border-b pb-2 mb-4 border-gray-500">
                           <div className="space-y-4">
                             <label className="flex items-center">
                               <span className="w-1/2 block font-semibold">Tên tài nguyên: </span>
                               <span className="w-1/2 block font-light text-sm">
-                                {resourceRegistration.item.name}
+                                {registrationResource.item.name}
                               </span>
                             </label>
                             <label className="flex items-center">
                               <span className="w-1/2 block font-semibold">Đã mượn: </span>
                               <span className="w-1/2 block font-light text-sm">
-                                {resourceRegistration.quantity}
+                                {registrationDetail.items[index].quantity}
                               </span>
                             </label>
                             <label className="flex items-center">
                               <span className="w-1/2 block font-semibold">Đã trả: </span>
                               <span className="w-1/2 block font-light text-sm">
-                                {resourceRegistration.quantityReturned}
+                              {registrationDetail.items[index].quantityReturned}
                               </span>
                             </label>
                             <label className="flex items-center">
                               <span className="w-1/2 block font-semibold">Ngày mượn: </span>
                               <span className="w-1/2 block font-light text-sm">
-                                {convertMillisecondsToDate(resourceRegistration.start_day)}
+                                {convertMillisecondsToDate(registrationDetail.items[index].start_day)}
                               </span>
                             </label>
                             <label className="flex items-center">
                               <span className="w-1/2 block font-semibold">Ngày trả dự kiến: </span>
                               <span className="w-1/2 block font-light text-sm">
-                                {convertMillisecondsToDate(resourceRegistration.end_day)}
+                                {convertMillisecondsToDate(registrationDetail.items[index].end_day)}
                               </span>
                             </label>
                             <label className="flex items-center">
                               <span className="w-1/2 block font-semibold">Phòng: </span>
                               <span className="w-1/2 block font-light text-sm">
-                                {resourceRegistration.room.name}
+                                {registrationResource.room.name}
                               </span>
                             </label>
                           </div>

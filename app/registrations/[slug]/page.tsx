@@ -1,5 +1,7 @@
+import { Registrations } from "@/components/registrations";
+
 const registrations = ({ params }: { params: { slug: string } }) => {
-  return <h1>{params.slug}</h1>;
+  return <Registrations registrationsStatus={params.slug}/>
 };
 
 export default registrations;

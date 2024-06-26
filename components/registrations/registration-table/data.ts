@@ -1,6 +1,7 @@
 import { Account } from "@/components/accounts/account-table/data";
 import { Resource } from "@/components/resoures/resource-table/data";
 import { Room } from "@/components/rooms/room-table/data";
+import { ResourcesTransfered } from "@/components/room-resources/room-resources-table/data";
 
 export const registraionColumns = [
   {
@@ -9,7 +10,7 @@ export const registraionColumns = [
   },
   {
     key: "name",
-    label: "SINH VIÊN MƯỢN",
+    label: "NGƯỜI MƯỢN",
   },
   {
     key: "email",
@@ -18,6 +19,10 @@ export const registraionColumns = [
   {
     key: "createdAt",
     label: "NGÀY TẠO PHIẾU",
+  },
+  {
+    key: "status",
+    label: "TRẠNG THÁI"
   },
   {
     key: "actions",
@@ -37,13 +42,13 @@ export interface Registration {
 
 interface ResourceRegistration {
   id: number;
+  itemStatus: number;
   status: number;
   quantity: number;
   quantityReturned: number;
   start_day: string;
   end_day: string;
-  item: Resource;
-  room: Room;
+  roomItem: ResourcesTransfered
 }
 
 export interface RegistrationDetail {

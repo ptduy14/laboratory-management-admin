@@ -12,19 +12,38 @@ import {
 } from "@nextui-org/react";
 import { LoaderTable } from "../loader/loader-table";
 import useSWR from "swr";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { registrationsFetcher } from "@/utils/fetchers/registration-fetchers/registrations-fetcher";
 import { RegistrationTableWrapper } from "./registration-table/registration-table";
 import { registraionColumns } from "./registration-table/data";
 import { QueryParams } from "@/types/query-params";
+import { RegistrationStatus } from "@/enums/registration-status";
+import { ChevronDownIcon } from "../icons/chevron-down-icon";
 
-export const Registrations = () => {
-  const [queryParams, setQueryParams] = useState<QueryParams>({});
+export const Registrations = ({ registrationsStatus }: { registrationsStatus: string }) => {
+  const initQueryParams = {
+    status:
+      registrationsStatus === "pending"
+        ? [RegistrationStatus.PENDING]
+        : [RegistrationStatus.APPROVED],
+  };
+  const [queryParams, setQueryParams] = useState<QueryParams>(initQueryParams);
+  const [typeAccountsFilter, setTypeAccountsFilter] = useState<Selection>("all");
+  const [valueSearch, setValueSearch] = useState("");
 
   const { data: registrations, isLoading: isFetchingRegistrations } = useSWR(
     [`/registration`, queryParams],
     ([url, queryParams]) => registrationsFetcher(url, queryParams)
   );
+
+  useEffect(() => {
+    if (typeAccountsFilter !== "all") {
+      const typeAccountsFilterKey = Array.from(typeAccountsFilter);
+      const typeAccountsFilterString = typeAccountsFilterKey.map((item) => String(item))
+      
+      setQueryParams((prev) => ({...prev, user: typeAccountsFilterString}))
+    }
+  }, [typeAccountsFilter])
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -46,7 +65,9 @@ export const Registrations = () => {
         </li>
       </ul>
 
-      <h3 className="text-xl font-semibold">Danh sách các phiếu mượn</h3>
+      <h3 className="text-xl font-semibold">
+        Danh sách các phiếu mượn {registrationsStatus === "pending" ? "chờ duyệt" : "đang mượn"}
+      </h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
           <Input
@@ -56,11 +77,32 @@ export const Registrations = () => {
             }}
             isClearable
             placeholder="Search registrations by name"
-            // value={searchFilterValue}
-            // onValueChange={onSearchChange}
+            // value={valueSearch}
+            // onValueChange={(value) => setValueSearch(value)}
           />
+          <Dropdown>
+            <DropdownTrigger className="hidden sm:flex">
+              <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                Người mượn
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              disallowEmptySelection
+              aria-label="Table type accounts"
+              closeOnSelect={false}
+              selectedKeys={typeAccountsFilter}
+              selectionMode="multiple"
+              onSelectionChange={setTypeAccountsFilter}>
+              <DropdownItem key="@ctuet.edu.vn" className="capitalize">
+                Giảng viên
+              </DropdownItem>
+              <DropdownItem key="@student.ctuet.edu.vn" className="capitalize">
+                Sinh viên
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
-        <div className="flex flex-row gap-3.5 flex-wrap"></div>
+        <div className="flex flex-row gap-3.5 flex-wrap">vvv</div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
         {!isFetchingRegistrations ? (

@@ -18,7 +18,10 @@ interface ResourcesFormRooms {
 export const Steam = () => {
   const [resourcesFormRooms, setResourcesForms] = useState<ResourcesFormRooms[]>([]);
 
-  const { data: rooms, isLoading: isFetchingRooms } = useSWR(["/rooms", {take: 50}], ([url, queryParams]) => roomsFetcher(url, queryParams));
+  const { data: rooms, isLoading: isFetchingRooms } = useSWR(
+    ["/rooms", { take: 50 }],
+    ([url, queryParams]) => roomsFetcher(url, queryParams)
+  );
 
   const calculateTotalQuantityBorrowed = (data: any) => {
     return data.reduce((total: string, current: ResourcesTransfered) => {
@@ -35,21 +38,25 @@ export const Steam = () => {
   useEffect(() => {
     if (rooms?.data) {
       const fetchResources = async () => {
-        const resources = await Promise.all(
-          rooms.data.map(async (room: Room) => {
-            const response = await roomResourcesFetcher(`/room-items/room/${room.id}`)
-            const totalQuantityBorrowed = calculateTotalQuantityBorrowed(response.data);
-            const totalQuantityReturned = calculateTotalQuantityReturned(response.data);
-            return {
-              roomId: room.id,
-              roomName: room.name,
-              resources: response.data,
-              totalQuantityBorrowed,
-              totalQuantityReturned,
-            };
-          })
-        );
-        setResourcesForms(resources);
+        try {
+          const resources = await Promise.all(
+            rooms.data.map(async (room: Room) => {
+              const response = await roomResourcesFetcher(`/room-items/room/${room.id}`);
+              const totalQuantityBorrowed = calculateTotalQuantityBorrowed(response.data);
+              const totalQuantityReturned = calculateTotalQuantityReturned(response.data);
+              return {
+                roomId: room.id,
+                roomName: room.name,
+                resources: response.data,
+                totalQuantityBorrowed,
+                totalQuantityReturned,
+              };
+            })
+          );
+          setResourcesForms(resources);
+        } catch (error) {
+          console.error("Error fetching resources:", error);
+        }
       };
 
       fetchResources();
@@ -59,11 +66,15 @@ export const Steam = () => {
   const state: Props["series"] = [
     {
       name: "Đã trả",
-      data: [...resourcesFormRooms].reverse().map((roomResources) => roomResources.totalQuantityReturned),
+      data: [...resourcesFormRooms]
+        .reverse()
+        .map((roomResources) => roomResources.totalQuantityReturned),
     },
     {
       name: "Đã mượn",
-      data: [...resourcesFormRooms].reverse().map((roomResources) => roomResources.totalQuantityBorrowed),
+      data: [...resourcesFormRooms]
+        .reverse()
+        .map((roomResources) => roomResources.totalQuantityBorrowed),
     },
   ];
 
