@@ -50,9 +50,9 @@ export const PendingRegistrations = () => {
     }
   }, [typeAccountsFilter]);
 
-  const handleUpdateRegistrations = async (status: string) => {
+  const handleUpdateRegistrations = async (action: string) => {
     try {
-      status === "approve" ? setIsLoadingHandleApprove(true) : setIsLoadingHandleReject(true);
+      action === "approve" ? setIsLoadingHandleApprove(true) : setIsLoadingHandleReject(true);
       const payload: RegistrationsApprovePayload = { items: [] };
       if (selectedRegistrations === "all") {
         const { data: Allregistrations } = await registrationsFetcher(`/registration`, {
@@ -63,7 +63,7 @@ export const PendingRegistrations = () => {
           payload.items.push({
             id: registration.id,
             status:
-              status === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
+            action === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
           });
         });
       }
@@ -73,7 +73,7 @@ export const PendingRegistrations = () => {
           payload.items.push({
             id: Number(id),
             status:
-              status === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
+            action === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
           })
         );
       }
@@ -83,12 +83,12 @@ export const PendingRegistrations = () => {
       toast.success("Duyệt phiếu mượn thành công");
       mutate();
 
-      status === "approve" ? setIsLoadingHandleApprove(false) : setIsLoadingHandleReject(false);
+      action === "approve" ? setIsLoadingHandleApprove(false) : setIsLoadingHandleReject(false);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log(error);
       }
-      status === "approve" ? setIsLoadingHandleApprove(false) : setIsLoadingHandleReject(false);
+      action === "approve" ? setIsLoadingHandleApprove(false) : setIsLoadingHandleReject(false);
     }
   };
 
