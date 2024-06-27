@@ -14,6 +14,26 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
   //@ts-ignore
   const cellValue = registration[columnKey];
 
+  const getColorStatusRegistration = (cellValue: number) => {
+    switch (cellValue) {
+      case RegistrationStatus.PENDING:
+        return "warning";
+        break;
+
+      case RegistrationStatus.CANCELED:
+        return "danger";
+        break;
+
+      case RegistrationStatus.RETURNED:
+        return "success";
+        break;
+
+      default:
+        return "primary"
+        break;
+    }
+  };
+
   switch (columnKey) {
     case "actions":
       return (
@@ -38,7 +58,7 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
         <Chip
           size="sm"
           variant="flat"
-          color={cellValue === RegistrationStatus.PENDING ? "warning" : "success"}>
+          color={getColorStatusRegistration(cellValue)}>
           <span className="capitalize text-xs">{RegistrationStatusNames[cellValue]}</span>
         </Chip>
       );

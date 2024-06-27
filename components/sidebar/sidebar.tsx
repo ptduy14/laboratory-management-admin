@@ -24,6 +24,7 @@ import { title } from "process";
 import { PendingRegistrationsIcon } from "../icons/sidebar/pending-registrations-icon";
 import { ReturnedRegistrationsIcon } from "../icons/sidebar/returned-registration-icon";
 import { BorrowedRegistrationsIcon } from "../icons/sidebar/borrowed-registrations-icon";
+import { CanceledIcon } from "../icons/sidebar/canceled-icon";
 
 export const SidebarWrapper = () => {
   const pathname = usePathname();
@@ -74,6 +75,12 @@ export const SidebarWrapper = () => {
                 title="Chờ xác nhận"
                 icon={<PendingRegistrationsIcon />}
                 href="/registrations/pending"></SidebarItem>
+              
+              <SidebarItem
+                isActive={pathname === "/registrations/canceled"}
+                title="Đã từ chối"
+                icon={<CanceledIcon />}
+                href="/registrations/canceled"></SidebarItem>
 
               <SidebarItem
                 isActive={pathname === "/registrations/borrowed"}

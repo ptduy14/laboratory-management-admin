@@ -37,9 +37,9 @@ export const RegistrationTableWrapper = ({
     <Table
       aria-label="Example table with dynamic content"
       bottomContentPlacement="outside"
-      selectionMode="multiple"
-      selectedKeys={reletedRegistrations?.selectedRegistrations}
-      onSelectionChange={reletedRegistrations?.setSeletedRegistrations}
+      selectionMode={reletedRegistrations ? "multiple" : undefined}
+      selectedKeys={reletedRegistrations ? reletedRegistrations?.selectedRegistrations : undefined}
+      onSelectionChange={reletedRegistrations ? reletedRegistrations?.selectedRegistrations : undefined}
       bottomContent={ 
         <div className="flex w-full justify-center">
           <Pagination
