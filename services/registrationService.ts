@@ -8,6 +8,9 @@ export const RegistrationService = {
   getById: async (url: string) => {
     return AxiosInstance.get(url);
   },
+  approveRegistrations: (payload: any) => {
+    return AxiosInstance.post('/registration/update-status', payload)
+  },
   returnResource: async (payload: ReturnResourceRegistrationchemaType) => {
     return AxiosInstance.post('/item-returning', payload);
   },

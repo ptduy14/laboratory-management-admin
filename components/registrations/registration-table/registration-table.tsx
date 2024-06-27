@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Table,
   TableHeader,
@@ -18,6 +19,10 @@ interface RegistrationTableWrapperProps {
   registrationColumns: { key: string; label: string }[];
   meta: metaType;
   setPage?: React.Dispatch<React.SetStateAction<QueryParams>>;
+  reletedRegistrations?: {
+    selectedRegistrations: any,
+    setSeletedRegistrations: any
+  }
 }
 
 export const RegistrationTableWrapper = ({
@@ -25,12 +30,17 @@ export const RegistrationTableWrapper = ({
   registrationColumns,
   meta,
   setPage,
+  reletedRegistrations
 }: RegistrationTableWrapperProps) => {
+
   return (
     <Table
       aria-label="Example table with dynamic content"
       bottomContentPlacement="outside"
-      bottomContent={
+      selectionMode="multiple"
+      selectedKeys={reletedRegistrations?.selectedRegistrations}
+      onSelectionChange={reletedRegistrations?.setSeletedRegistrations}
+      bottomContent={ 
         <div className="flex w-full justify-center">
           <Pagination
             isCompact

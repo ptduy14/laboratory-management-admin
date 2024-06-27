@@ -15,23 +15,24 @@ import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { registrationsFetcher } from "@/utils/fetchers/registration-fetchers/registrations-fetcher";
 import { RegistrationTableWrapper } from "./registration-table/registration-table";
-import { registraionColumns } from "./registration-table/data";
+import { Registration, registraionColumns } from "./registration-table/data";
 import { QueryParams } from "@/types/query-params";
 import { RegistrationStatus } from "@/enums/registration-status";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
+import { RegistrationsApprovePayload } from "@/types/registration";
+import { RegistrationService } from "@/services/registrationService";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-export const Registrations = ({ registrationsStatus }: { registrationsStatus: string }) => {
-  const initQueryParams = {
-    status:
-      registrationsStatus === "pending"
-        ? [RegistrationStatus.PENDING]
-        : [RegistrationStatus.APPROVED],
-  };
-  const [queryParams, setQueryParams] = useState<QueryParams>(initQueryParams);
+export const PendingRegistrations = () => {
+  const [queryParams, setQueryParams] = useState<QueryParams>({
+    status: [RegistrationStatus.PENDING],
+  });
   const [typeAccountsFilter, setTypeAccountsFilter] = useState<Selection>("all");
-  const [valueSearch, setValueSearch] = useState("");
+  const [selectedRegistrations, setSeletedRegistrations] = useState<Set<string | number> | "all">();
+  const [isloading, setIsLoading] = useState(false);
 
-  const { data: registrations, isLoading: isFetchingRegistrations } = useSWR(
+  const { data: registrations, isLoading: isFetchingRegistrations, mutate } = useSWR(
     [`/registration`, queryParams],
     ([url, queryParams]) => registrationsFetcher(url, queryParams)
   );
@@ -39,11 +40,46 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
   useEffect(() => {
     if (typeAccountsFilter !== "all") {
       const typeAccountsFilterKey = Array.from(typeAccountsFilter);
-      const typeAccountsFilterString = typeAccountsFilterKey.map((item) => String(item))
-      
-      setQueryParams((prev) => ({...prev, user: typeAccountsFilterString}))
+      const typeAccountsFilterString = typeAccountsFilterKey.map((item) => String(item));
+
+      setQueryParams((prev) => ({ ...prev, user: typeAccountsFilterString }));
     }
-  }, [typeAccountsFilter])
+  }, [typeAccountsFilter]);
+
+  const handleApproveRegistrations = async () => {
+    try {
+      setIsLoading(true);
+      const payload: RegistrationsApprovePayload = { items: [] };
+      if (selectedRegistrations === "all") {
+        const { data: Allregistrations } = await registrationsFetcher(`/registration`, {
+          ...queryParams,
+          take: 50,
+        });
+        Allregistrations.forEach((registration: Registration) => {
+          payload.items.push({ id: registration.id, status: RegistrationStatus.APPROVED });
+        });
+      }
+
+      if (typeof selectedRegistrations === "object") {
+        const selectedRegistrationsArrNumber= Array.from(selectedRegistrations).map((item) => Number(item))
+        selectedRegistrationsArrNumber.forEach((item) => {
+          payload.items.push({id: item, status: RegistrationStatus.APPROVED})
+        })
+      }
+
+      const { data } = await RegistrationService.approveRegistrations(payload);
+      console.log(data);
+      toast.success("Duyệt phiếu mượn thành công");
+      mutate();
+      
+      setIsLoading(false);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error)
+      }
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -65,9 +101,7 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
         </li>
       </ul>
 
-      <h3 className="text-xl font-semibold">
-        Danh sách các phiếu mượn {registrationsStatus === "pending" ? "chờ duyệt" : "đang mượn"}
-      </h3>
+      <h3 className="text-xl font-semibold">Danh sách các phiếu mượn chờ duyệt</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
           <Input
@@ -102,7 +136,18 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
             </DropdownMenu>
           </Dropdown>
         </div>
-        <div className="flex flex-row gap-3.5 flex-wrap">vvv</div>
+        <div className="flex flex-row gap-3.5 flex-wrap">
+          <Button
+            color="primary"
+            isDisabled={
+              typeof selectedRegistrations === "undefined" ||
+              Array.from(selectedRegistrations).length === 0
+            }
+            onClick={handleApproveRegistrations}
+            isLoading={isloading}>
+            Duyệt phiếu mượn
+          </Button>
+        </div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
         {!isFetchingRegistrations ? (
@@ -111,6 +156,7 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
             registrationColumns={registraionColumns}
             meta={registrations.meta}
             setPage={setQueryParams}
+            reletedRegistrations={{ selectedRegistrations, setSeletedRegistrations }}
           />
         ) : (
           <LoaderTable />

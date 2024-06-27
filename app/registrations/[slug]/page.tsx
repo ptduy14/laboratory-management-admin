@@ -1,7 +1,7 @@
-import { Registrations } from "@/components/registrations";
+import { PendingRegistrations } from "@/components/registrations/pending-registration";
 
 const registrations = ({ params }: { params: { slug: string } }) => {
-  return <Registrations registrationsStatus={params.slug}/>
+  return <PendingRegistrations registrationsStatus={params.slug}/>
 };
 
 export default registrations;

@@ -40,9 +40,6 @@ export const DetailRegistration = ({ registration }: { registration: Registratio
 
   const { data: registrationResources, isLoading: isFetchingRegistrationResources } = useSWR(!isFetchingRegistrationDetail ? ['registrationResource', registrationDetail] : null, ([key, registrationDetail]) => fetchAllRegistrationResources(key, registrationDetail))
 
-  console.log(!isFetchingRegistrationDetail && registrationDetail);
-  console.log(!isFetchingRegistrationResources && registrationResources);
-
   return (
     <div>
       <Tooltip content="Chi tiết phiếu mượn">
