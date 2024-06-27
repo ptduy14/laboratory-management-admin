@@ -30,11 +30,15 @@ export const PendingRegistrations = () => {
   });
   const [typeAccountsFilter, setTypeAccountsFilter] = useState<Selection>("all");
   const [selectedRegistrations, setSeletedRegistrations] = useState<Set<string | number> | "all">();
-  const [isloading, setIsLoading] = useState(false);
+  const [isLoadingHandleApprove, setIsLoadingHandleApprove] = useState(false);
+  const [isLoadingHandleReject, setIsLoadingHandleReject] = useState(false);
 
-  const { data: registrations, isLoading: isFetchingRegistrations, mutate } = useSWR(
-    [`/registration`, queryParams],
-    ([url, queryParams]) => registrationsFetcher(url, queryParams)
+  const {
+    data: registrations,
+    isLoading: isFetchingRegistrations,
+    mutate,
+  } = useSWR([`/registration`, queryParams], ([url, queryParams]) =>
+    registrationsFetcher(url, queryParams)
   );
 
   useEffect(() => {
@@ -46,9 +50,9 @@ export const PendingRegistrations = () => {
     }
   }, [typeAccountsFilter]);
 
-  const handleApproveRegistrations = async () => {
+  const handleUpdateRegistrations = async (status: string) => {
     try {
-      setIsLoading(true);
+      status === "approve" ? setIsLoadingHandleApprove(true) : setIsLoadingHandleReject(true);
       const payload: RegistrationsApprovePayload = { items: [] };
       if (selectedRegistrations === "all") {
         const { data: Allregistrations } = await registrationsFetcher(`/registration`, {
@@ -56,28 +60,35 @@ export const PendingRegistrations = () => {
           take: 50,
         });
         Allregistrations.forEach((registration: Registration) => {
-          payload.items.push({ id: registration.id, status: RegistrationStatus.APPROVED });
+          payload.items.push({
+            id: registration.id,
+            status:
+              status === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
+          });
         });
       }
 
-      if (typeof selectedRegistrations === "object") {
-        const selectedRegistrationsArrNumber= Array.from(selectedRegistrations).map((item) => Number(item))
-        selectedRegistrationsArrNumber.forEach((item) => {
-          payload.items.push({id: item, status: RegistrationStatus.APPROVED})
-        })
+      if (selectedRegistrations instanceof Set) {
+        selectedRegistrations.forEach((id) =>
+          payload.items.push({
+            id: Number(id),
+            status:
+              status === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
+          })
+        );
       }
 
       const { data } = await RegistrationService.approveRegistrations(payload);
-      console.log(data);
+      console.log(payload);
       toast.success("Duyệt phiếu mượn thành công");
       mutate();
-      
-      setIsLoading(false);
+
+      status === "approve" ? setIsLoadingHandleApprove(false) : setIsLoadingHandleReject(false);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error)
+        console.log(error);
       }
-      setIsLoading(false);
+      status === "approve" ? setIsLoadingHandleApprove(false) : setIsLoadingHandleReject(false);
     }
   };
 
@@ -110,7 +121,7 @@ export const PendingRegistrations = () => {
               mainWrapper: "w-full",
             }}
             isClearable
-            placeholder="Search registrations by name"
+            placeholder="Tìm kiếm"
             // value={valueSearch}
             // onValueChange={(value) => setValueSearch(value)}
           />
@@ -140,12 +151,24 @@ export const PendingRegistrations = () => {
           <Button
             color="primary"
             isDisabled={
-              typeof selectedRegistrations === "undefined" ||
-              Array.from(selectedRegistrations).length === 0
+              !selectedRegistrations ||
+              Array.from(selectedRegistrations).length === 0 ||
+              isLoadingHandleReject
             }
-            onClick={handleApproveRegistrations}
-            isLoading={isloading}>
-            Duyệt phiếu mượn
+            onClick={() => handleUpdateRegistrations("approve")}
+            isLoading={isLoadingHandleApprove}>
+            Duyệt mượn
+          </Button>
+          <Button
+            color="danger"
+            isDisabled={
+              !selectedRegistrations ||
+              Array.from(selectedRegistrations).length === 0 ||
+              isLoadingHandleApprove
+            }
+            onClick={() => handleUpdateRegistrations("reject")}
+            isLoading={isLoadingHandleReject}>
+            Từ chối
           </Button>
         </div>
       </div>

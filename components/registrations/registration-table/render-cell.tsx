@@ -19,7 +19,6 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
       return (
         <div className="flex gap-4 ">
           <DetailRegistration registration={registration} />
-          <ConfirmReturnRegistration registrationId={registration.id} />
         </div>
       );
       break;
