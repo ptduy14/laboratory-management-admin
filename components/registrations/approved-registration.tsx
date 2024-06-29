@@ -19,10 +19,9 @@ import { Registration, registraionColumns } from "./registration-table/data";
 import { QueryParams } from "@/types/query-params";
 import { RegistrationStatus } from "@/enums/registration-status";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
-
-export const CanceledRegistrations = () => {
+export const ApprovedRegistrations = () => {
   const [queryParams, setQueryParams] = useState<QueryParams>({
-    status: [RegistrationStatus.CANCELED],
+    status: [RegistrationStatus.APPROVED],
   });
   const [typeAccountsFilter, setTypeAccountsFilter] = useState<Selection>("all");
 
@@ -63,7 +62,7 @@ export const CanceledRegistrations = () => {
         </li>
       </ul>
 
-      <h3 className="text-xl font-semibold">Danh sách các phiếu mượn đã hủy</h3>
+      <h3 className="text-xl font-semibold">Danh sách các phiếu mượn đã duyệt</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
           <Input

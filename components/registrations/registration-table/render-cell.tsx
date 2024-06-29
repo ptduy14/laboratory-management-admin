@@ -38,7 +38,9 @@ export const RenderCell = ({ registration, columnKey }: Props) => {
     case "actions":
       return (
         <div className="flex gap-4 ">
+          
           <DetailRegistration registration={registration} />
+          {RegistrationStatusNames[registration.status] === 'Đã duyệt' && <ConfirmReturnRegistration registration={registration}/>}
         </div>
       );
       break;

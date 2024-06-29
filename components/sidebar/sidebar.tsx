@@ -23,7 +23,7 @@ import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
 import { title } from "process";
 import { PendingRegistrationsIcon } from "../icons/sidebar/pending-registrations-icon";
 import { ReturnedRegistrationsIcon } from "../icons/sidebar/returned-registration-icon";
-import { BorrowedRegistrationsIcon } from "../icons/sidebar/borrowed-registrations-icon";
+import { ApprovedRegistrationsIcon } from "../icons/sidebar/approved-registrations-icon";
 import { CanceledIcon } from "../icons/sidebar/canceled-icon";
 
 export const SidebarWrapper = () => {
@@ -78,15 +78,15 @@ export const SidebarWrapper = () => {
               
               <SidebarItem
                 isActive={pathname === "/registrations/canceled"}
-                title="Đã từ chối"
+                title="Đã hủy"
                 icon={<CanceledIcon />}
                 href="/registrations/canceled"></SidebarItem>
 
               <SidebarItem
-                isActive={pathname === "/registrations/borrowed"}
-                title="Đang mượn"
-                icon={<BorrowedRegistrationsIcon />}
-                href="/registrations/borrowed"></SidebarItem>
+                isActive={pathname === "/registrations/approved"}
+                title="Đã duyệt"
+                icon={<ApprovedRegistrationsIcon />}
+                href="/registrations/approved"></SidebarItem>
 
               <SidebarItem
                 isActive={pathname === "/registrations/returned"}

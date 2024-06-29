@@ -19,10 +19,14 @@ import { Registration, registraionColumns } from "./registration-table/data";
 import { QueryParams } from "@/types/query-params";
 import { RegistrationStatus } from "@/enums/registration-status";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
+import { RegistrationsApprovePayload } from "@/types/registration";
+import { RegistrationService } from "@/services/registrationService";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-export const CanceledRegistrations = () => {
+export const ReturnedRegistration = () => {
   const [queryParams, setQueryParams] = useState<QueryParams>({
-    status: [RegistrationStatus.CANCELED],
+    status: [RegistrationStatus.RETURNED],
   });
   const [typeAccountsFilter, setTypeAccountsFilter] = useState<Selection>("all");
 
@@ -30,7 +34,7 @@ export const CanceledRegistrations = () => {
     data: registrations,
     isLoading: isFetchingRegistrations,
     mutate,
-  } = useSWR([`/registration`, queryParams], ([url, queryParams]) =>
+  } = useSWR([`/registration`, queryParams], ([url, queryParams]) =>    
     registrationsFetcher(url, queryParams)
   );
 
@@ -63,7 +67,7 @@ export const CanceledRegistrations = () => {
         </li>
       </ul>
 
-      <h3 className="text-xl font-semibold">Danh sách các phiếu mượn đã hủy</h3>
+      <h3 className="text-xl font-semibold">Danh sách các phiếu mượn đã trả</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
           <Input
