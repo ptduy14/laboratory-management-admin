@@ -1,4 +1,4 @@
-import { ReturnResourceRegistrationchemaType } from "@/components/registrations/schema/return-resource-registration";
+import { ReturnRegistrationchemaType } from "@/components/registrations/schema/return-resource-registration";
 import AxiosInstance from "@/config/axiosInstance";
 
 export const RegistrationService = {
@@ -11,7 +11,7 @@ export const RegistrationService = {
   approveRegistrations: (payload: any) => {
     return AxiosInstance.post('/registration/update-status', payload)
   },
-  returnResource: async (payload: ReturnResourceRegistrationchemaType) => {
+  returnResource: async (payload: ReturnRegistrationchemaType) => {
     return AxiosInstance.post('/item-returning', payload);
   },
 };
