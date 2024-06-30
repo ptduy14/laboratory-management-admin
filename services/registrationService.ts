@@ -11,7 +11,7 @@ export const RegistrationService = {
   approveRegistrations: (payload: any) => {
     return AxiosInstance.post('/registration/update-status', payload)
   },
-  returnResource: async (payload: ReturnRegistrationchemaType) => {
-    return AxiosInstance.post('/item-returning', payload);
+  returnRegistrationResources: async (payload: ReturnRegistrationchemaType) => {
+    return AxiosInstance.post('/item-returning/list-item-returning', payload);
   },
 };

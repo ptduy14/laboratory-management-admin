@@ -19,6 +19,7 @@ export const ConfirmReturnRegistrationForm = ({
     watch,
   } = useFormContext();
 
+  console.log(errors);
 
   return (
     <>
@@ -57,6 +58,7 @@ export const ConfirmReturnRegistrationForm = ({
                 </option>
               </select>
             </div>
+            <Input className="mb-7" label="Tổng dung tích còn lại" variant="bordered" {...register(`items.${index}.remaining_volume`)}/>
             <Input className="mb-7" label="Ghi chú" variant="bordered" {...register(`items.${index}.remark`)}/>
           </div>
         );

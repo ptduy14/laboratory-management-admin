@@ -49,20 +49,30 @@ export const ConfirmReturnRegistration = ({ registration }: { registration: Regi
     if (!isFetchingRegistrationResources && registrationResources && registrationDetail) {
       methods.reset({
         uid: registrationDetail.registration.user.id,
-        status: RegistrationStatus.RETURNED,
+        status: 1,
         items: registrationResources.map((registrationResource, index) => ({
           registrationId: registrationDetail.registration.id,
           itemRegistrationId: registrationResource.item.id,
           quantity: registrationDetail.items[index].quantity,
-          itemStatus: registrationResource.item.status
+          itemStatus: registrationResource.item.status,
         })),
       });
     }
   }, [isFetchingRegistrationResources]);
 
-  const onSubmit: SubmitHandler<ReturnRegistrationchemaType> = (payload) => {
-    console.log(payload)
-  }
+  const onSubmit: SubmitHandler<ReturnRegistrationchemaType> = async (payload) => {
+    console.log(payload);
+    try {
+      const { data } = await RegistrationService.returnRegistrationResources(payload)
+      mutate((key) => Array.isArray(key) && key[0] === '/registration')
+      toast.success("Ghi nhận trả thành công");
+      onClose();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error);
+      }
+    }
+  };
 
   const handleCloseModal = () => {
     onClose();
@@ -85,7 +95,10 @@ export const ConfirmReturnRegistration = ({ registration }: { registration: Regi
                   <form className=" scrollbar scrollbar-thin overflow-y-auto">
                     <div className="w-full max-h-96">
                       <FormProvider {...methods}>
-                        <ConfirmReturnRegistrationForm registrationDetail={registrationDetail} registrationResources={registrationResources}/>
+                        <ConfirmReturnRegistrationForm
+                          registrationDetail={registrationDetail}
+                          registrationResources={registrationResources}
+                        />
                       </FormProvider>
                     </div>
                   </form>
@@ -95,7 +108,7 @@ export const ConfirmReturnRegistration = ({ registration }: { registration: Regi
               </ModalBody>
               {!isFetchingRegistrationResources && registrationResources && registrationDetail ? (
                 <ModalFooter>
-                <Button color="danger" variant="light" onClick={handleCloseModal}>
+                  <Button color="danger" variant="light" onClick={handleCloseModal}>
                     Đóng
                   </Button>
                   <Button color="primary" onClick={methods.handleSubmit(onSubmit)}>
