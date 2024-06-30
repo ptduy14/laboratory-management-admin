@@ -63,7 +63,7 @@ export const PendingRegistrations = () => {
           payload.items.push({
             id: registration.id,
             status:
-            action === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
+              action === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
           });
         });
       }
@@ -73,13 +73,12 @@ export const PendingRegistrations = () => {
           payload.items.push({
             id: Number(id),
             status:
-            action === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
+              action === "approve" ? RegistrationStatus.APPROVED : RegistrationStatus.CANCELED,
           })
         );
       }
 
       const { data } = await RegistrationService.approveRegistrations(payload);
-      console.log(payload);
       toast.success("Duyệt phiếu mượn thành công");
       mutate();
 
@@ -152,7 +151,7 @@ export const PendingRegistrations = () => {
             color="primary"
             isDisabled={
               !selectedRegistrations ||
-              Array.from(selectedRegistrations).length === 0 ||
+              (selectedRegistrations instanceof Set && selectedRegistrations.size == 0) ||
               isLoadingHandleReject
             }
             onClick={() => handleUpdateRegistrations("approve")}
@@ -163,7 +162,7 @@ export const PendingRegistrations = () => {
             color="danger"
             isDisabled={
               !selectedRegistrations ||
-              Array.from(selectedRegistrations).length === 0 ||
+              (selectedRegistrations instanceof Set && selectedRegistrations.size == 0) ||
               isLoadingHandleApprove
             }
             onClick={() => handleUpdateRegistrations("reject")}
@@ -179,7 +178,7 @@ export const PendingRegistrations = () => {
             registrationColumns={registraionColumns}
             meta={registrations.meta}
             setPage={setQueryParams}
-            reletedRegistrations={{ selectedRegistrations, setSeletedRegistrations }}
+            selectedRegistrations={{ selectedRegistrations, setSeletedRegistrations }}
           />
         ) : (
           <LoaderTable />

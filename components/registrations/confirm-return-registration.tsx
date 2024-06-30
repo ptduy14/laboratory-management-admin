@@ -61,7 +61,7 @@ export const ConfirmReturnRegistration = ({ registration }: { registration: Regi
   }, [isFetchingRegistrationResources]);
 
   const onSubmit: SubmitHandler<ReturnRegistrationchemaType> = async (payload) => {
-    console.log(payload);
+    console.log("Payload: ",payload);
     try {
       const { data } = await RegistrationService.returnRegistrationResources(payload)
       mutate((key) => Array.isArray(key) && key[0] === '/registration')
@@ -69,6 +69,7 @@ export const ConfirmReturnRegistration = ({ registration }: { registration: Regi
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message)
         console.log(error);
       }
     }

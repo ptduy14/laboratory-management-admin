@@ -18,9 +18,7 @@ export const ConfirmReturnRegistrationForm = ({
     getValues,
     watch,
   } = useFormContext();
-
-  console.log(errors);
-
+  
   return (
     <>
       {registrationResources.map((registrationResource, index) => {
