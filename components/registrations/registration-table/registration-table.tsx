@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Table,
   TableHeader,
@@ -18,6 +19,10 @@ interface RegistrationTableWrapperProps {
   registrationColumns: { key: string; label: string }[];
   meta: metaType;
   setPage?: React.Dispatch<React.SetStateAction<QueryParams>>;
+  selectedRegistrations?: {
+    selectedRegistrations: any;
+    setSeletedRegistrations: any;
+  };
 }
 
 export const RegistrationTableWrapper = ({
@@ -25,11 +30,22 @@ export const RegistrationTableWrapper = ({
   registrationColumns,
   meta,
   setPage,
+  selectedRegistrations,
 }: RegistrationTableWrapperProps) => {
+
   return (
     <Table
       aria-label="Example table with dynamic content"
       bottomContentPlacement="outside"
+      selectionMode={selectedRegistrations ? "multiple" : undefined}
+      selectedKeys={
+        selectedRegistrations ? selectedRegistrations?.selectedRegistrations : undefined
+      }
+      onSelectionChange={
+        selectedRegistrations
+          ? (keys) => selectedRegistrations?.setSeletedRegistrations(keys)
+          : undefined
+      }
       bottomContent={
         <div className="flex w-full justify-center">
           <Pagination

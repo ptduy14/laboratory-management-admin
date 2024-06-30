@@ -29,6 +29,7 @@ import { convertMillisecondsToDate } from "@/utils/convertMillisecondsToDate";
 import { roomFetcher } from "@/utils/fetchers/room-fetchers.ts/room-fetcher";
 import { fetchAllRegistrationResources } from "@/utils/fetchers/registration-fetchers/registration-resources-fetcher";
 import axios from "axios";
+import { RegistrationStatusNames } from "@/enums/registration-status";
 
 export const DetailRegistration = ({ registration }: { registration: Registration }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -40,11 +41,8 @@ export const DetailRegistration = ({ registration }: { registration: Registratio
 
   const { data: registrationResources, isLoading: isFetchingRegistrationResources } = useSWR(!isFetchingRegistrationDetail ? ['registrationResource', registrationDetail] : null, ([key, registrationDetail]) => fetchAllRegistrationResources(key, registrationDetail))
 
-  console.log(!isFetchingRegistrationDetail && registrationDetail);
-  console.log(!isFetchingRegistrationResources && registrationResources);
-
   return (
-    <div>
+    <>
       <Tooltip content="Chi tiết phiếu mượn">
         <button onClick={onOpen}>
           <EyeIcon size={20} fill="#979797" />
@@ -68,6 +66,12 @@ export const DetailRegistration = ({ registration }: { registration: Registratio
                         <span className="w-1/2 block font-semibold">Mã phiếu: </span>
                         <span className="w-1/2 block font-light text-sm">
                           {registrationDetail.registration.id}
+                        </span>
+                      </label>
+                      <label className="flex items-center mb-1.5">
+                        <span className="w-1/2 block font-semibold">Trạng thái: </span>
+                        <span className="w-1/2 block font-light text-sm">
+                          {RegistrationStatusNames[registrationDetail.registration.status]}
                         </span>
                       </label>
                       <label className="flex items-center mb-1.5">
@@ -136,6 +140,6 @@ export const DetailRegistration = ({ registration }: { registration: Registratio
           )}
         </ModalContent>
       </Modal>
-    </div>
+    </>
   );
 };

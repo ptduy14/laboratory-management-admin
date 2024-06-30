@@ -15,35 +15,37 @@ import useSWR from "swr";
 import { useEffect, useState } from "react";
 import { registrationsFetcher } from "@/utils/fetchers/registration-fetchers/registrations-fetcher";
 import { RegistrationTableWrapper } from "./registration-table/registration-table";
-import { registraionColumns } from "./registration-table/data";
+import { Registration, registraionColumns } from "./registration-table/data";
 import { QueryParams } from "@/types/query-params";
 import { RegistrationStatus } from "@/enums/registration-status";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
+import { RegistrationsApprovePayload } from "@/types/registration";
+import { RegistrationService } from "@/services/registrationService";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-export const Registrations = ({ registrationsStatus }: { registrationsStatus: string }) => {
-  const initQueryParams = {
-    status:
-      registrationsStatus === "pending"
-        ? [RegistrationStatus.PENDING]
-        : [RegistrationStatus.APPROVED],
-  };
-  const [queryParams, setQueryParams] = useState<QueryParams>(initQueryParams);
+export const ReturnedRegistration = () => {
+  const [queryParams, setQueryParams] = useState<QueryParams>({
+    status: [RegistrationStatus.RETURNED],
+  });
   const [typeAccountsFilter, setTypeAccountsFilter] = useState<Selection>("all");
-  const [valueSearch, setValueSearch] = useState("");
 
-  const { data: registrations, isLoading: isFetchingRegistrations } = useSWR(
-    [`/registration`, queryParams],
-    ([url, queryParams]) => registrationsFetcher(url, queryParams)
+  const {
+    data: registrations,
+    isLoading: isFetchingRegistrations,
+    mutate,
+  } = useSWR([`/registration`, queryParams], ([url, queryParams]) =>    
+    registrationsFetcher(url, queryParams)
   );
 
   useEffect(() => {
     if (typeAccountsFilter !== "all") {
       const typeAccountsFilterKey = Array.from(typeAccountsFilter);
-      const typeAccountsFilterString = typeAccountsFilterKey.map((item) => String(item))
-      
-      setQueryParams((prev) => ({...prev, user: typeAccountsFilterString}))
+      const typeAccountsFilterString = typeAccountsFilterKey.map((item) => String(item));
+
+      setQueryParams((prev) => ({ ...prev, user: typeAccountsFilterString }));
     }
-  }, [typeAccountsFilter])
+  }, [typeAccountsFilter]);
 
   return (
     <div className="my-14 lg:px-6 max-w-[95rem] mx-auto w-full flex flex-col gap-4">
@@ -65,9 +67,7 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
         </li>
       </ul>
 
-      <h3 className="text-xl font-semibold">
-        Danh sách các phiếu mượn {registrationsStatus === "pending" ? "chờ duyệt" : "đang mượn"}
-      </h3>
+      <h3 className="text-xl font-semibold">Danh sách các phiếu mượn đã trả</h3>
       <div className="flex justify-between flex-wrap gap-4 items-center">
         <div className="flex items-center gap-3 flex-wrap md:flex-nowrap">
           <Input
@@ -76,7 +76,7 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
               mainWrapper: "w-full",
             }}
             isClearable
-            placeholder="Search registrations by name"
+            placeholder="Tìm kiếm"
             // value={valueSearch}
             // onValueChange={(value) => setValueSearch(value)}
           />
@@ -102,7 +102,6 @@ export const Registrations = ({ registrationsStatus }: { registrationsStatus: st
             </DropdownMenu>
           </Dropdown>
         </div>
-        <div className="flex flex-row gap-3.5 flex-wrap">vvv</div>
       </div>
       <div className="max-w-[95rem] mx-auto w-full">
         {!isFetchingRegistrations ? (

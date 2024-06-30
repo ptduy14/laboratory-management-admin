@@ -33,40 +33,46 @@ import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categor
 
 export const AddResource = ({ mutate }: { mutate: any }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [schema, setSchema] =
-    useState<z.ZodType<AddResourceSchemaUnionType>>(AddResourceCommonSchema);
+  const [isChemicalFieldVisible, setIsChemicalFieldVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [schema, setSchema] = useState<z.ZodType<AddResourceSchemaUnionType>>(AddResourceCommonSchema);
 
   const methods = useForm<AddResourceSchemaUnionType>({
     resolver: zodResolver(schema),
   });
 
-  const categoryId: number = methods.watch("categoryId", 1);
+  const categoryIdSelected: number = methods.watch("categoryId", 1);
 
-  const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
+  const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) =>
+    categoriesFetcher(url, queryParams)
+  );
 
   // need to improment later
   useEffect(() => {
-    let newSchema = getAddResourceSchema(categoryId);
+    let newSchema = getAddResourceSchema(categoryIdSelected);
     setSchema(newSchema);
     methods.reset(undefined, { keepValues: true }); // Reset form with new schema
-  }, [categoryId, categories]);
+  }, [categoryIdSelected, categories]);
 
-  const getAddResourceSchema = (categoryId: number) => {
+  const getAddResourceSchema = (categoryIdSelected: number) => {
     let category = categories?.data.find((category: Category) => {
-      return category.id === categoryId;
+      return category.id === categoryIdSelected;
     });
 
     switch (category?.name) {
       case "Hóa chất":
+        setIsChemicalFieldVisible(true);
         return AddResourceChemicalSchema;
       default:
+        setIsChemicalFieldVisible(false);
         return AddResourceCommonSchema;
     }
   };
 
-  const onSubmit: SubmitHandler<AddResourceSchemaUnionType> = async (data) => {
+  const onSubmit: SubmitHandler<AddResourceSchemaUnionType> = async (payload) => {
     try {
-      const { data: newResource } = await ResourceService.create(data);
+      setIsLoading(true);
+      const { data: newResource } = await ResourceService.create(payload);
       console.log(newResource);
       mutate();
       methods.reset();
@@ -78,7 +84,8 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
         toast.error(translatedErrorMessage);
       }
     }
-    console.log(data);
+    setIsLoading(false)
+    console.log(payload);
   };
 
   const handleCloseModal = () => {
@@ -101,7 +108,7 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
                   <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                     <div className="w-full max-h-96">
                       <FormProvider {...methods}>
-                        <AddResourceCommonForm categories={categories?.data} />
+                        <AddResourceCommonForm categories={categories?.data} isChemicalFieldVisible={isChemicalFieldVisible}/>
                       </FormProvider>
                     </div>
                   </form>
@@ -110,7 +117,7 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
                   <Button color="danger" variant="flat" onClick={handleCloseModal}>
                     Đóng
                   </Button>
-                  <Button color="primary" onClick={methods.handleSubmit(onSubmit)}>
+                  <Button color="primary" onClick={methods.handleSubmit(onSubmit)} isLoading={isLoading}>
                     Thêm tài nguyên
                   </Button>
                 </ModalFooter>

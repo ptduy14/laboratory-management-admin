@@ -22,7 +22,7 @@ const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auths/login`, {
+        const response = await fetch(`${process.env.API_URL}/auths/login`, {
           method: "POST",
           headers: {
             "Accept": "application/json",
@@ -57,7 +57,7 @@ const authOptions: NextAuthOptions = {
       if (account?.provider === "google" && user) {
         const payload = handleTransformData(user, account);
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auths/google-login`, {
+          const response = await fetch(`${process.env.API_URL}/auths/google-login`, {
             method: "POST",
             headers: {
               "Accept": "application/json",
