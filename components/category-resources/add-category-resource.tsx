@@ -32,6 +32,7 @@ import {
   
   export const AddCategoryResource = ({ mutate, category } : { mutate: any, category: Category}) => {
     const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+    const [isChemicalFieldVisible, setIsChemicalFieldVisible] = useState<boolean>(category.name === "Hóa chất" ? true : false);
   
     const methods = useForm<AddResourceSchemaUnionType>({
       defaultValues: {
@@ -82,7 +83,7 @@ import {
                     <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                       <div className="w-full max-h-80">
                         <FormProvider {...methods}>
-                          <AddResourceCommonForm isHiddenCategorySelect={true}/>
+                          <AddResourceCommonForm isHiddenCategorySelect={true} isChemicalFieldVisible={isChemicalFieldVisible}/>
                         </FormProvider>
                       </div>
                     </form>
