@@ -52,7 +52,7 @@ export const ConfirmReturnRegistration = ({ registration }: { registration: Regi
         status: 1,
         items: registrationResources.map((registrationResource, index) => ({
           registrationId: registrationDetail.registration.id,
-          itemRegistrationId: registrationResource.item.id,
+          itemRegistrationId: registrationDetail.items[index].id,
           quantity: registrationDetail.items[index].quantity,
           itemStatus: registrationResource.item.status,
         })),
