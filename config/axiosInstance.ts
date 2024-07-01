@@ -41,7 +41,7 @@ AxiosInstance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest: AxiosRequestConfig = error.config;
-    if (error.response && error.response.status === 401) {
+    if (error.response && error.response.status === 401 && originalRequest.url !== '/auths/refresh-token') {
       if (!isRefreshing) {
         const refresh_token = tokenManager.getRefreshToken();
         const email = localStorage.getItem("email");
