@@ -18,7 +18,9 @@ export const ConfirmReturnRegistrationForm = ({
     getValues,
     watch,
   } = useFormContext();
-  
+
+  console.log(registrationResources);
+
   return (
     <>
       {registrationResources.map((registrationResource, index) => {
@@ -56,7 +58,7 @@ export const ConfirmReturnRegistrationForm = ({
                 </option>
               </select>
             </div>
-            <Input className="mb-7" label="Tổng dung tích còn lại" variant="bordered" {...register(`items.${index}.remaining_volume`)}/>
+            {registrationResource.item.volume !== null && <Input className="mb-7" label="Tổng dung tích còn lại" variant="bordered" {...register(`items.${index}.remaining_volume`)}/>}
             <Input className="mb-7" label="Ghi chú" variant="bordered" {...register(`items.${index}.remark`)}/>
           </div>
         );
