@@ -14,7 +14,8 @@ export interface Resource {
   unit: number;
   status: 2;
   category: Category;
-  handover: number
+  handover: number;
+  volume: number | null;
 }
 
 export const resourceColumns = [
