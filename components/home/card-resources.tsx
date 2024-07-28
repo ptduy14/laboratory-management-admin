@@ -31,17 +31,17 @@ export const resourceCardColumns = [
   },
 ];
 
-export const CardAgents = () => {
+export const CardResources = () => {
   const {
     data: resources,
     isLoading: isFetchingResouces,
     mutate: updateResourceList,
-  } = useSWR([`/items`, {take: 8}], ([url, queryParams]) => resourcesFetcher(url, queryParams));
+  } = useSWR([`/items`, {take: 8, order: "DESC"}], ([url, queryParams]) => resourcesFetcher(url, queryParams));
 
   return (
     <Card className="bg-default-50 rounded-xl shadow-md w-full">
       {isFetchingResouces ? (
-       <div className="min-h-52">
+       <div className="min-h-52 flex items-center justify-center">
        <CardLoaderSpinner />
    </div>
       ) : (

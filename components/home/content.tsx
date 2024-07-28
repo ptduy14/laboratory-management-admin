@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { CardEquipment } from "./card-equipment";
 import { CardTool } from "./card-tool";
 import { CardChemical } from "./card-chemical";
-import { CardAgents } from "./card-";
+import { CardResources } from "./card-resources";
 import { CardTransactions } from "./card-latest-transfer-resource";
 import { Link } from "@nextui-org/react";
 import NextLink from "next/link";
@@ -75,7 +75,7 @@ export const Content = () => {
             </Link>
           </div>
           <div className="flex flex-col justify-center gap-4 flex-wrap md:flex-nowrap md:flex-col">
-            <CardAgents />
+            <CardResources />
             <CardTransactions />
           </div>
         </div>

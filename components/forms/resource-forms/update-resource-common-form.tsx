@@ -74,7 +74,7 @@ export const UpdateResourceCommonForm = ({
         errorMessage={errors.specification?.message?.toString()}
         isInvalid={errors.specification?.message ? true : false}
         defaultValue={getValues("specification")}
-        {...register("specification", {setValueAs: (value: string) => value.trim()})}
+        {...register("specification", {setValueAs: (value: string) => (value ? value.trim() : "")})}
       />
       <Input
         className="mb-7"
