@@ -14,6 +14,10 @@ You may need to wait for fetching data because we used free hosting :)))
 
 If you want to use this API please contact locnguyen071102@gmail.com
 
+## First look
+
+![Dashboard Dark Mode](./public/dark.png)
+
 ### Sample structure
 ```
 ├── components
@@ -38,4 +42,31 @@ If you want to use this API please contact locnguyen071102@gmail.com
 └──
 ```
 ## Feature
-Waiting for update ....
+<ul>
+  <li>Equipment management</li>
+  <li>Chemical management</li>
+  <li>Laboratory management</li>
+  <li>Usage history</li>
+  <li>User management</li>
+  <li>Resource allocation to departments</li>
+</ul>
+
+## For Run
+
+Install dependencies
+
+
+```bash
+npm install
+```
+
+Start the server
+
+
+
+```bash
+npm run dev
+```
+
+Now you can visit https://localhost:3000 in your browser.
+
