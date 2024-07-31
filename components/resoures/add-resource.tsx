@@ -35,7 +35,9 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isChemicalFieldVisible, setIsChemicalFieldVisible] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [schema, setSchema] = useState<z.ZodType<AddResourceSchemaUnionType>>(AddResourceCommonSchema);
+  const [schema, setSchema] = useState<z.ZodType<AddResourceSchemaUnionType>>(
+    AddResourceCommonSchema
+  );
 
   const methods = useForm<AddResourceSchemaUnionType>({
     resolver: zodResolver(schema),
@@ -43,18 +45,20 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
 
   const categoryIdSelected: number = methods.watch("categoryId", 1);
 
-  const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) =>
-    categoriesFetcher(url, queryParams)
+  const { data: categories } = useSWR(
+    ["/categories", {}],
+    ([url, queryParams]) => categoriesFetcher(url, queryParams)
   );
 
   // need to improment later
   useEffect(() => {
-    let newSchema = getAddResourceSchema(categoryIdSelected);
+    let newSchema = getNewAddResourceSchema(categoryIdSelected);
     setSchema(newSchema);
     methods.reset(undefined, { keepValues: true }); // Reset form with new schema
-  }, [categoryIdSelected, categories]);
+    console.log(categoryIdSelected);
+  }, [categoryIdSelected]);
 
-  const getAddResourceSchema = (categoryIdSelected: number) => {
+  const getNewAddResourceSchema = (categoryIdSelected: number) => {
     let category = categories?.data.find((category: Category) => {
       return category.id === categoryIdSelected;
     });
@@ -69,8 +73,11 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
     }
   };
 
-  const onSubmit: SubmitHandler<AddResourceSchemaUnionType> = async (payload) => {
+  const onSubmit: SubmitHandler<AddResourceSchemaUnionType> = async (
+    payload
+  ) => {
     try {
+      console.log('ok');
       setIsLoading(true);
       const { data: newResource } = await ResourceService.create(payload);
       console.log(newResource);
@@ -80,12 +87,15 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const translatedErrorMessage = translateErrorMessage(error.response?.data.message);
+        const translatedErrorMessage = translateErrorMessage(
+          error.response?.data.message
+        );
         toast.error(translatedErrorMessage);
       }
+    } finally {
+      setIsLoading(false);
+      console.log(payload);
     }
-    setIsLoading(false)
-    console.log(payload);
   };
 
   const handleCloseModal = () => {
@@ -99,25 +109,43 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
         <Button onPress={onOpen} color="primary">
           Thêm tài nguyên
         </Button>
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="3xl">
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          placement="top-center"
+          size="3xl"
+        >
           <ModalContent>
             {(onClose) => (
               <>
-                <ModalHeader className="flex flex-col gap-1">Thêm tài nguyên</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">
+                  Thêm tài nguyên
+                </ModalHeader>
                 <ModalBody>
                   <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
                     <div className="w-full max-h-96">
                       <FormProvider {...methods}>
-                        <AddResourceCommonForm categories={categories?.data} isChemicalFieldVisible={isChemicalFieldVisible}/>
+                        <AddResourceCommonForm
+                          categories={categories?.data}
+                          isChemicalFieldVisible={isChemicalFieldVisible}
+                        />
                       </FormProvider>
                     </div>
                   </form>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onClick={handleCloseModal}>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onClick={handleCloseModal}
+                  >
                     Đóng
                   </Button>
-                  <Button color="primary" onClick={methods.handleSubmit(onSubmit)} isLoading={isLoading}>
+                  <Button
+                    color="primary"
+                    onClick={methods.handleSubmit(onSubmit)}
+                    isLoading={isLoading}
+                  >
                     Thêm tài nguyên
                   </Button>
                 </ModalFooter>

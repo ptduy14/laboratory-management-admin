@@ -10,7 +10,7 @@ export const AddResourceCommonSchema = z.object({
   remark: z.string().optional(),
   quantity: z.coerce
     .number({ invalid_type_error: "Trường này phải là số" })
-    .min(1, { message: "Trường này không được rộng" }),
+    .min(1, { message: "Trường này không được trống" }),
   categoryId: z.coerce.number(),
 });
 
@@ -18,12 +18,10 @@ export const AddResourceCommonSchema = z.object({
 export const AddResourceChemicalSchema = AddResourceCommonSchema.extend({
   volume: z.coerce
     .number({ invalid_type_error: "Trường này phải là số" })
-    .min(1, { message: "Trường này không được rộng" }),
+    .min(1, { message: "Trường này không được trống" }),
   specification: z.coerce.number(),
 });
 
 export type AddResourceCommonSchemaType = z.infer<typeof AddResourceCommonSchema>;
 export type AddResourceChemicalSchemaType = z.infer<typeof AddResourceChemicalSchema>;
-export type AddResourceSchemaUnionType =
-  | AddResourceCommonSchemaType
-  | AddResourceChemicalSchemaType;
+export type AddResourceSchemaUnionType = AddResourceCommonSchemaType | AddResourceChemicalSchemaType;
