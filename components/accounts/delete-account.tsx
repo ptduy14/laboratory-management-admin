@@ -25,9 +25,9 @@ export const DeleteAccount = ({ account }: { account: Account }) => {
     setIsLoading(!isLoading)
     if (account.photo) {
       let publicId = getPublicIdFromUrl(account.photo);
-      const data = await CloudinaryService.deleteImg(publicId!);
+      await CloudinaryService.deleteImg(publicId!);
     }
-    const { data } = await AccountService.delete(account.id.toString());
+    await AccountService.delete(account.id.toString());
     mutate((key) => Array.isArray(key) && key[0] === "/users/get");
     toast.success("Xóa account thành công");
     setIsLoading(!isLoading)

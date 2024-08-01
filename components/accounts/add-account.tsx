@@ -20,13 +20,13 @@ import { AddAccountSchemaType } from "./schema/addAccountSchema";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { AccountStatus } from "@/enums/account-status";
+import { translateErrorMessage } from "@/utils/translateErrorMessage";
 
 type AddAccountProps = {
-  mutate: any,
-  accounts: Account[]
+  mutate: any
 }
 
-export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
+export const AddAccount = ({ mutate } : AddAccountProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isVisible, setIsVisible] = React.useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -44,23 +44,22 @@ export const AddAccount = ({ mutate, accounts } : AddAccountProps) => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const onSubmit: SubmitHandler<AddAccountSchemaType> = async (dataField) => {
-    setIsLoading(!isLoading)
+    setIsLoading(true)
     dataField = {...dataField, status: AccountStatus.ACTIVE}
-
     try {
       const { data } = await AccountService.createAccount(dataField)
       console.log(data);
       mutate();
       toast.success("Thêm tài khoản thành công !!")
-      setIsLoading(!isLoading)
       onClose();
     } catch (error) {
-      setIsLoading(!isLoading)
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message)
+        toast.error(translateErrorMessage(error.response?.data.message))
       } else {
         toast.error('Đã có lỗi xảy ra. Vui lòng liên hệ Admin')
       }
+    } finally {
+      setIsLoading(false)
     }
   };
 
