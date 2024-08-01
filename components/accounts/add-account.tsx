@@ -20,6 +20,7 @@ import { AddAccountSchemaType } from "./schema/addAccountSchema";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { AccountStatus } from "@/enums/account-status";
+import { translateErrorMessage } from "@/utils/translateErrorMessage";
 
 type AddAccountProps = {
   mutate: any
@@ -53,7 +54,7 @@ export const AddAccount = ({ mutate } : AddAccountProps) => {
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message)
+        toast.error(translateErrorMessage(error.response?.data.message))
       } else {
         toast.error('Đã có lỗi xảy ra. Vui lòng liên hệ Admin')
       }
