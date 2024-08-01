@@ -5,7 +5,7 @@ export const AddAccountSchema = z
     email: z
       .string()
       .min(1, { message: "Trường này không được trống" })
-      .regex(/^[a-zA-Z0-9._%+-]+@student\.ctuet\.edu\.vn$/, {
+      .regex(/^[a-zA-Z0-9._%+-]+@(student\.)?ctuet\.edu\.vn$/, {
         message: "Địa chỉ email không hợp lệ",
       }),
     firstName: z.string().min(1, { message: "Trường này không được trống" }),
