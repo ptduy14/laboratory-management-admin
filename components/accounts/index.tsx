@@ -166,7 +166,7 @@ export const Accounts = () => {
           </div>
         </div>
         <div className="flex flex-row gap-3.5 flex-wrap">
-          <AddAccount accounts={accounts?.data} mutate={updateAccountList} />
+          <AddAccount mutate={updateAccountList} />
           <ExportCSVAccount />
         </div>
       </div>
