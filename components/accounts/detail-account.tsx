@@ -11,34 +11,13 @@ import {
   Chip,
 } from "@nextui-org/react";
 import { EyeIcon } from "@/components/icons/table/eye-icon";
-import React, { useState, useEffect } from "react";
-import { UserService } from "@/services/userService";
+import React from "react";
 import { Account } from "./account-table/data";
-import { LoaderImageText } from "../loader/loader-image-text";
 import { RoleNames } from "@/enums/role";
 import { AccountStatusNames } from "@/enums/account-status";
-import useSWR from "swr";
-import { accountFetcher } from "@/utils/fetchers/account-fetchers.ts/accountFetcher";
 
-export const DetailAccount = ({ accountId }: { accountId: number }) => {
-  // const [account, setAccount] = useState<Account>();
+export const DetailAccount = ({ accountId, account }: { accountId: number, account: Account }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  const { data: account, isLoading: isFetchingAccount } = useSWR<Account>(
-    isOpen ? `/users/get/${accountId.toString()}` : null,
-    accountFetcher
-  );
-
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     getAccountById();
-  //   }
-  // }, [isOpen]);
-
-  // const getAccountById = async () => {
-  //   const { data } = await UserService.getById(accountId.toString());
-  //   setAccount(data);
-  // };
 
   return (
     <div>
@@ -55,8 +34,7 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
             <>
               <ModalHeader className="flex flex-col gap-1">Account Detail</ModalHeader>
               <ModalBody>
-                {!isFetchingAccount && account ? (
-                  <div className="flex justify-between">
+                <div className="flex justify-between">
                     <div className="w-1/3 pr-10">
                       <Avatar
                         radius="none"
@@ -120,9 +98,6 @@ export const DetailAccount = ({ accountId }: { accountId: number }) => {
                       </label>
                     </div>
                   </div>
-                ) : (
-                  <LoaderImageText />
-                )}
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="flat" onClick={onClose}>
