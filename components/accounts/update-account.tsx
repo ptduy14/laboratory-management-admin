@@ -16,7 +16,7 @@ import {
 } from "./schema/updateAccountSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { UserService } from "@/services/userService";
+import { AccountService } from "@/services/accountService";
 import { ACCEPTED_IMAGE_TYPES } from "./schema/updateAccountSchema";
 import { CloudinaryService } from "@/services/cloudinaryService";
 import axios from "axios";
@@ -66,9 +66,9 @@ export default function UpdateAccount({
           ...data,
           photo: cloudinaryData.url,
         };
-        await UserService.updateById(accountId.toString(), newData);
+        await AccountService.updateById(accountId.toString(), newData);
       } else {
-        await UserService.updateById(accountId.toString(), {
+        await AccountService.updateById(accountId.toString(), {
           ...data,
           photo: account.photo ? account.photo : "",
         });

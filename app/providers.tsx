@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider } from "next-auth/react";
+import { AppProvider } from "@/contexts/AppContext";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -25,8 +26,14 @@ export function Providers({ children, themeProps, session }: ProvidersProps) {
           attribute="class"
           {...themeProps}
         >
-          {pathname === "/login" || pathname.startsWith('/api') ? children : <Layout>{children}</Layout>}
-          <ToastContainer />
+          <AppProvider>
+            {pathname === "/login" || pathname.startsWith("/api") ? (
+              children
+            ) : (
+              <Layout>{children}</Layout>
+            )}
+            <ToastContainer />
+          </AppProvider>
         </NextThemesProvider>
       </NextUIProvider>
     </SessionProvider>

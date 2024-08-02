@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -26,7 +26,10 @@ export const DeleteResource = ({
   disclosure: UseDisclosureReturn;
 }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const handleDeleteResource = async () => {
+    setIsLoading(true);
     try {
       const { data } = await ResourceService.delete(resource.id.toString());
       mutate((key) => Array.isArray(key) && key[0] === "/items");
@@ -38,6 +41,8 @@ export const DeleteResource = ({
         const translatedErrorMessage = translateErrorMessage(error.response?.data.message);
         toast.error(translatedErrorMessage);
       }
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -57,7 +62,7 @@ export const DeleteResource = ({
                 <Button color="primary" variant="light" onPress={onClose}>
                   Đóng
                 </Button>
-                <Button color="danger" onClick={handleDeleteResource}>
+                <Button color="danger" onClick={handleDeleteResource} isLoading={isLoading}>
                   Xóa
                 </Button>
               </ModalFooter>

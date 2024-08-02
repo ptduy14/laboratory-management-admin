@@ -29,6 +29,7 @@ import { categoryFetcher } from "@/utils/fetchers/category-fetchers.ts/category-
 import { QueryParams } from "@/types/query-params";
 import { categoryResourcesFetcher } from "@/utils/fetchers/category-resource-fetchers/category-resources-fetcher";
 import { useDebounce } from "../hooks/useDebounce";
+import { useAppContext } from "@/contexts/AppContext";
 
 export const CategoryResources = ({ id }: { id: string }) => {
   const [queryParams, setQueryParams] = useState<QueryParams>({});
@@ -36,6 +37,11 @@ export const CategoryResources = ({ id }: { id: string }) => {
   const debounceSearchValue = useDebounce(searchValue);
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
   const [originFilter, setOriginFilter] = useState<Selection>("all");
+  const { setAppState } = useAppContext();
+
+  useEffect(() => {
+    setAppState((prev) => ({...prev, currentCategoryId: Number(id)}))
+  }, [id])
 
   const {
     data: categoryResources,

@@ -57,7 +57,7 @@ export const ResourceTableWrapper = ({
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
-              <TableCell>{RenderCell({ resouce: item, columnKey: columnKey })}</TableCell>
+              <TableCell>{RenderCell({ resouce: item, columnKey })}</TableCell>
             )}
           </TableRow>
         )}

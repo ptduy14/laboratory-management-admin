@@ -1,9 +1,6 @@
 import { Button } from "@nextui-org/react";
 import { ExportIcon } from "../icons/accounts/export-icon";
 import useSWR from "swr";
-import { AccountService } from "@/services/accountService";
-import { UserService } from "@/services/userService";
-import { useEffect } from "react";
 import { Account } from "./account-table/data";
 import { RoleNames } from "@/enums/role";
 import { AccountStatusNames } from "@/enums/account-status";

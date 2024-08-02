@@ -1,14 +1,13 @@
 import { Input } from "@nextui-org/react";
 import { RoomType } from "@/types/room";
 import { useFormContext } from "react-hook-form";
+import { useState } from "react";
 
 export const TransferResourceForm = ({ rooms }: { rooms: RoomType[] }) => {
   const {
     register,
     formState: { errors },
   } = useFormContext();
-
-  console.log(errors);
 
   return (
     <>

@@ -1,6 +1,6 @@
-import { UserService } from "@/services/userService"
+import { AccountService } from "@/services/accountService";
 
 export const accountFetcher = async (url: string) => {
-    const { data } = await UserService.getById(url);
+    const { data } = await AccountService.getById(url);
     return data
 }

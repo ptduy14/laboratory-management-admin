@@ -5,14 +5,9 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
 } from "@nextui-org/react";
-import { Tooltip } from "@nextui-org/react";
-import { HandoverIcon } from "../icons/table/handover-icon";
-import { ViewIcon } from "../icons/sidebar/view-icon";
 import { TransferResourceForm } from "../forms/resource-forms/transfer-resource-form";
 import useSWR from "swr";
-import { RoomService } from "@/services/roomService";
 import { Resource } from "./resource-table/data";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
@@ -26,6 +21,7 @@ import { mutate } from "swr";
 import { toast } from "react-toastify";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
+import { useState } from "react";
 
 export const TransferResource = ({
   resource,
@@ -35,6 +31,7 @@ export const TransferResource = ({
   disclosure: UseDisclosureReturn;
 }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
+  const [isLoading, setIsloading] = useState<boolean>(false)
 
   const methods = useForm<transferResourceSchemaType>({
     resolver: zodResolver(transferResourceSchema),
@@ -44,18 +41,29 @@ export const TransferResource = ({
     },
   });
 
-  const { data: rooms, isLoading: isFetchingRooms } = useSWR(isOpen ? ["/rooms", {take: 50}] : null, ([url, queryParams]) => roomsFetcher(url, queryParams));
+  const { data: rooms, isLoading: isFetchingRooms } = useSWR(
+    isOpen ? ["/rooms", { take: 50 }] : null,
+    ([url, queryParams]) => roomsFetcher(url, queryParams)
+  );
 
   const onSubmit: SubmitHandler<transferResourceSchemaType> = async (data) => {
     if (data.quantity > resource.quantity - resource.handover) {
-      methods.setError("quantity", { type: "invalid", message: "Số lượng bàn giao không hợp lệ" });
+      methods.setError("quantity", {
+        type: "invalid",
+        message: "Số lượng bàn giao không hợp lệ",
+      });
+      return;
     }
+
+    setIsloading(true);
 
     try {
       const { data: res } = await RoomResourceService.transferResource(data);
       //udpate cache and trigger revalidation
       mutate((key) => Array.isArray(key) && key[0] === "/items");
-      mutate((key) => Array.isArray(key) && key[0].startsWith(`/items/category/`));
+      mutate(
+        (key) => Array.isArray(key) && key[0].startsWith(`/items/category/`)
+      );
       methods.reset();
       toast.success("Bàn giao thành công");
       onClose();
@@ -63,6 +71,8 @@ export const TransferResource = ({
       if (axios.isAxiosError(error)) {
         console.log(error);
       }
+    } finally {
+      setIsloading(false);
     }
   };
 
@@ -78,7 +88,8 @@ export const TransferResource = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Bàn giao {`${resource.name.toLowerCase()} ${resource.specification}`}
+                Bàn giao{" "}
+                {`${resource.name.toLowerCase()} ${resource.specification}`}
               </ModalHeader>
               <ModalBody>
                 <div className="p-4 bg-[#3F3F46] rounded mb-4">
@@ -94,10 +105,18 @@ export const TransferResource = ({
                 </form>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onClick={handleCloseModal}>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onClick={handleCloseModal}
+                >
                   Đóng
                 </Button>
-                <Button color="primary" onClick={methods.handleSubmit(onSubmit)}>
+                <Button
+                  color="primary"
+                  isLoading={isLoading}
+                  onClick={methods.handleSubmit(onSubmit)}
+                >
                   Bàn giao
                 </Button>
               </ModalFooter>
