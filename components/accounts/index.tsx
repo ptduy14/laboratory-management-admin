@@ -10,16 +10,13 @@ import {
   Pagination,
 } from "@nextui-org/react";
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
-import { ExportIcon } from "@/components/icons/accounts/export-icon";
+import React, { useEffect, useState } from "react";
 import { HouseIcon } from "@/components/icons/breadcrumb/house-icon";
 import { UsersIcon } from "@/components/icons/breadcrumb/users-icon";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
 import { SearchIcon } from "../icons/searchicon";
 import { AccountTableWrapper } from "./account-table/account-table";
 import { AddAccount } from "./add-account";
-import { UserService } from "@/services/userService";
-import { Account } from "./account-table/data";
 import { LoaderTable } from "../loader/loader-table";
 import { statusOptions } from "./account-table/data";
 import { roleOptions } from "./account-table/data";
