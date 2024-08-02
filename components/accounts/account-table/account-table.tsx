@@ -46,8 +46,8 @@ export const AccountTableWrapper = ({
                 if (setPage) {
                   setPage((prev) => ({
                     ...prev,
-                    page: page
-                  }))
+                    page: page,
+                  }));
                 }
               }}
             />
@@ -63,7 +63,7 @@ export const AccountTableWrapper = ({
       </TableHeader>
       <TableBody items={accounts} emptyContent={"No account found"}>
         {(item) => (
-          <TableRow key={item.id}>
+          <TableRow className={`${item.id === session?.user.userInfo.id && "hidden"}`} key={item.id}>
             {(columnKey) => (
               <TableCell>
                 {RenderCell({
