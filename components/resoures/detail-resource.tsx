@@ -26,27 +26,20 @@ import { resourceFetcher } from "@/utils/fetchers/resource-fetchers.ts/resource-
 import { roomResourceFetcher } from "@/utils/fetchers/room-resource-fetchers/room-resource-fetch";
 
 export const DetailResource = ({
-  resourceId,
   resource,
   disclosure,
 }: {
-  resourceId: number;
   resource: Resource;
   disclosure: UseDisclosureReturn;
 }) => {
   // const [account, setAccount] = useState<Account>();
   const { isOpen, onOpen, onOpenChange } = disclosure;
 
-  // const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
-  //   isOpen ? `/items/${resourceId.toString()}` : null,
-  //   resourceFetcher
-  // );
-
   const {
     data: resourceTransferedInfo,
     isLoading: isFetchingResourceTransferedInfo,
   } = useSWR(
-    isOpen ? `room-items/item/${resourceId.toString()}` : null,
+    isOpen ? `room-items/item/${resource.id.toString()}` : null,
     roomResourceFetcher
   );
 
@@ -78,7 +71,7 @@ export const DetailResource = ({
                           Resource id:
                         </span>
                         <span className="w-1/2 block font-light text-sm">
-                          {resourceId}
+                          {resource.id}
                         </span>
                       </label>
                       <label className="flex items-center mb-1.5">

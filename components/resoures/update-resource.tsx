@@ -38,13 +38,12 @@ import { LoaderSkeletonForm } from "../loader/loader-skeleton-form";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { resourceFetcher } from "@/utils/fetchers/resource-fetchers.ts/resource-fetcher";
 import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categories-fetcher";
+import { useAppContext } from "@/contexts/AppContext";
 
 export default function UpdateResouce({
-  resourceId,
   resource,
   disclosure,
 }: {
-  resourceId: number;
   resource: Resource;
   disclosure: UseDisclosureReturn;
 }) {
@@ -53,6 +52,9 @@ export default function UpdateResouce({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [schema, setSchema] = useState<z.ZodType<UpdateResourceSchemaUnionType>>(UpdateResourceCommonSchema);
   const { mutate } = useSWRConfig();
+  const { appState } = useAppContext();
+  const { currentCategoryId } = appState;
+  console.log(currentCategoryId);
 
   const methods = useForm<UpdateResourceSchemaUnionType>({
     resolver: zodResolver(schema),
@@ -67,13 +69,13 @@ export default function UpdateResouce({
     if (!resource) return;
     methods.reset({
       ...resource,
-      categoryId: resource.category.id,
+      categoryId: resource.category?.id ? resource.category.id : currentCategoryId,
       volume: resource.volume ?? undefined,
       serial_number: resource.serial_number ?? undefined,
       remark: resource.remark ?? undefined,
     });
   }, [resource]);
-
+  console.log(resource.category?.id);
   let categoryIdSelected: number = methods.watch("categoryId");
 
   // need to improment later
@@ -101,10 +103,9 @@ export default function UpdateResouce({
     setIsLoading(true)
     try {
       const { data: resourceUpdated } = await ResourceService.update(
-        resourceId,
+        resource.id,
         data
       );
-      console.log(resourceUpdated);
       methods.reset();
       mutate((key) => Array.isArray(key) && key[0] === "/items");
       mutate((key) => Array.isArray(key) && key[0] === `/items/category/${resourceUpdated.category.id}`);

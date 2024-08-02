@@ -5,14 +5,9 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
 } from "@nextui-org/react";
-import { Tooltip } from "@nextui-org/react";
-import { HandoverIcon } from "../icons/table/handover-icon";
-import { ViewIcon } from "../icons/sidebar/view-icon";
 import { TransferResourceForm } from "../forms/resource-forms/transfer-resource-form";
 import useSWR from "swr";
-import { RoomService } from "@/services/roomService";
 import { Resource } from "./resource-table/data";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
@@ -26,6 +21,7 @@ import { mutate } from "swr";
 import { toast } from "react-toastify";
 import type { UseDisclosureReturn } from "@nextui-org/use-disclosure";
 import { roomsFetcher } from "@/utils/fetchers/room-fetchers.ts/rooms-fetcher";
+import { useState } from "react";
 
 export const TransferResource = ({
   resource,
@@ -35,6 +31,7 @@ export const TransferResource = ({
   disclosure: UseDisclosureReturn;
 }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = disclosure;
+  const [isLoading, setIsloading] = useState<boolean>(false)
 
   const methods = useForm<transferResourceSchemaType>({
     resolver: zodResolver(transferResourceSchema),
@@ -55,7 +52,10 @@ export const TransferResource = ({
         type: "invalid",
         message: "Số lượng bàn giao không hợp lệ",
       });
+      return;
     }
+
+    setIsloading(true);
 
     try {
       const { data: res } = await RoomResourceService.transferResource(data);
@@ -71,6 +71,8 @@ export const TransferResource = ({
       if (axios.isAxiosError(error)) {
         console.log(error);
       }
+    } finally {
+      setIsloading(false);
     }
   };
 
@@ -112,6 +114,7 @@ export const TransferResource = ({
                 </Button>
                 <Button
                   color="primary"
+                  isLoading={isLoading}
                   onClick={methods.handleSubmit(onSubmit)}
                 >
                   Bàn giao
