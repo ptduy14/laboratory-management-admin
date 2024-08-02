@@ -36,69 +36,44 @@ export default function UpdateAccount({
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [currentAccountPhoto, setCurrentAccountPhoto] = useState<string>("");
 
   const methods = useForm<UpdateAccountSchemaType>({
     resolver: zodResolver(UpdateAccountSchema),
   });
 
-  // {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  //   reset,
-  //   getValues,
-  //   clearErrors,
-  // }
-
   useEffect(() => {
-    setCurrentAccountPhoto(account.photo ? account.photo : "");
     methods.reset({ ...account });
   }, [account]);
 
   const handleDeleteImgFromCloud = async () => {
-    if (setCurrentAccountPhoto !== undefined) {
-      let publicId = getPublicIdFromUrl(currentAccountPhoto);
-      try {
-        const res = await CloudinaryService.deleteImg(publicId!);
-        console.log(res);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          console.log(error);
-        }
-      }
-    }
-    return;
+    let publicId = getPublicIdFromUrl(account.photo ? account.photo : "");
+    if (!publicId) return;
+
+    const res = await CloudinaryService.deleteImg(publicId);
+    console.log(res);
   };
 
   const onSubmit: SubmitHandler<UpdateAccountSchemaType> = async (data) => {
     setIsLoading(true);
-    let account: Account;
     try {
-      if (!Array.isArray(data.photo)) {
-        const { data: upadtedAccount } = await UserService.updateById(
-          accountId.toString(),
-          {
-            ...data,
-            photo: currentAccountPhoto ? currentAccountPhoto : "",
-          }
-        );
-        account = upadtedAccount;
-      } else {
+      if (data.photo) {
+        handleDeleteImgFromCloud();
         const { data: cloudinaryData } = await CloudinaryService.uploadImg(
           data.photo[0]
         );
+        console.log(cloudinaryData);
         let newData = {
           ...data,
           photo: cloudinaryData.url,
         };
-        handleDeleteImgFromCloud();
-        const { data: updatedAccount } = await UserService.updateById(
-          accountId.toString(),
-          newData
-        );
-        account = updatedAccount;
+        await UserService.updateById(accountId.toString(), newData);
+      } else {
+        await UserService.updateById(accountId.toString(), {
+          ...data,
+          photo: account.photo ? account.photo : "",
+        });
       }
+
       toast.success("Cập nhật thành công !!");
 
       // cần cập nhật lại data ở đây
@@ -157,7 +132,7 @@ export default function UpdateAccount({
                   <FormProvider {...methods}>
                     <UpdateAccountForm
                       previewImage={previewImage}
-                      currentAccountPhoto={currentAccountPhoto}
+                      currentAccountPhoto={account.photo}
                       handlePreviewImage={handlePreviewImage}
                     ></UpdateAccountForm>
                   </FormProvider>

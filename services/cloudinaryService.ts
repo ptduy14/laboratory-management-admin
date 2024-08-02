@@ -18,7 +18,7 @@ export const CloudinaryService = {
 
   deleteImg: async (publicId: string) => {
     const timestamp = new Date().getTime();
-    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_KEY;
+    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
     const signature = generateSHA1(generateSignature(publicId));
     const payload = {
       public_id: publicId,

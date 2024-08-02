@@ -5,7 +5,7 @@ import { RoleEnum, RoleNames } from "@/enums/role";
 
 interface UpdateAccountFormProps {
   previewImage: string | null;
-  currentAccountPhoto: string;
+  currentAccountPhoto: string | null;
   handlePreviewImage: (e: any) => void;
 }
 
