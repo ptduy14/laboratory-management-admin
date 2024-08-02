@@ -47,7 +47,7 @@ export const AddAccount = ({ mutate } : AddAccountProps) => {
     setIsLoading(true)
     dataField = {...dataField, status: AccountStatus.ACTIVE}
     try {
-      const { data } = await AccountService.createAccount(dataField)
+      const { data } = await AccountService.create(dataField)
       console.log(data);
       mutate();
       toast.success("Thêm tài khoản thành công !!")

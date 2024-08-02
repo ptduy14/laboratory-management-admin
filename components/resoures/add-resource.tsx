@@ -55,7 +55,6 @@ export const AddResource = ({ mutate }: { mutate: any }) => {
     let newSchema = getNewAddResourceSchema(categoryIdSelected);
     setSchema(newSchema);
     methods.reset(undefined, { keepValues: true }); // Reset form with new schema
-    console.log(categoryIdSelected);
   }, [categoryIdSelected]);
 
   const getNewAddResourceSchema = (categoryIdSelected: number) => {

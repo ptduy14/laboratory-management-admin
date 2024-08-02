@@ -41,31 +41,38 @@ import { categoriesFetcher } from "@/utils/fetchers/category-fetchers.ts/categor
 
 export default function UpdateResouce({
   resourceId,
+  resource,
   disclosure,
 }: {
   resourceId: number;
+  resource: Resource;
   disclosure: UseDisclosureReturn;
 }) {
   const { isOpen, onOpen, onClose, onOpenChange } = disclosure;
-  const [schema, setSchema] = useState<z.ZodType<UpdateResourceSchemaUnionType>>(
-    UpdateResourceCommonSchema
-  );
+  const [isChemicalFieldVisible, setIsChemicalFieldVisible] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [schema, setSchema] = useState<z.ZodType<UpdateResourceSchemaUnionType>>(UpdateResourceCommonSchema);
   const { mutate } = useSWRConfig();
 
   const methods = useForm<UpdateResourceSchemaUnionType>({
     resolver: zodResolver(schema),
   });
 
-  const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
-    isOpen ? `/items/${resourceId.toString()}` : null,
-    async (url: string) => {
-      const data = await resourceFetcher(url);
-      methods.reset({ ...data, categoryId: data.category.id });
-      return data;
-    }
+  const { data: categories } = useSWR(
+    ["/categories", {}],
+    ([url, queryParams]) => categoriesFetcher(url, queryParams)
   );
 
-  const { data: categories } = useSWR(["/categories", {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
+  useEffect(() => {
+    if (!resource) return;
+    methods.reset({
+      ...resource,
+      categoryId: resource.category.id,
+      volume: resource.volume ?? undefined,
+      serial_number: resource.serial_number ?? undefined,
+      remark: resource.remark ?? undefined,
+    });
+  }, [resource]);
 
   let categoryIdSelected: number = methods.watch("categoryId");
 
@@ -74,35 +81,42 @@ export default function UpdateResouce({
     let newSchema = getUpdateResourceSchema(categoryIdSelected);
     setSchema(newSchema);
     methods.reset(undefined, { keepValues: true }); // Reset form with new schema
-  }, [categoryIdSelected, categories]);
+  }, [categoryIdSelected]);
 
-  const getUpdateResourceSchema = (id: number) => {
+  const getUpdateResourceSchema = (categoryIdSelected: number) => {
     let category = categories?.data.find((category: Category) => {
-      return category.id === id;
+      return category.id === categoryIdSelected;
     });
     switch (category?.name) {
       case "Hóa chất":
+        setIsChemicalFieldVisible(false)
         return UpdateResourceChemicalSchema;
       default:
+        setIsChemicalFieldVisible(true)
         return UpdateResourceCommonSchema;
     }
   };
 
   const onSubmit: SubmitHandler<UpdateResourceSchemaUnionType> = async (data) => {
+    setIsLoading(true)
     try {
-      const { data: resourceUpdated } = await ResourceService.update(resourceId, data);
+      const { data: resourceUpdated } = await ResourceService.update(
+        resourceId,
+        data
+      );
       console.log(resourceUpdated);
       methods.reset();
       mutate((key) => Array.isArray(key) && key[0] === "/items");
-      mutate(`/items/${resourceId.toString()}`);
-      mutate((key) => Array.isArray(key) && key[0] === `/items/category/${resourceUpdated.category.id}`)
+      mutate((key) => Array.isArray(key) && key[0] === `/items/category/${resourceUpdated.category.id}`);
       methods.reset();
       toast.success("Cập nhật thành công");
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message)
+        toast.error(error.response?.data.message);
       }
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -113,34 +127,44 @@ export default function UpdateResouce({
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl" placement="top-center">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="3xl"
+        placement="top-center"
+      >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Cập nhật tài nguyên</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Cập nhật tài nguyên
+              </ModalHeader>
               <ModalBody>
-                {isFetchingResource ? (
-                  <LoaderSkeletonForm />
-                ) : (
-                  <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
-                    <div className="w-full max-h-80">
-                      <FormProvider {...methods}>
-                        <UpdateResourceCommonForm categories={categories?.data} />
-                      </FormProvider>
-                    </div>
-                  </form>
-                )}
+                <form className="flex justify-between scrollbar scrollbar-thin overflow-y-auto">
+                  <div className="w-full max-h-80">
+                    <FormProvider {...methods}>
+                      <UpdateResourceCommonForm isChemicalFieldVisible={isChemicalFieldVisible} categories={categories?.data} />
+                    </FormProvider>
+                  </div>
+                </form>
               </ModalBody>
-              {isFetchingResource || (
-                <ModalFooter>
-                  <Button color="danger" variant="flat" onClick={handleCloseModal}>
-                    Đóng
-                  </Button>
-                  <Button color="primary" variant="flat" onClick={methods.handleSubmit(onSubmit)}>
-                    Cập nhật
-                  </Button>
-                </ModalFooter>
-              )}
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onClick={handleCloseModal}
+                >
+                  Đóng
+                </Button>
+                <Button
+                  color="primary"
+                  variant="flat"
+                  isLoading={isLoading}
+                  onClick={methods.handleSubmit(onSubmit)}
+                >
+                  Cập nhật
+                </Button>
+              </ModalFooter>
             </>
           )}
         </ModalContent>

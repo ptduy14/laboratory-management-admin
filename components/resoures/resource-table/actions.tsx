@@ -69,8 +69,8 @@ export const Actions = ({ resource }: { resource: Resource }) => {
         </DropdownMenu>
       </Dropdown>
       <TransferResource resource={resource} disclosure={transferModalDisclosure} />
-      <DetailResource resourceId={resource.id} disclosure={detailModalDisclosure} />
-      <UpdateResouce resourceId={resource.id} disclosure={updateModalDisclosure}/>
+      <DetailResource resourceId={resource.id} resource={resource} disclosure={detailModalDisclosure} />
+      <UpdateResouce resourceId={resource.id} resource={resource} disclosure={updateModalDisclosure}/>
       <DeleteResource resource={resource} disclosure={deleteModalDisclosure}/>
     </div>
   );

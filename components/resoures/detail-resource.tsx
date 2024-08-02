@@ -27,27 +27,37 @@ import { roomResourceFetcher } from "@/utils/fetchers/room-resource-fetchers/roo
 
 export const DetailResource = ({
   resourceId,
+  resource,
   disclosure,
 }: {
   resourceId: number;
+  resource: Resource;
   disclosure: UseDisclosureReturn;
 }) => {
   // const [account, setAccount] = useState<Account>();
   const { isOpen, onOpen, onOpenChange } = disclosure;
 
-  const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
-    isOpen ? `/items/${resourceId.toString()}` : null,
-    resourceFetcher
-  );
+  // const { data: resource, isLoading: isFetchingResource } = useSWR<Resource>(
+  //   isOpen ? `/items/${resourceId.toString()}` : null,
+  //   resourceFetcher
+  // );
 
-  const { data: resourceTransferedInfo, isLoading: isFetchingResourceTransferedInfo } = useSWR(
+  const {
+    data: resourceTransferedInfo,
+    isLoading: isFetchingResourceTransferedInfo,
+  } = useSWR(
     isOpen ? `room-items/item/${resourceId.toString()}` : null,
     roomResourceFetcher
   );
 
   return (
     <div>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="xl" placement="top-center">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="xl"
+        placement="top-center"
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -60,23 +70,33 @@ export const DetailResource = ({
                 </div>
               </ModalHeader>
               <ModalBody>
-                {!isFetchingResource && resource ? (
+                {resource ? (
                   <div className="space-y-4 scrollbar scrollbar-thin overflow-y-auto h-96">
                     <div className="border-b pb-2 mb-4 border-gray-500">
                       <label className="flex items-center mb-1.5">
-                        <span className="w-1/2 block font-semibold">Resource id:</span>
-                        <span className="w-1/2 block font-light text-sm">{resourceId}</span>
+                        <span className="w-1/2 block font-semibold">
+                          Resource id:
+                        </span>
+                        <span className="w-1/2 block font-light text-sm">
+                          {resourceId}
+                        </span>
                       </label>
                       <label className="flex items-center mb-1.5">
-                        <span className="w-1/2 block font-semibold">Tên tài nguyên:</span>
-                        <span className="w-1/2 block font-light text-sm">{resource.name}</span>
+                        <span className="w-1/2 block font-semibold">
+                          Tên tài nguyên:
+                        </span>
+                        <span className="w-1/2 block font-light text-sm">
+                          {resource.name}
+                        </span>
                       </label>
                     </div>
                     <div className="border-b pb-2 mb-4 border-gray-500">
                       <div className="grid grid-cols-2 gap-y-4">
                         <label className="flex flex-col">
                           <span className="block font-semibold">Xuất xứ:</span>
-                          <span className="block font-light text-sm">{resource.origin || "-"}</span>
+                          <span className="block font-light text-sm">
+                            {resource.origin || "-"}
+                          </span>
                         </label>
                         <label className="flex flex-col">
                           <span className="block font-semibold">Số seri:</span>
@@ -85,7 +105,9 @@ export const DetailResource = ({
                           </span>
                         </label>
                         <label className="flex flex-col">
-                          <span className="block font-semibold">Dung tích:</span>
+                          <span className="block font-semibold">
+                            Dung tích:
+                          </span>
                           <span className="block font-light text-sm">
                             {resource.specification || "-"}
                           </span>
@@ -103,12 +125,20 @@ export const DetailResource = ({
                           </span>
                         </label>
                         <label className="flex flex-col">
-                          <span className="block font-semibold">Đã bàn giao</span>
-                          <span className="block font-light text-sm">{resource.handover}</span>
+                          <span className="block font-semibold">
+                            Đã bàn giao
+                          </span>
+                          <span className="block font-light text-sm">
+                            {resource.handover}
+                          </span>
                         </label>
                         <label className="flex flex-col">
-                          <span className="block font-semibold">Chú thích:</span>
-                          <span className="block font-light text-sm">{resource.remark || "-"}</span>
+                          <span className="block font-semibold">
+                            Chú thích:
+                          </span>
+                          <span className="block font-light text-sm">
+                            {resource.remark || "-"}
+                          </span>
                         </label>
                         <label className="flex flex-col">
                           <span className="block font-semibold">Có sẵng</span>
@@ -117,18 +147,22 @@ export const DetailResource = ({
                           </span>
                         </label>
                         <label className="flex flex-col">
-                          <span className="block font-semibold">Trạng thái:</span>
+                          <span className="block font-semibold">
+                            Trạng thái:
+                          </span>
                           <span className="block font-light text-sm">
                             <Chip
                               size="sm"
                               variant="flat"
                               color={
-                                Number(resource.status) === 0 || Number(resource.status) === 1
+                                Number(resource.status) === 0 ||
+                                Number(resource.status) === 1
                                   ? "success"
                                   : Number(resource.status) === 2
                                   ? "warning"
                                   : "danger"
-                              }>
+                              }
+                            >
                               <span className="capitalize text-xs">
                                 {ResourceStatusName[resource.status]}
                               </span>
@@ -137,7 +171,9 @@ export const DetailResource = ({
                         </label>
                         <label className="flex flex-col">
                           <span className="block font-semibold">Danh mục:</span>
-                          <span className="block font-light text-sm">{resource.category.name}</span>
+                          <span className="block font-light text-sm">
+                            {resource.category.name}
+                          </span>
                         </label>
                       </div>
                     </div>
@@ -152,13 +188,17 @@ export const DetailResource = ({
                               return (
                                 <>
                                   <label className="flex flex-col">
-                                    <span className="block font-semibold">Tên phòng:</span>
+                                    <span className="block font-semibold">
+                                      Tên phòng:
+                                    </span>
                                     <span className="block font-light text-sm">
                                       {item.room.name}
                                     </span>
                                   </label>
                                   <label className="flex flex-col">
-                                    <span className="block font-semibold">Số lượng bàn giao:</span>
+                                    <span className="block font-semibold">
+                                      Số lượng bàn giao:
+                                    </span>
                                     <span className="block font-light text-sm">
                                       {item.quantity}
                                     </span>
