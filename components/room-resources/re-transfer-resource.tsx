@@ -8,7 +8,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import useSWR from "swr";
-import { RoomService } from "@/services/roomService";
 import { ResourcesTransfered } from "./room-resources-table/data";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
@@ -44,7 +43,7 @@ export const ReTransferResource = ({
     },
   });
 
-  const { data: rooms, isLoading: isFetchingRooms } = useSWR(isOpen ? ["/rooms", {take: 50}] : null, ([url, queryParams]) => roomsFetcher(url, queryParams));
+  const { data: rooms } = useSWR(isOpen ? ["/rooms", {take: 50}] : null, ([url, queryParams]) => roomsFetcher(url, queryParams));
 
   const onSubmit: SubmitHandler<transferResourceSchemaType> = async (data) => {
     if ((data.quantity > resourceTransfered.quantity - resourceTransfered.itemQuantityBorrowed)) {
@@ -58,7 +57,7 @@ export const ReTransferResource = ({
     try {
       setIsLoading(true)
       const currentRoomId = resourceTransfered.room.id
-      const { data: res } = await RoomResourceService.reTransferResource(resourceTransfered.room.id.toString(), data);
+      await RoomResourceService.reTransferResource(resourceTransfered.room.id.toString(), data);
       //udpate cache and trigger revalidation
       mutate((key) => Array.isArray(key) && key[0] === `/room-items/room/${currentRoomId}`)
       //update detail resource transfered

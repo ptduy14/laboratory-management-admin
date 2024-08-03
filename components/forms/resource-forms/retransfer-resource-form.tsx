@@ -13,9 +13,7 @@ export const ReTransferResourceForm = ({
     register,
     formState: { errors },
   } = useFormContext();
-
-  console.log(errors);
-
+  
   return (
     <>
       <div className="mb-7">
