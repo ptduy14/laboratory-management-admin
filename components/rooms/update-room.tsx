@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -12,7 +12,6 @@ import { Tooltip } from "@nextui-org/react";
 import { EditIcon } from "../icons/table/edit-icon";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useSWR from "swr";
 import axios from "axios";
 import { mutate } from "swr";
 import { toast } from "react-toastify";
@@ -20,23 +19,34 @@ import { UpdateRoomSchema, UpdateRoomSchemaType } from "./schema/updateRoomSchem
 import { Room } from "./room-table/data";
 import { UpdateRoomForm } from "../forms/room-forms/update-room-form";
 import { RoomService } from "@/services/roomService";
+import { translateErrorMessage } from "@/utils/translateErrorMessage";
 
 export const UpdateRoom = ({ room }: { room: Room }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const methods = useForm<UpdateRoomSchemaType>({
-    resolver: zodResolver(UpdateRoomSchema),
-    defaultValues: {
-      ...room,
-      roomId: room.id,
-    },
+    resolver: zodResolver(UpdateRoomSchema)
   });
 
+  useEffect(() => {
+    if (!room) return
+    methods.reset({...room, roomId: room.id})
+  }, [room])
+
   const onSubmit: SubmitHandler<UpdateRoomSchemaType> = async (data) => {
-    const { data: updatedRoom } = await RoomService.update(room.id, data);
-    mutate((key) => Array.isArray(key) && key[0] === "/rooms");
-    methods.reset({ ...updatedRoom, roomId: updatedRoom.id });
-    toast.success("Cập nhật phòng thành công");
-    onClose();
+    setIsLoading(true)
+    try {
+      await RoomService.update(room.id, data);
+      mutate((key) => Array.isArray(key) && key[0] === "/rooms");
+      toast.success("Cập nhật phòng thành công");
+      onClose(); 
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        toast.error(translateErrorMessage(error.response?.data.message))
+      }
+    } finally {
+      setIsLoading(false)
+    }
   };
 
   const handleCloseModal = () => {
@@ -71,7 +81,7 @@ export const UpdateRoom = ({ room }: { room: Room }) => {
                 <Button color="danger" variant="flat" onClick={handleCloseModal}>
                   Đóng
                 </Button>
-                <Button color="primary" variant="flat" onClick={methods.handleSubmit(onSubmit)}>
+                <Button color="primary" variant="flat" onClick={methods.handleSubmit(onSubmit)} isLoading={isLoading}>
                   Cập nhật
                 </Button>
               </ModalFooter>
