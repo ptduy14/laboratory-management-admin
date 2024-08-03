@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalContent,
@@ -18,13 +18,15 @@ import { toast } from "react-toastify";
 
 export const AddRoom = ({ mutate }: {mutate: any}) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const methods = useForm<AddRoomSchemaType>({
     resolver: zodResolver(AddRoomSchema)
   })
 
   const onSubmit: SubmitHandler<AddRoomSchemaType> = async (data) => {
+  setIsLoading(true)
     try {
-      const { data: addedRoom } = await RoomService.create(data);
+      await RoomService.create(data);
       mutate();
       methods.reset();
       toast.success("Thêm phòng thành công");
@@ -33,6 +35,8 @@ export const AddRoom = ({ mutate }: {mutate: any}) => {
       if (axios.isAxiosError(error)) {
         console.log(error)
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -62,7 +66,7 @@ export const AddRoom = ({ mutate }: {mutate: any}) => {
                 <Button color="danger" variant="light" onClick={handleCloseModal}>
                   Đóng
                 </Button>
-                <Button color="primary" onClick={methods.handleSubmit(onSubmit)}>
+                <Button color="primary" onClick={methods.handleSubmit(onSubmit)} isLoading={isLoading}>
                   Thêm
                 </Button>
               </ModalFooter>
