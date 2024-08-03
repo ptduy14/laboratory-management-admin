@@ -28,7 +28,7 @@ export const RenderCell = ({ category, columnKey }: RenderCellProps) => {
     case "actions":
       return (
         <div className="flex items-center gap-4 ">
-          <UpdateCategory categoryId={category.id}/>
+          <UpdateCategory category={category}/>
           <DeleteCategory categoryId={category.id}/>
         </div>
       );

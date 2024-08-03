@@ -14,14 +14,17 @@ import axios from "axios";
 import { CategoryService } from "@/services/categoryService";
 import { toast } from "react-toastify";
 import { AddCategoryForm } from "../forms/categry-forms/add-category-form";
+import { useState } from "react";
 
 export const AddCategory = ({ mutate }: { mutate: any }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const methods = useForm<AddCategorySchemaType>({ resolver: zodResolver(AddCategorySchema) });
 
   const onSubmit: SubmitHandler<AddCategorySchemaType> = async (data) => {
+    setIsLoading(true)
     try {
-      const { data: createdCategory } = await CategoryService.create(data);
+      await CategoryService.create(data);
       mutate();
       methods.reset();
       toast.success("Thêm danh mục thành công");
@@ -30,6 +33,8 @@ export const AddCategory = ({ mutate }: { mutate: any }) => {
       if (axios.isAxiosError(error)) {
         console.log(error);
       }
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -59,7 +64,7 @@ export const AddCategory = ({ mutate }: { mutate: any }) => {
                 <Button color="danger" variant="flat" onClick={handleCloseModal}>
                   Đóng
                 </Button>
-                <Button color="primary" variant="flat" onClick={methods.handleSubmit(onSubmit)}>
+                <Button color="primary" variant="flat" onClick={methods.handleSubmit(onSubmit)} isLoading={isLoading}>
                   Thêm
                 </Button>
               </ModalFooter>

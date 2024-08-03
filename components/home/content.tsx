@@ -1,20 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
-import { CardEquipment } from "./card-equipment";
-import { CardTool } from "./card-tool";
-import { CardChemical } from "./card-chemical";
 import { CardResources } from "./card-resources";
 import { CardTransactions } from "./card-latest-transfer-resource";
 import { Link } from "@nextui-org/react";
 import NextLink from "next/link";
-import { useSession } from "next-auth/react";
-import { UserService } from "@/services/userService";
 import { AccountTableWrapper } from "../accounts/account-table/account-table";
-import { Account } from "../accounts/account-table/data";
 import { LoaderTable } from "../loader/loader-table";
 import useSWR from "swr";
-import { CategoryService } from "@/services/categoryService";
 import { Category } from "../category/category-table/data";
 import { CardCategory } from "./card-category";
 import { accountsFetcher } from "@/utils/fetchers/account-fetchers.ts/accountsFetcher";
@@ -36,7 +29,6 @@ export const Content = () => {
   const {
     data: categories,
     isLoading: isFetchingCategories,
-    mutate: updateCategoriesList,
   } = useSWR(["/categories", {}], ([url, queryParams]) => categoriesFetcher(url, queryParams));
 
   return (
